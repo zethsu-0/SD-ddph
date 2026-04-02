@@ -1,0 +1,110 @@
+<Window x:Class="ddph.Views.AddProductWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Add Product"
+        Height="520"
+        Width="420"
+        MinHeight="480"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#F4F7FB">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock x:Name="WindowTitleTextBlock"
+                       Text="Add Product"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#1F2937"/>
+            <TextBlock x:Name="WindowSubtitleTextBlock"
+                       Text="Enter the product details below."
+                       Margin="0,6,0,0"
+                       Foreground="#6B7280"/>
+        </StackPanel>
+
+        <Border Grid.Row="2"
+                Padding="18"
+                Background="White"
+                BorderBrush="#D9E2EC"
+                BorderThickness="1"
+                CornerRadius="14">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Product Name"
+                                   Margin="0,0,0,6"
+                                   FontWeight="SemiBold"/>
+                        <TextBox x:Name="ProductNameTextBox"
+                                 Height="34"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="Price"
+                                   Margin="0,0,0,6"
+                                   FontWeight="SemiBold"/>
+                        <TextBox x:Name="PriceTextBox"
+                                 Height="34"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4">
+                        <TextBlock Text="Stock"
+                                   Margin="0,0,0,6"
+                                   FontWeight="SemiBold"/>
+                        <TextBox x:Name="StockTextBox"
+                                 Height="34"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="6">
+                        <TextBlock Text="Category"
+                                   Margin="0,0,0,6"
+                                   FontWeight="SemiBold"/>
+                        <ComboBox x:Name="CategoryComboBox"
+                                  Height="34"
+                                  VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Content="Cancel"
+                    Width="100"
+                    Height="36"
+                    Margin="0,0,10,0"
+                    Click="CancelButton_Click"/>
+            <Button x:Name="SaveButton"
+                    Content="Save"
+                    Width="100"
+                    Height="36"
+                    Background="#EA580C"
+                    Foreground="White"
+                    BorderBrush="#EA580C"
+                    Click="SaveButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
