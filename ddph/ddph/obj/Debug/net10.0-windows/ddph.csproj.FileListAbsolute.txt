@@ -29,3 +29,4 @@ C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-wind
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\OnlineOrders.g.cs
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\CustomItemsWindow.baml
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\CustomItemsWindow.g.cs
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\ddph.sourcelink.json

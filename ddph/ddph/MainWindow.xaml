@@ -10,143 +10,218 @@
         Width="1200"
         MinHeight="600"
         MinWidth="900"
-        Background="#F5F5F5" WindowState="Maximized">
+        Background="#F6F0E8"
+        WindowState="Maximized">
+    <Window.Resources>
+        <Style x:Key="SurfaceCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFFDFB"/>
+            <Setter Property="BorderBrush" Value="#E7DDD1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+        </Style>
 
-    <Grid Margin="12">
+        <Style x:Key="HeaderActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#F5ECE2"/>
+            <Setter Property="Foreground" Value="#5D4037"/>
+            <Setter Property="BorderBrush" Value="#DCCFC1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#5D4037"/>
+            <Setter Property="Foreground" Value="#FFF8E1"/>
+            <Setter Property="BorderBrush" Value="#5D4037"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F5ECE2"/>
+            <Setter Property="Foreground" Value="#5D4037"/>
+            <Setter Property="BorderBrush" Value="#DCCFC1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="16"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Top Bar -->
         <Border Grid.Row="0"
-                Background="White"
-                BorderBrush="#D0D0D0"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="12">
+                Style="{StaticResource SurfaceCardStyle}"
+                Padding="18">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="420"/>
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="18"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0"
-                        Background="#EAEAEA"
-                        CornerRadius="6"
-                        Height="40"
+                <StackPanel Grid.Column="0"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="DreamDough POS"
+                               FontSize="28"
+                               FontWeight="SemiBold"
+                               Foreground="#5D4037"/>
+                    <TextBlock Margin="0,4,0,0"
+                               Text="Warm bakery checkout for walk-in customers"
+                               Foreground="#8D6E63"/>
+                </StackPanel>
+
+                <Border Grid.Column="2"
+                        Padding="14,10"
+                        Background="#FBF6F0"
+                        BorderBrush="#E8DCCD"
+                        BorderThickness="1"
+                        CornerRadius="14"
                         VerticalAlignment="Center">
-                    <TextBlock Text="LOGO"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontWeight="Bold"
-                               FontSize="16"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="340"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="140"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Search"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Foreground="#5D4037"/>
+
+                        <TextBox Grid.Column="2"
+                                 Height="36"
+                                 VerticalContentAlignment="Center"
+                                 FontSize="14"
+                                 Padding="10,0"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Grid.Column="4"
+                                   Text="Date"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Foreground="#5D4037"/>
+
+                        <DatePicker Grid.Column="6"
+                                    Height="36"
+                                    SelectedDate="{x:Static sys:DateTime.Now}"
+                                    xmlns:sys="clr-namespace:System;assembly=mscorlib"/>
+                    </Grid>
                 </Border>
 
-                <TextBlock Grid.Column="2"
-                           Text="Search Product"
-                           VerticalAlignment="Center"
-                           FontWeight="SemiBold"
-                           Margin="0,0,8,0"/>
-
-                <TextBox Grid.Column="3"
-                         Height="36"
-                         VerticalContentAlignment="Center"
-                         FontSize="14"
-                         Padding="10,0"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-
-                <TextBlock Grid.Column="5"
-                           Text="Date"
-                           VerticalAlignment="Center"
-                           FontWeight="SemiBold"
-                           Margin="0,0,8,0"/>
-
-                <DatePicker Grid.Column="6"
-                            Height="36"
-                            SelectedDate="{x:Static sys:DateTime.Now}"
-                            xmlns:sys="clr-namespace:System;assembly=mscorlib"/>
-                <StackPanel Grid.Column="7"
-                            Orientation="Horizontal"
+                <StackPanel Grid.Column="4"
                             HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
                     <Button Content="Products"
-                            Height="36"
                             Width="100"
-                            Margin="0,2,8,2"
+                            Style="{StaticResource HeaderActionButtonStyle}"
                             Click="Button_Click"/>
                     <Button Content="Online Orders"
-                            Height="36"
                             Width="120"
-                            Margin="0,2,8,2"
+                            Style="{StaticResource HeaderActionButtonStyle}"
                             Click="OrdersButton_Click"/>
                     <Button Content="Custom Order"
-                            Height="36"
                             Width="120"
-                            Margin="0,2,0,2"
+                            Margin="0"
+                            Style="{StaticResource HeaderActionButtonStyle}"
                             Click="CustomItemsButton_Click"/>
+                    </StackPanel>
+                    <TextBlock Margin="0,10,0,0"
+                               Text="User: Staff"
+                               HorizontalAlignment="Right"
+                               FontWeight="Bold"
+                               FontSize="14"
+                               Foreground="#5D4037"/>
                 </StackPanel>
-                <TextBlock Grid.Column="8"
-                           Text="User: Staff"
-                           VerticalAlignment="Center"
-                           FontWeight="Bold"
-                           FontSize="14"/>
             </Grid>
         </Border>
 
         <!-- Main Content -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="12"/>
-                <ColumnDefinition Width="0.8*"/>
+                <ColumnDefinition Width="2.1*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="0.95*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Product Grid -->
             <Border Grid.Column="0"
-                    Background="White"
-                    BorderBrush="#D0D0D0"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    Padding="12">
+                    Style="{StaticResource SurfaceCardStyle}"
+                    Padding="16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Product Grid"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-
-                    <Grid Grid.Row="1"
-                          Margin="0,6,0,0">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding ProductCount, StringFormat=Available Products: {0}}"
-                                   Foreground="#6B7280"
+                        <StackPanel>
+                            <TextBlock Text="Product Gallery"
+                                       FontSize="24"
+                                       FontWeight="SemiBold"
+                                       Foreground="#5D4037"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="Tap a product card to add it to the current order."
+                                       Foreground="#8D6E63"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Padding="14,10"
+                                Background="#FFF5E8"
+                                BorderBrush="#EFD8B0"
+                                BorderThickness="1"
+                                CornerRadius="14">
+                            <StackPanel>
+                                <TextBlock Text="{Binding ProductCount, StringFormat={}{0}}"
+                                           HorizontalAlignment="Center"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#A86416"/>
+                                <TextBlock Text="Visible Today"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#8D6E63"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Row="1"
+                          Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Freshly synced from Firebase inventory"
+                                   Foreground="#8D6E63"
                                    VerticalAlignment="Center"/>
 
                         <Button Grid.Column="1"
-                                Content="Refresh"
-                                Width="90"
-                                Height="32"
+                                Content="Refresh Products"
+                                Width="132"
+                                Height="36"
                                 Margin="12,0,0,0"
-                                Command="{Binding RefreshProductsCommand}"/>
+                                Command="{Binding RefreshProductsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"/>
                     </Grid>
 
                     <ScrollViewer Grid.Row="3"
@@ -160,25 +235,33 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="170"
-                                            Height="120"
-                                            Margin="6"
+                                    <Button Width="190"
+                                            Height="148"
+                                            Margin="0,0,14,14"
                                             Padding="0"
                                             BorderThickness="0"
                                             Background="Transparent"
                                             Command="{Binding DataContext.ProductButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}">
-                                        <Border CornerRadius="14"
-                                                BorderBrush="#D0D0D0"
+                                        <Border CornerRadius="18"
+                                                BorderBrush="#E2D7CB"
                                                 BorderThickness="1"
                                                 ClipToBounds="True">
                                             <Grid>
-                                                <Border Background="#E5E7EB"/>
+                                                <Border Background="#F3EADF"/>
                                                 <Image Source="{Binding ImageUrl}"
                                                        Stretch="UniformToFill"/>
-                                                <Border Background="#66000000"/>
+                                                <Rectangle>
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                            <GradientStop Color="#00000000" Offset="0"/>
+                                                            <GradientStop Color="#33000000" Offset="0.45"/>
+                                                            <GradientStop Color="#B5201711" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
 
-                                                <Grid Margin="12">
+                                                <Grid Margin="14">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="*"/>
                                                         <RowDefinition Height="Auto"/>
@@ -187,26 +270,26 @@
                                                     <TextBlock Text="{Binding Category}"
                                                                HorizontalAlignment="Left"
                                                                VerticalAlignment="Top"
-                                                               Padding="8,4"
+                                                               Padding="10,5"
                                                                FontSize="11"
                                                                FontWeight="SemiBold"
                                                                Foreground="White">
                                                         <TextBlock.Background>
-                                                            <SolidColorBrush Color="#7F111827"/>
+                                                            <SolidColorBrush Color="#B25D4037"/>
                                                         </TextBlock.Background>
                                                     </TextBlock>
 
                                                     <StackPanel Grid.Row="1">
                                                         <TextBlock Text="{Binding ProductName}"
-                                                                   FontSize="16"
+                                                                   FontSize="17"
                                                                    FontWeight="SemiBold"
                                                                    Foreground="White"
                                                                    TextWrapping="Wrap"/>
                                                         <TextBlock Margin="0,6,0,0"
                                                                    Text="{Binding Price, StringFormat={}{0:C}}"
-                                                                   FontSize="14"
+                                                                   FontSize="15"
                                                                    FontWeight="Bold"
-                                                                   Foreground="#FDE68A"/>
+                                                                   Foreground="#FFE0A6"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </Grid>
@@ -221,27 +304,30 @@
 
             <!-- Cart / Order Summary -->
             <Border Grid.Column="2"
-                    Background="White"
-                    BorderBrush="#D0D0D0"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    Padding="12">
+                    Style="{StaticResource SurfaceCardStyle}"
+                    Padding="16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Cart / Order Summary"
-                               FontSize="18"
-                               FontWeight="Bold"/>
+                    <StackPanel>
+                        <TextBlock Text="Current Order"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"
+                                   Foreground="#5D4037"/>
+                        <TextBlock Margin="0,4,0,0"
+                                   Text="Review quantities, payment, and finalize the sale."
+                                   Foreground="#8D6E63"/>
+                    </StackPanel>
 
                     <DataGrid Grid.Row="2"
                               ItemsSource="{Binding CartItems}"
@@ -249,12 +335,35 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               HeadersVisibility="Column"
-                              IsReadOnly="True">
+                              IsReadOnly="True"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              RowHeaderWidth="0"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#FAF4ED"/>
+                                <Setter Property="Foreground" Value="#5D4037"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderBrush" Value="#E7DDD1"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Style>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Height" Value="46"/>
+                                <Setter Property="BorderBrush" Value="#EFE4D9"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="*"/>
-                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty}" Width="80"/>
-                            <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}{0:C}}" Width="100"/>
-                            <DataGridTemplateColumn Header="" Width="60">
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty}" Width="70"/>
+                            <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}{0:C}}" Width="90"/>
+                            <DataGridTemplateColumn Header="" Width="54">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="-"
@@ -263,7 +372,8 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Command="{Binding DataContext.RemoveCartItemCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                CommandParameter="{Binding}"/>
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource SecondaryButtonStyle}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -271,20 +381,40 @@
 
                     </DataGrid>
 
-                    <TextBlock Grid.Row="4"
-                               Text="{Binding CartTotal, StringFormat=Total: {0:C}}"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Right"/>
+                    <Border Grid.Row="4"
+                            Padding="14"
+                            Background="#FAF4ED"
+                            BorderBrush="#E7DDD1"
+                            BorderThickness="1"
+                            CornerRadius="14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Order Total"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#8D6E63"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding CartTotal, StringFormat={}{0:C}}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="#5D4037"/>
+                        </Grid>
+                    </Border>
 
                     <StackPanel Grid.Row="6">
                         <TextBlock Text="Payment"
                                    Margin="0,0,0,6"
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold"
+                                   Foreground="#5D4037"/>
                         <TextBox x:Name="PaymentTextBox"
-                                 Height="36"
+                                 Height="40"
                                  VerticalContentAlignment="Center"
-                                 Padding="10,0"
+                                 Padding="12,0"
                                  Text="{Binding PaymentText, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
@@ -292,14 +422,16 @@
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right">
                         <Button Content="Checkout"
-                                Width="110"
-                                Height="40"
+                                Width="120"
+                                Height="42"
                                 Margin="0,0,8,0"
-                                Command="{Binding CheckoutCommand}"/>
+                                Command="{Binding CheckoutCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"/>
                         <Button Content="Clear"
-                                Width="90"
-                                Height="40"
-                                Command="{Binding ClearCartCommand}"/>
+                                Width="100"
+                                Height="42"
+                                Command="{Binding ClearCartCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -307,11 +439,8 @@
 
         <!-- Filters -->
         <Border Grid.Row="4"
-                Background="White"
-                BorderBrush="#D0D0D0"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="12">
+                Style="{StaticResource SurfaceCardStyle}"
+                Padding="16">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -327,30 +456,36 @@
 
                 <TextBlock Text="Filters"
                            VerticalAlignment="Center"
-                           FontWeight="Bold"
-                           FontSize="16"/>
+                           FontWeight="SemiBold"
+                           FontSize="18"
+                           Foreground="#5D4037"/>
 
                 <ComboBox Grid.Column="2"
                           Height="36"
                           ItemsSource="{Binding Categories}"
-                          SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"/>
+                          SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                          Background="#FBF6F0"
+                          BorderBrush="#E8DCCD"/>
 
                 <CheckBox Grid.Column="4"
                           Content="In Stock Only"
                           VerticalAlignment="Center"
-                          IsChecked="{Binding ShowInStockOnly, UpdateSourceTrigger=PropertyChanged}"/>
+                          IsChecked="{Binding ShowInStockOnly, UpdateSourceTrigger=PropertyChanged}"
+                          Foreground="#5D4037"
+                          FontWeight="SemiBold"/>
 
                 <TextBlock Grid.Column="6"
-                           Text="{Binding ProductCount, StringFormat=Showing: {0}}"
+                           Text="{Binding ProductCount, StringFormat=Showing {0} items}"
                            VerticalAlignment="Center"
-                           Foreground="#6B7280"
+                           Foreground="#8D6E63"
                            FontWeight="SemiBold"/>
 
                 <Button Grid.Column="8"
                         Content="Clear Filters"
-                        Width="110"
+                        Width="118"
                         Height="36"
-                        Command="{Binding ClearFiltersCommand}"/>
+                        Command="{Binding ClearFiltersCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
             </Grid>
         </Border>
     </Grid>
