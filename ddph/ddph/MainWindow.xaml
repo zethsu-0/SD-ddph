@@ -1,4 +1,4 @@
-<Window x:Class="ddph.MainWindow"
+﻿<Window x:Class="ddph.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         Title="POS System"
         Height="720"
-        Width="1200"
+        Width="1378"
         MinHeight="600"
         MinWidth="900"
-        Background="#F6F0E8"
-        WindowState="Maximized">
+        Background="#FFFFFEFE"
+        WindowState="Maximized"
+        WindowStyle="None">
     <Window.Resources>
         <Style x:Key="SurfaceCardStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFFDFB"/>
@@ -45,7 +46,12 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="18">
+    <Grid Margin="0,1,0,18">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="53*"/>
+            <ColumnDefinition Width="463*"/>
+            <ColumnDefinition Width="155*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="16"/>
@@ -54,16 +60,34 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Close Button Overlay -->
+        <Button Content="✕"
+                Width="36"
+                Height="36"
+                Margin="0,-1,0,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Panel.ZIndex="100"
+                FontSize="14"
+                FontWeight="Bold"
+                Background="#FDECEA"
+                Foreground="#C0392B"
+                BorderBrush="#F5C6C2"
+                ToolTip="Close"
+                Grid.Column="2"
+                Click="CloseButton_Click"/>
+
         <!-- Top Bar -->
         <Border Grid.Row="0"
-                Style="{StaticResource SurfaceCardStyle}"
-                Padding="18">
+                Grid.ColumnSpan="3"
+                Margin="0,0,0,0"
+                Padding="18,14"
+                Background="#FFFDFB"
+                BorderThickness="0"
+                BorderBrush="Transparent">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="18"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -78,79 +102,37 @@
                                Foreground="#8D6E63"/>
                 </StackPanel>
 
-                <Border Grid.Column="2"
-                        Padding="14,10"
-                        Background="#FBF6F0"
-                        BorderBrush="#E8DCCD"
-                        BorderThickness="1"
-                        CornerRadius="14"
-                        VerticalAlignment="Center">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="340"/>
-                            <ColumnDefinition Width="16"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="140"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Search"
-                                   VerticalAlignment="Center"
-                                   FontWeight="SemiBold"
-                                   Foreground="#5D4037"/>
-
-                        <TextBox Grid.Column="2"
-                                 Height="36"
-                                 VerticalContentAlignment="Center"
-                                 FontSize="14"
-                                 Padding="10,0"
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <TextBlock Grid.Column="4"
-                                   Text="Date"
-                                   VerticalAlignment="Center"
-                                   FontWeight="SemiBold"
-                                   Foreground="#5D4037"/>
-
-                        <DatePicker Grid.Column="6"
-                                    Height="36"
-                                    SelectedDate="{x:Static sys:DateTime.Now}"
-                                    xmlns:sys="clr-namespace:System;assembly=mscorlib"/>
-                    </Grid>
-                </Border>
-
-                <StackPanel Grid.Column="4"
+                <StackPanel Grid.Column="1"
+                            Margin="0,-14,48,0"
                             HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Right">
-                    <Button Content="Products"
-                            Width="100"
-                            Style="{StaticResource HeaderActionButtonStyle}"
-                            Click="Button_Click"/>
-                    <Button Content="Online Orders"
-                            Width="120"
-                            Style="{StaticResource HeaderActionButtonStyle}"
-                            Click="OrdersButton_Click"/>
-                    <Button Content="Custom Order"
-                            Width="120"
-                            Margin="0"
-                            Style="{StaticResource HeaderActionButtonStyle}"
-                            Click="CustomItemsButton_Click"/>
+                        <Button Content="Products"
+                                Width="100"
+                                Style="{StaticResource HeaderActionButtonStyle}"
+                                Click="Button_Click"/>
+                        <Button Content="Online Orders"
+                                Width="120"
+                                Style="{StaticResource HeaderActionButtonStyle}"
+                                Click="OrdersButton_Click"/>
+                        <Button Content="Custom Order"
+                                Width="120"
+                                Margin="0"
+                                Style="{StaticResource HeaderActionButtonStyle}"
+                                Click="CustomItemsButton_Click"/>
                     </StackPanel>
-                    <TextBlock Margin="0,10,0,0"
+                </StackPanel>
+                <TextBlock Margin="0,47,-4,-9"
                                Text="User: Staff"
                                HorizontalAlignment="Right"
                                FontWeight="Bold"
                                FontSize="14"
-                               Foreground="#5D4037"/>
-                </StackPanel>
+                               Foreground="#5D4037" Grid.Column="1"/>
             </Grid>
         </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2.1*"/>
                 <ColumnDefinition Width="16"/>
@@ -180,9 +162,14 @@
                                        FontSize="24"
                                        FontWeight="SemiBold"
                                        Foreground="#5D4037"/>
-                            <TextBlock Margin="0,4,0,0"
-                                       Text="Tap a product card to add it to the current order."
-                                       Foreground="#8D6E63"/>
+                            <TextBox Margin="0,10,0,0"
+                                     Width="260"
+                                     Height="36"
+                                     Padding="12,0"
+                                     VerticalContentAlignment="Center"
+                                     Background="#FBF6F0"
+                                     BorderBrush="#E8DCCD"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
                         <Border Grid.Column="1"
@@ -210,10 +197,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Freshly synced from Firebase inventory"
-                                   Foreground="#8D6E63"
-                                   VerticalAlignment="Center"/>
 
                         <Button Grid.Column="1"
                                 Content="Refresh Products"
@@ -440,7 +423,7 @@
         <!-- Filters -->
         <Border Grid.Row="4"
                 Style="{StaticResource SurfaceCardStyle}"
-                Padding="16">
+                Padding="16" Grid.ColumnSpan="3">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -480,12 +463,12 @@
                            Foreground="#8D6E63"
                            FontWeight="SemiBold"/>
 
-                <Button Grid.Column="8"
+                <Button Grid.Column="7"
                         Content="Clear Filters"
                         Width="118"
                         Height="36"
                         Command="{Binding ClearFiltersCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"/>
+                        Style="{StaticResource SecondaryButtonStyle}" Margin="529,-1,0,1" HorizontalAlignment="Left"/>
             </Grid>
         </Border>
     </Grid>

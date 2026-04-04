@@ -10,7 +10,9 @@
         MinHeight="700"
         MinWidth="1020"
         Background="#FFF9E6"
-        WindowStartupLocation="CenterOwner">
+        WindowState="Maximized"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None">
     <Window.Resources>
         <Style x:Key="SubmitButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#5D4037"/>
@@ -33,11 +35,27 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Background="White"
-                BorderBrush="#E7DDD1"
-                BorderThickness="1"
-                CornerRadius="14"
-                Padding="18">
+        <!-- Close Button Overlay -->
+        <Button Content="✕"
+                Width="36"
+                Height="36"
+                Margin="0,-18,-18,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Panel.ZIndex="100"
+                FontSize="14"
+                FontWeight="Bold"
+                Background="#FDECEA"
+                Foreground="#C0392B"
+                BorderBrush="#F5C6C2"
+                ToolTip="Close"
+                Click="CloseButton_Click"/>
+
+        <Border Background="#FFFDFB"
+                BorderThickness="0"
+                BorderBrush="Transparent"
+                Margin="-18,-18,-18,0"
+                Padding="18,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -54,14 +72,7 @@
                                Foreground="#8D6E63"/>
                 </StackPanel>
 
-                <Button Grid.Column="1"
-                        Width="170"
-                        Height="42"
-                        Margin="18,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Submit Order"
-                        Command="{Binding SubmitCustomOrderCommand}"
-                        Style="{StaticResource SubmitButtonStyle}" Foreground="#FFF9F9F9"/>
+
             </Grid>
         </Border>
 

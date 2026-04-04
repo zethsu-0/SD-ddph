@@ -10,7 +10,9 @@
         MinHeight="640"
         MinWidth="1100"
         Background="#F6F3EE"
-        WindowStartupLocation="CenterOwner">
+        WindowState="Maximized"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None">
     <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,16 +20,34 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Close Button Overlay -->
+        <Button Content="✕"
+                Width="36"
+                Height="36"
+                Margin="0,-18,-18,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Panel.ZIndex="100"
+                FontSize="14"
+                FontWeight="Bold"
+                Background="#FDECEA"
+                Foreground="#C0392B"
+                BorderBrush="#F5C6C2"
+                ToolTip="Close"
+                Click="CloseButton_Click"/>
+
         <Border Background="#FFFDFB"
-                BorderBrush="#E7DDD1"
-                BorderThickness="1"
-                CornerRadius="14"
-                Padding="18">
+                BorderThickness="0"
+                BorderBrush="Transparent"
+                Margin="-18,-18,-18,0"
+                Padding="18,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -41,18 +61,20 @@
                                Foreground="#7D6E61"/>
                 </StackPanel>
 
-                <TextBox Grid.Column="1"
+                <TextBox
                          Width="280"
                          Height="38"
                          VerticalContentAlignment="Center"
                          Padding="12,0"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="816,8,76,8"/>
 
-                <Button Grid.Column="3"
+                <Button
                         Width="90"
                         Height="38"
                         Content="Refresh"
-                        Command="{Binding RefreshCommand}"/>
+                        Command="{Binding RefreshCommand}" Margin="1146,8,26,8"/>
+
+
             </Grid>
         </Border>
 

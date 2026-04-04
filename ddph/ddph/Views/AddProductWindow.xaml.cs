@@ -84,6 +84,12 @@ namespace ddph.Views
             Close();
         }
 
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
         private void LoadCategories(IEnumerable<string>? categories)
         {
             var normalizedCategories = (categories ?? Enumerable.Empty<string>())

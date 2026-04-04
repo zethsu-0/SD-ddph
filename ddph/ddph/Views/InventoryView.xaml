@@ -7,64 +7,88 @@
              d:DesignHeight="680"
              d:DesignWidth="1100"
              Background="#F5F2EC">
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  Background="#F5F2EC">
-        <Grid Margin="18">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <Border Padding="18,14"
-                    Background="#FFFDFB"
-                    BorderBrush="#E6DDD1"
-                    BorderThickness="1"
-                    CornerRadius="12">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+        <!-- Close Button Overlay -->
+        <Button Content="✕"
+                Width="36"
+                Height="36"
+                Margin="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Panel.ZIndex="100"
+                FontSize="14"
+                FontWeight="Bold"
+                Background="#FDECEA"
+                Foreground="#C0392B"
+                BorderBrush="#F5C6C2"
+                ToolTip="Close"
+                Click="CloseButton_Click"/>
 
-                    <TextBlock Text="Menu Items Management"
-                               VerticalAlignment="Center"
-                               FontSize="24"
-                               FontWeight="SemiBold"
-                               Foreground="#2E241D"/>
+        <!-- Flat Top Bar -->
+        <Border Background="#FFFDFB"
+                BorderThickness="0"
+                BorderBrush="Transparent"
+                Padding="18,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="1"
-                            Padding="14,10"
-                            Background="White"
-                            BorderBrush="#E8DED3"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                        <StackPanel>
-                            <TextBlock Text="{Binding VisibleProductCount, StringFormat={}{0} visible items}"
-                                       HorizontalAlignment="Center"
-                                       FontFamily="Consolas"
-                                       FontSize="13"
-                                       FontWeight="Bold"
-                                       Foreground="#0C3B66"/>
-                            <TextBlock Text="Live inventory view"
-                                       Margin="0,4,0,0"
-                                       HorizontalAlignment="Center"
-                                       FontSize="11"
-                                       Foreground="#9A7F6B"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Border>
+                <TextBlock Text="Menu Items Management"
+                           VerticalAlignment="Center"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Foreground="#2E241D"/>
 
-            <Border Grid.Row="1"
+                <Border Grid.Column="1"
+                        Padding="14,10"
+                        Margin="0,0,48,0"
+                        Background="White"
+                        BorderBrush="#E8DED3"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                    <StackPanel>
+                        <TextBlock Text="{Binding VisibleProductCount, StringFormat={}{0} visible items}"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="Consolas"
+                                   FontSize="13"
+                                   FontWeight="Bold"
+                                   Foreground="#0C3B66"/>
+                        <TextBlock Text="Live inventory view"
+                                   Margin="0,4,0,0"
+                                   HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Foreground="#9A7F6B"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Scrollable Content -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      Background="#F5F2EC">
+            <Grid Margin="18">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="1"
                     Margin="0,18,0,0"
                     Padding="18"
                     Background="#FFFDFB"
                     BorderBrush="#E6DDD1"
                     BorderThickness="1"
                     CornerRadius="12">
-                <Button Content="+ Add New Item"
+                    <Button Content="+ Add New Item"
                         Width="132"
                         Height="40"
                         HorizontalAlignment="Left"
@@ -73,100 +97,100 @@
                         Foreground="White"
                         BorderBrush="#2C8ED6"
                         FontWeight="SemiBold"/>
-            </Border>
+                </Border>
 
-            <ItemsControl Grid.Row="2"
+                <ItemsControl Grid.Row="2"
                           Margin="0,18,0,0"
                           ItemsSource="{Binding CategorySummaries}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Width="318"
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="318"
                                 Margin="0,0,12,12"
                                 Padding="18"
                                 Background="#FFFDFB"
                                 BorderBrush="#E6DDD1"
                                 BorderThickness="1"
                                 CornerRadius="12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="12"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Border Width="46"
+                                    <Border Width="46"
                                         Height="46"
                                         Background="#F4EFE8"
                                         CornerRadius="10">
-                                    <TextBlock Text="{Binding Icon}"
+                                        <TextBlock Text="{Binding Icon}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="24"/>
-                                </Border>
+                                    </Border>
 
-                                <StackPanel Grid.Column="2"
+                                    <StackPanel Grid.Column="2"
                                             VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Count}"
+                                        <TextBlock Text="{Binding Count}"
                                                FontSize="26"
                                                FontWeight="Bold"
                                                Foreground="#163A63"/>
-                                    <TextBlock Text="{Binding Title}"
+                                        <TextBlock Text="{Binding Title}"
                                                TextTrimming="CharacterEllipsis"
                                                FontSize="12"
                                                TextWrapping="Wrap"
                                                Foreground="#7A6A5D"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-            <Border Grid.Row="3"
+                <Border Grid.Row="3"
                     Margin="0,6,0,0"
                     Padding="14"
                     Background="#FFFDFB"
                     BorderBrush="#E6DDD1"
                     BorderThickness="1"
                     CornerRadius="12">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="18"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="12"/>
-                        <ColumnDefinition Width="220"/>
-                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0"
+                        <Border Grid.Row="0"
                             Grid.Column="0"
                             Padding="14,4"
                             Background="#FBF8F4"
                             BorderBrush="#E4D8CA"
                             BorderThickness="1"
                             CornerRadius="10">
-                        <DockPanel>
-                            <TextBlock Text="🔎"
+                            <DockPanel>
+                                <TextBlock Text="🔎"
                                        Margin="0,0,8,0"
                                        VerticalAlignment="Center"
                                        FontSize="14"/>
-                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                                      BorderThickness="0"
                                      Background="Transparent"
                                      FontSize="14"
                                      VerticalContentAlignment="Center"/>
-                        </DockPanel>
-                    </Border>
+                            </DockPanel>
+                        </Border>
 
-                    <ComboBox Grid.Row="0"
+                        <ComboBox Grid.Row="0"
                               Grid.Column="2"
                               Height="38"
                               Padding="8,0"
@@ -176,67 +200,67 @@
                               BorderBrush="#E4D8CA"
                               BorderThickness="1"/>
 
-                    <ItemsControl Grid.Row="2"
+                        <ItemsControl Grid.Row="2"
                                   Grid.ColumnSpan="3"
                                   ItemsSource="{Binding FilteredProducts}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Width="248"
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="248"
                                         Margin="0,0,16,18"
                                         Background="White"
                                         BorderBrush="#E6DDD1"
                                         BorderThickness="1"
                                         CornerRadius="14">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="180"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="180"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
 
-                                        <Border Grid.Row="0"
+                                            <Border Grid.Row="0"
                                                 CornerRadius="14,14,0,0"
                                                 ClipToBounds="True"
                                                 Background="#F3EDE4">
-                                            <Grid>
-                                                <Image Source="{Binding ImageUrl}"
+                                                <Grid>
+                                                    <Image Source="{Binding ImageUrl}"
                                                        Stretch="UniformToFill"/>
-                                                <Border Background="#0F0F0F10"/>
-                                                <Border HorizontalAlignment="Right"
+                                                    <Border Background="#0F0F0F10"/>
+                                                    <Border HorizontalAlignment="Right"
                                                         VerticalAlignment="Top"
                                                         Margin="0,14,14,0"
                                                         Padding="10,5"
                                                         Background="#39C97D"
                                                         CornerRadius="12">
-                                                    <TextBlock Text="{Binding Category}"
+                                                        <TextBlock Text="{Binding Category}"
                                                                FontSize="11"
                                                                FontWeight="Bold"
                                                                Foreground="White"
                                                                TextTrimming="CharacterEllipsis"/>
-                                                </Border>
-                                            </Grid>
-                                        </Border>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
 
-                                        <Grid Grid.Row="1"
+                                            <Grid Grid.Row="1"
                                               Margin="16,14,16,16">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="18"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="18"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
 
-                                            <TextBlock Text="{Binding ProductName}"
+                                                <TextBlock Text="{Binding ProductName}"
                                                        FontSize="20"
                                                        FontWeight="SemiBold"
                                                        Foreground="#1F2C3C"
                                                        TextWrapping="Wrap"/>
 
-                                            <TextBlock Grid.Row="1"
+                                                <TextBlock Grid.Row="1"
                                                        Margin="0,8,0,0"
                                                        MinHeight="36"
                                                        Text="{Binding Description}"
@@ -245,25 +269,25 @@
                                                        TextWrapping="Wrap"
                                                        TextTrimming="WordEllipsis"/>
 
-                                            <Grid Grid.Row="3">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="8"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Row="3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="8"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                <StackPanel VerticalAlignment="Bottom">
-                                                    <TextBlock Text="{Binding Price, StringFormat=₱{0:F0}}"
+                                                    <StackPanel VerticalAlignment="Bottom">
+                                                        <TextBlock Text="{Binding Price, StringFormat=₱{0:F0}}"
                                                                FontSize="24"
                                                                FontWeight="Bold"
                                                                Foreground="#2C8ED6"/>
-                                                    <TextBlock Text="{Binding Stock, StringFormat=Stock: {0}}"
+                                                        <TextBlock Text="{Binding Stock, StringFormat=Stock: {0}}"
                                                                FontSize="11"
                                                                Foreground="#9A7F6B"/>
-                                                </StackPanel>
+                                                    </StackPanel>
 
-                                                <Button Grid.Column="1"
+                                                    <Button Grid.Column="1"
                                                         Width="28"
                                                         Height="28"
                                                         Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -273,7 +297,7 @@
                                                         BorderBrush="#C9E8FB"
                                                         Content="✎"/>
 
-                                                <Button Grid.Column="3"
+                                                    <Button Grid.Column="3"
                                                         Width="28"
                                                         Height="28"
                                                         Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -282,15 +306,16 @@
                                                         Foreground="#C26161"
                                                         BorderBrush="#F6D4D4"
                                                         Content="🗑"/>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-            </Border>
-        </Grid>
-    </ScrollViewer>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

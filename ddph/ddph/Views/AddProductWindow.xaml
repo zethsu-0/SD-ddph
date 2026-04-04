@@ -10,7 +10,8 @@
         MinHeight="480"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterOwner"
-        Background="#F4F7FB">
+        Background="#F4F7FB"
+        WindowStyle="None">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,6 +20,22 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
+        <!-- Close Button Overlay -->
+        <Button Content="✕"
+                Width="36"
+                Height="36"
+                Margin="0,0,-20,38"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Panel.ZIndex="100"
+                FontSize="14"
+                FontWeight="Bold"
+                Background="#FDECEA"
+                Foreground="#C0392B"
+                BorderBrush="#F5C6C2"
+                ToolTip="Close"
+                Click="CloseButton_Click"/>
 
         <StackPanel>
             <TextBlock x:Name="WindowTitleTextBlock"

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -23,6 +23,16 @@ namespace ddph
         }
 
         private void InventoryView_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void InventoryView_Loaded_1(object sender, RoutedEventArgs e)
         {
 
         }

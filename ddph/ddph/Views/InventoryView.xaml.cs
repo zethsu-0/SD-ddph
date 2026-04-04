@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using ddph.ViewModels;
 
@@ -11,9 +12,14 @@ namespace ddph.Views
             DataContext = new InventoryViewModel();
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
         }
     }
 }
