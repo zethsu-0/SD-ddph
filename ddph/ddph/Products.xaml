@@ -10,7 +10,7 @@
         Width="1474"
         MinHeight="600"
         MinWidth="900"
-        Background="#F4F7FB"
+        Background="{StaticResource ThemeBaseBrush}"
         WindowState="Maximized" ShowInTaskbar="False"
         WindowStyle="None">
     

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Add Product"
-        Height="520"
+        Height="640"
         Width="420"
-        MinHeight="480"
+        MinHeight="580"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterOwner"
-        Background="#F4F7FB"
+        Background="{StaticResource ThemeBaseBrush}"
         WindowStyle="None">
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -22,37 +22,62 @@
         </Grid.RowDefinitions>
 
         <!-- Close Button Overlay -->
-        <Button Content="✕"
-                Width="36"
+        <Button Width="100"
                 Height="36"
-                Margin="0,0,-20,38"
+                Margin="0,-1,0,0"
+                VerticalAlignment="Top"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
                 Panel.ZIndex="100"
-                FontSize="14"
-                FontWeight="Bold"
-                Background="#FDECEA"
-                Foreground="#C0392B"
-                BorderBrush="#F5C6C2"
-                ToolTip="Close"
-                Click="CloseButton_Click"/>
+                FontSize="18"
+                FontWeight="SemiBold"
+                Background="{StaticResource ThemeAccentSoftBrush}"
+                Foreground="{StaticResource ThemeInkBrush}"
+                BorderBrush="{StaticResource ThemeAccentBrush}"
+                BorderThickness="1"
+                ToolTip="Back"
+                Click="CloseButton_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                        <TextBlock Text="&#x2190;"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.82"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.65"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
         <StackPanel>
             <TextBlock x:Name="WindowTitleTextBlock"
                        Text="Add Product"
                        FontSize="24"
                        FontWeight="Bold"
-                       Foreground="#1F2937"/>
+                       Foreground="{StaticResource ThemeInkBrush}"/>
             <TextBlock x:Name="WindowSubtitleTextBlock"
                        Text="Enter the product details below."
                        Margin="0,6,0,0"
-                       Foreground="#6B7280"/>
+                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
         </StackPanel>
 
         <Border Grid.Row="2"
                 Padding="18"
-                Background="White"
-                BorderBrush="#D9E2EC"
+                Background="{StaticResource ThemeSurfaceBrush}"
+                BorderBrush="{StaticResource ThemeBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="14">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -65,31 +90,77 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel>
+                    <!-- Image Picker -->
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Product Image"
+                                   Margin="0,0,0,6"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
+                        <Border x:Name="ImagePreviewBorder"
+                                Height="130"
+                                CornerRadius="10"
+                                Background="{StaticResource ThemeAccentSoftBrush}"
+                                BorderBrush="{StaticResource ThemeBorderBrush}"
+                                BorderThickness="1"
+                                ClipToBounds="True"
+                                Margin="0,0,0,8">
+                            <Grid>
+                                <TextBlock x:Name="ImagePlaceholderText"
+                                           Text="No image selected"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"
+                                           FontSize="13"/>
+                                <Image x:Name="ImagePreview"
+                                       Stretch="UniformToFill"
+                                       Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="ImageUrlTextBox"
+                                     Height="34"
+                                     VerticalContentAlignment="Center"
+                                     Padding="8,0"
+                                     FontSize="12"
+                                     Foreground="{StaticResource ThemeInkSoftBrush}"
+                                     TextChanged="ImageUrlTextBox_TextChanged"
+                                     ToolTip="Paste an image URL or use Browse to pick a local file"/>
+                            <Button Grid.Column="2"
+                                    Content="Browse…"
+                                    Width="80"
+                                    Height="34"
+                                    Background="{StaticResource ThemeAccentSoftBrush}"
+                                    BorderBrush="{StaticResource ThemeBorderBrush}"
+                                    FontWeight="SemiBold"
+                                    Click="BrowseImageButton_Click"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
                         <TextBlock Text="Product Name"
                                    Margin="0,0,0,6"
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                         <TextBox x:Name="ProductNameTextBox"
                                  Height="34"
                                  VerticalContentAlignment="Center"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2">
+                    <StackPanel Grid.Row="4">
                         <TextBlock Text="Price"
                                    Margin="0,0,0,6"
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                         <TextBox x:Name="PriceTextBox"
-                                 Height="34"
-                                 VerticalContentAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="4">
-                        <TextBlock Text="Stock"
-                                   Margin="0,0,0,6"
-                                   FontWeight="SemiBold"/>
-                        <TextBox x:Name="StockTextBox"
                                  Height="34"
                                  VerticalContentAlignment="Center"/>
                     </StackPanel>
@@ -97,7 +168,8 @@
                     <StackPanel Grid.Row="6">
                         <TextBlock Text="Category"
                                    Margin="0,0,0,6"
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                         <ComboBox x:Name="CategoryComboBox"
                                   Height="34"
                                   VerticalContentAlignment="Center"/>
@@ -118,9 +190,9 @@
                     Content="Save"
                     Width="100"
                     Height="36"
-                    Background="#EA580C"
-                    Foreground="White"
-                    BorderBrush="#EA580C"
+                    Background="{StaticResource ThemeAccentBrush}"
+                    Foreground="{StaticResource ThemeInkBrush}"
+                    BorderBrush="{StaticResource ThemeAccentBrush}"
                     Click="SaveButton_Click"/>
         </StackPanel>
     </Grid>

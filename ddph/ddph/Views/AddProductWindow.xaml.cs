@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using Microsoft.Win32;
 using ddph.Models;
 
 namespace ddph.Views
@@ -23,7 +25,11 @@ namespace ddph.Views
 
             ProductNameTextBox.Text = productToEdit.ProductName;
             PriceTextBox.Text = productToEdit.Price.ToString(CultureInfo.InvariantCulture);
-            StockTextBox.Text = productToEdit.Stock?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(productToEdit.ImageUrl))
+            {
+                ImageUrlTextBox.Text = productToEdit.ImageUrl;
+                TryLoadImagePreview(productToEdit.ImageUrl);
+            }
             EnsureCategoryOption(productToEdit.Category);
             CategoryComboBox.SelectedItem = string.IsNullOrWhiteSpace(productToEdit.Category)
                 ? "Uncategorized"
@@ -53,23 +59,10 @@ namespace ddph.Views
                 return;
             }
 
-            int? stock = null;
-            if (!string.IsNullOrWhiteSpace(StockTextBox.Text))
-            {
-                if (!int.TryParse(StockTextBox.Text, out var parsedStock) || parsedStock < 0)
-                {
-                    MessageBox.Show("Enter a valid stock quantity.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    StockTextBox.Focus();
-                    return;
-                }
-
-                stock = parsedStock;
-            }
-
             CreatedProduct ??= new Product();
             CreatedProduct.ProductName = ProductNameTextBox.Text.Trim();
             CreatedProduct.Price = price;
-            CreatedProduct.Stock = stock;
+            CreatedProduct.ImageUrl = ImageUrlTextBox.Text.Trim();
             CreatedProduct.Category = string.IsNullOrWhiteSpace(CategoryComboBox.Text)
                 ? "Uncategorized"
                 : CategoryComboBox.Text.Trim();
@@ -88,6 +81,64 @@ namespace ddph.Views
         {
             DialogResult = false;
             Close();
+        }
+
+        private void BrowseImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Select Product Image",
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.webp|All Files|*.*",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var filePath = dialog.FileName;
+            ImageUrlTextBox.Text = filePath;
+            TryLoadImagePreview(filePath);
+        }
+
+        private void ImageUrlTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            var url = ImageUrlTextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                ClearImagePreview();
+                return;
+            }
+
+            TryLoadImagePreview(url);
+        }
+
+        private void TryLoadImagePreview(string source)
+        {
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new System.Uri(source, System.UriKind.RelativeOrAbsolute);
+                bitmap.EndInit();
+
+                ImagePreview.Source = bitmap;
+                ImagePreview.Visibility = Visibility.Visible;
+                ImagePlaceholderText.Visibility = Visibility.Collapsed;
+            }
+            catch
+            {
+                ClearImagePreview();
+            }
+        }
+
+        private void ClearImagePreview()
+        {
+            ImagePreview.Source = null;
+            ImagePreview.Visibility = Visibility.Collapsed;
+            ImagePlaceholderText.Visibility = Visibility.Visible;
         }
 
         private void LoadCategories(IEnumerable<string>? categories)

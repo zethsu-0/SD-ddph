@@ -39,14 +39,10 @@ namespace ddph.Data
                 ["name"] = product.ProductName.Trim(),
                 ["category"] = normalizedCategory,
                 ["price"] = product.Price,
+                ["image"] = product.ImageUrl ?? string.Empty,
                 ["createdAt"] = now,
                 ["updatedAt"] = now
             };
-
-            if (product.Stock.HasValue)
-            {
-                payload["stock"] = product.Stock.Value;
-            }
 
             var created = _firebaseClient
                 .PostAsync<FirebasePushResponse>("products", payload)
@@ -86,16 +82,8 @@ namespace ddph.Data
             existingProduct["name"] = product.ProductName.Trim();
             existingProduct["category"] = normalizedCategory;
             existingProduct["price"] = product.Price;
+            existingProduct["image"] = product.ImageUrl ?? string.Empty;
             existingProduct["updatedAt"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
-
-            if (product.Stock.HasValue)
-            {
-                existingProduct["stock"] = product.Stock.Value;
-            }
-            else
-            {
-                existingProduct.Remove("stock");
-            }
 
             _firebaseClient
                 .PutAsync($"products/{product.Id}", existingProduct)
@@ -154,8 +142,7 @@ namespace ddph.Data
                 ProductName = record.Name ?? string.Empty,
                 ImageUrl = record.Image ?? string.Empty,
                 Category = NormalizeCategory(record.Category),
-                Price = record.Price,
-                Stock = record.Stock
+                Price = record.Price
             };
         }
 
@@ -188,7 +175,6 @@ namespace ddph.Data
             public string? Image { get; set; }
             public string? Name { get; set; }
             public decimal Price { get; set; }
-            public int? Stock { get; set; }
         }
 
         private sealed class FirebasePushResponse

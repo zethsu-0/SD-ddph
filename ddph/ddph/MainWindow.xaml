@@ -1,4 +1,4 @@
-﻿<Window x:Class="ddph.MainWindow"
+<Window x:Class="ddph.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,13 +10,13 @@
         Width="1378"
         MinHeight="600"
         MinWidth="900"
-        Background="#FFFFFEFE"
+        Background="{StaticResource ThemeBaseBrush}"
         WindowState="Maximized"
         WindowStyle="None">
     <Window.Resources>
         <Style x:Key="SurfaceCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="#FFFDFB"/>
-            <Setter Property="BorderBrush" Value="#E7DDD1"/>
+            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="18"/>
         </Style>
@@ -25,23 +25,23 @@
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="16,0"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Background" Value="#F5ECE2"/>
-            <Setter Property="Foreground" Value="#5D4037"/>
-            <Setter Property="BorderBrush" Value="#DCCFC1"/>
+            <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#5D4037"/>
-            <Setter Property="Foreground" Value="#FFF8E1"/>
-            <Setter Property="BorderBrush" Value="#5D4037"/>
+            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#F5ECE2"/>
-            <Setter Property="Foreground" Value="#5D4037"/>
-            <Setter Property="BorderBrush" Value="#DCCFC1"/>
+            <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Window.Resources>
@@ -70,9 +70,9 @@
                 Panel.ZIndex="100"
                 FontSize="14"
                 FontWeight="Bold"
-                Background="#FDECEA"
-                Foreground="#C0392B"
-                BorderBrush="#F5C6C2"
+                Background="{StaticResource ThemeSurfaceBrush}"
+                Foreground="{StaticResource ThemeOnSurfaceBrush}"
+                BorderBrush="{StaticResource ThemeSurfaceBrush}"
                 ToolTip="Close"
                 Grid.Column="2"
                 Click="CloseButton_Click"/>
@@ -82,7 +82,7 @@
                 Grid.ColumnSpan="3"
                 Margin="0,0,0,0"
                 Padding="18,14"
-                Background="#FFFDFB"
+                Background="{StaticResource ThemeBaseBrush}"
                 BorderThickness="0"
                 BorderBrush="Transparent">
             <Grid>
@@ -96,10 +96,10 @@
                     <TextBlock Text="DreamDough POS"
                                FontSize="28"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeInkBrush}"/>
                     <TextBlock Margin="0,4,0,0"
                                Text="Warm bakery checkout for walk-in customers"
-                               Foreground="#8D6E63"/>
+                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1"
@@ -127,7 +127,7 @@
                                HorizontalAlignment="Right"
                                FontWeight="Bold"
                                FontSize="14"
-                               Foreground="#5D4037" Grid.Column="1"/>
+                               Foreground="{StaticResource ThemeInkBrush}" Grid.Column="1"/>
             </Grid>
         </Border>
 
@@ -161,21 +161,21 @@
                             <TextBlock Text="Product Gallery"
                                        FontSize="24"
                                        FontWeight="SemiBold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Margin="0,10,0,0"
                                      Width="260"
                                      Height="36"
                                      Padding="12,0"
                                      VerticalContentAlignment="Center"
-                                     Background="#FBF6F0"
-                                     BorderBrush="#E8DCCD"
+                                     Background="{StaticResource ThemeAccentSoftBrush}"
+                                     BorderBrush="{StaticResource ThemeBorderBrush}"
                                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
                         <Border Grid.Column="1"
                                 Padding="14,10"
-                                Background="#FFF5E8"
-                                BorderBrush="#EFD8B0"
+                                Background="{StaticResource ThemeAccentSoftBrush}"
+                                BorderBrush="{StaticResource ThemeBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="14">
                             <StackPanel>
@@ -183,10 +183,10 @@
                                            HorizontalAlignment="Center"
                                            FontSize="24"
                                            FontWeight="Bold"
-                                           Foreground="#A86416"/>
+                                           Foreground="{StaticResource ThemeInkBrush}"/>
                                 <TextBlock Text="Visible Today"
                                            HorizontalAlignment="Center"
-                                           Foreground="#8D6E63"/>
+                                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -227,11 +227,11 @@
                                             Command="{Binding DataContext.ProductButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}">
                                         <Border CornerRadius="18"
-                                                BorderBrush="#E2D7CB"
+                                                BorderBrush="{StaticResource ThemeBorderBrush}"
                                                 BorderThickness="1"
                                                 ClipToBounds="True">
                                             <Grid>
-                                                <Border Background="#F3EADF"/>
+                                                <Border Background="{StaticResource ThemeAccentSoftBrush}"/>
                                                 <Image Source="{Binding ImageUrl}"
                                                        Stretch="UniformToFill"/>
                                                 <Rectangle>
@@ -239,7 +239,7 @@
                                                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                                             <GradientStop Color="#00000000" Offset="0"/>
                                                             <GradientStop Color="#33000000" Offset="0.45"/>
-                                                            <GradientStop Color="#B5201711" Offset="1"/>
+                                                            <GradientStop Color="#B52C2C2E" Offset="1"/>
                                                         </LinearGradientBrush>
                                                     </Rectangle.Fill>
                                                 </Rectangle>
@@ -258,7 +258,7 @@
                                                                FontWeight="SemiBold"
                                                                Foreground="White">
                                                         <TextBlock.Background>
-                                                            <SolidColorBrush Color="#B25D4037"/>
+                                                            <SolidColorBrush Color="#CC2C2C2E"/>
                                                         </TextBlock.Background>
                                                     </TextBlock>
 
@@ -272,7 +272,7 @@
                                                                    Text="{Binding Price, StringFormat={}{0:C}}"
                                                                    FontSize="15"
                                                                    FontWeight="Bold"
-                                                                   Foreground="#FFE0A6"/>
+                                                                   Foreground="{StaticResource ThemeAccentBrush}"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </Grid>
@@ -306,10 +306,10 @@
                         <TextBlock Text="Current Order"
                                    FontSize="24"
                                    FontWeight="SemiBold"
-                                   Foreground="#5D4037"/>
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                         <TextBlock Margin="0,4,0,0"
                                    Text="Review quantities, payment, and finalize the sale."
-                                   Foreground="#8D6E63"/>
+                                   Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"/>
                     </StackPanel>
 
                     <DataGrid Grid.Row="2"
@@ -325,11 +325,11 @@
                               GridLinesVisibility="Horizontal">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Background" Value="#FAF4ED"/>
-                                <Setter Property="Foreground" Value="#5D4037"/>
+                                <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Padding" Value="10,8"/>
-                                <Setter Property="BorderBrush" Value="#E7DDD1"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
                             </Style>
                             <Style TargetType="DataGridCell">
@@ -338,7 +338,7 @@
                             </Style>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="Height" Value="46"/>
-                                <Setter Property="BorderBrush" Value="#EFE4D9"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
                             </Style>
                         </DataGrid.Resources>
@@ -366,8 +366,8 @@
 
                     <Border Grid.Row="4"
                             Padding="14"
-                            Background="#FAF4ED"
-                            BorderBrush="#E7DDD1"
+                            Background="{StaticResource ThemeAccentSoftBrush}"
+                            BorderBrush="{StaticResource ThemeBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="14">
                         <Grid>
@@ -380,12 +380,12 @@
                                        VerticalAlignment="Center"
                                        FontSize="16"
                                        FontWeight="SemiBold"
-                                       Foreground="#8D6E63"/>
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
                             <TextBlock Grid.Column="1"
                                        Text="{Binding CartTotal, StringFormat={}{0:C}}"
                                        FontSize="24"
                                        FontWeight="Bold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
                         </Grid>
                     </Border>
 
@@ -393,7 +393,7 @@
                         <TextBlock Text="Payment"
                                    Margin="0,0,0,6"
                                    FontWeight="SemiBold"
-                                   Foreground="#5D4037"/>
+                                   Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                         <TextBox x:Name="PaymentTextBox"
                                  Height="40"
                                  VerticalContentAlignment="Center"
@@ -431,8 +431,6 @@
                     <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
@@ -441,34 +439,27 @@
                            VerticalAlignment="Center"
                            FontWeight="SemiBold"
                            FontSize="18"
-                           Foreground="#5D4037"/>
+                           Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
 
                 <ComboBox Grid.Column="2"
                           Height="36"
                           ItemsSource="{Binding Categories}"
                           SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                          Background="#FBF6F0"
-                          BorderBrush="#E8DCCD"/>
+                          Background="{StaticResource ThemeAccentSoftBrush}"
+                          BorderBrush="{StaticResource ThemeBorderBrush}"/>
 
-                <CheckBox Grid.Column="4"
-                          Content="In Stock Only"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding ShowInStockOnly, UpdateSourceTrigger=PropertyChanged}"
-                          Foreground="#5D4037"
-                          FontWeight="SemiBold"/>
-
-                <TextBlock Grid.Column="6"
+                <TextBlock Grid.Column="4"
                            Text="{Binding ProductCount, StringFormat=Showing {0} items}"
                            VerticalAlignment="Center"
-                           Foreground="#8D6E63"
+                           Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"
                            FontWeight="SemiBold"/>
 
-                <Button Grid.Column="7"
+                <Button Grid.Column="6"
                         Content="Clear Filters"
                         Width="118"
                         Height="36"
                         Command="{Binding ClearFiltersCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}" Margin="529,-1,0,1" HorizontalAlignment="Left"/>
+                        Style="{StaticResource SecondaryButtonStyle}"/>
             </Grid>
         </Border>
     </Grid>

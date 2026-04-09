@@ -10,7 +10,6 @@ namespace ddph.Models
         private string _description = string.Empty;
         private string _imageUrl = string.Empty;
         private decimal _price;
-        private int? _stock;
         private string _category = string.Empty;
 
         public string Id
@@ -59,16 +58,6 @@ namespace ddph.Models
             set
             {
                 _price = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int? Stock
-        {
-            get => _stock;
-            set
-            {
-                _stock = value;
                 OnPropertyChanged();
             }
         }

@@ -9,21 +9,21 @@
         Width="1180"
         MinHeight="700"
         MinWidth="1020"
-        Background="#FFF9E6"
+        Background="{StaticResource ThemeBaseBrush}"
         WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None">
     <Window.Resources>
         <Style x:Key="SubmitButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#5D4037"/>
-            <Setter Property="Foreground" Value="#fff8e113"/>
-            <Setter Property="BorderBrush" Value="#5D4037"/>
+            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#fff8e113"/>
-                    <Setter Property="BorderBrush" Value="#fff8e113"/>
-                    <Setter Property="Foreground" Value="#F5F0EC"/>
+                    <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource ThemeInkSoftBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -36,22 +36,47 @@
         </Grid.RowDefinitions>
 
         <!-- Close Button Overlay -->
-        <Button Content="✕"
-                Width="36"
+        <Button Width="100"
                 Height="36"
                 Margin="0,-18,-18,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Panel.ZIndex="100"
-                FontSize="14"
-                FontWeight="Bold"
-                Background="#FDECEA"
-                Foreground="#C0392B"
-                BorderBrush="#F5C6C2"
-                ToolTip="Close"
-                Click="CloseButton_Click"/>
+                FontSize="18"
+                FontWeight="SemiBold"
+                Background="{StaticResource ThemeAccentSoftBrush}"
+                Foreground="{StaticResource ThemeInkBrush}"
+                BorderBrush="{StaticResource ThemeBorderBrush}"
+                BorderThickness="1"
+                ToolTip="Back"
+                Click="CloseButton_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                        <TextBlock Text="&#x2190;"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.82"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.65"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
-        <Border Background="#FFFDFB"
+        <Border Background="{StaticResource ThemeBaseBrush}"
                 BorderThickness="0"
                 BorderBrush="Transparent"
                 Margin="-18,-18,-18,0"
@@ -66,10 +91,10 @@
                     <TextBlock Text="Custom Order"
                                FontSize="28"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeInkBrush}"/>
                     <TextBlock Margin="0,8,0,0"
                                Text="Compact cashier intake for website-style custom orders"
-                               Foreground="#8D6E63"/>
+                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
                 </StackPanel>
 
 
@@ -77,8 +102,8 @@
         </Border>
 
         <Border Grid.Row="2"
-                Background="White"
-                BorderBrush="#E7DDD1"
+                Background="{StaticResource ThemeSurfaceBrush}"
+                BorderBrush="{StaticResource ThemeBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="14"
                 Padding="20">
@@ -97,12 +122,12 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.ColumnSpan="3"
-                        Background="#E3F2FD"
-                        BorderBrush="#2196F3"
+                        Background="{StaticResource ThemeAccentSoftBrush}"
+                        BorderBrush="{StaticResource ThemeAccentBrush}"
                         BorderThickness="1,0,0,0"
                         Padding="12"
                         CornerRadius="10">
-                    <TextBlock Foreground="#5D4037"
+                    <TextBlock Foreground="{StaticResource ThemeInkBrush}"
                                TextWrapping="Wrap">
                         <Run Text="Tip: "/><Run Text="Keep the details concise and clear so the baker can confirm the custom design quickly."/>
                     </TextBlock>
@@ -113,7 +138,7 @@
                     <TextBlock Margin="0,0,0,6"
                                Text="Full Name *"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
@@ -122,7 +147,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Phone Number *"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
@@ -131,7 +156,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Email"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
@@ -148,7 +173,7 @@
                             <TextBlock Margin="0,0,0,6"
                                        Text="Product Type *"
                                        FontWeight="SemiBold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <ComboBox Height="36"
                                       ItemsSource="{Binding ProductTypes}"
                                       SelectedItem="{Binding ProductType, UpdateSourceTrigger=PropertyChanged}"/>
@@ -158,7 +183,7 @@
                             <TextBlock Margin="0,0,0,6"
                                        Text="Quantity *"
                                        FontWeight="SemiBold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Height="36"
                                      Padding="10,0"
                                      VerticalContentAlignment="Center"
@@ -169,7 +194,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Size / Serving *"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
@@ -178,7 +203,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Flavor Preferences"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
@@ -195,7 +220,7 @@
                             <TextBlock Margin="0,0,0,6"
                                        Text="Pickup Date *"
                                        FontWeight="SemiBold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Height="36"
                                      Padding="10,0"
                                      VerticalContentAlignment="Center"
@@ -206,7 +231,7 @@
                             <TextBlock Margin="0,0,0,6"
                                        Text="Pickup Time *"
                                        FontWeight="SemiBold"
-                                       Foreground="#5D4037"/>
+                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Height="36"
                                      Padding="10,0"
                                      VerticalContentAlignment="Center"
@@ -220,7 +245,7 @@
                     <TextBlock Margin="0,0,0,6"
                                Text="Design Description *"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox MinHeight="100"
                              Padding="10"
                              Text="{Binding DesignDescription, UpdateSourceTrigger=PropertyChanged}"
@@ -230,7 +255,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Delivery Address"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox MinHeight="64"
                              Padding="10"
                              Text="{Binding DeliveryAddress, UpdateSourceTrigger=PropertyChanged}"
@@ -240,7 +265,7 @@
                     <TextBlock Margin="0,12,0,6"
                                Text="Additional Notes"
                                FontWeight="SemiBold"
-                               Foreground="#5D4037"/>
+                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox MinHeight="74"
                              Padding="10"
                              Text="{Binding AdditionalNotes, UpdateSourceTrigger=PropertyChanged}"
@@ -250,8 +275,8 @@
 
                 <Border Grid.Row="4"
                         Grid.ColumnSpan="3"
-                        Background="#FFF3CD"
-                        BorderBrush="#FFC107"
+                        Background="{StaticResource ThemeAccentSoftBrush}"
+                        BorderBrush="{StaticResource ThemeBorderBrush}"
                         BorderThickness="1,0,0,0"
                         Padding="12"
                         CornerRadius="10" Margin="0,33,0,0">
@@ -264,7 +289,7 @@
                         <TextBlock Margin="0,20,0,6"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap"
-                                   Foreground="#5D4037">
+                                   Foreground="{StaticResource ThemeInkBrush}">
                             <Run Text="Note: "/><Run Text="This submits a custom order to Firebase as a pending inquiry with price still set to 0."/>
                         </TextBlock>
 

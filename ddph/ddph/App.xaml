@@ -4,6 +4,34 @@
              xmlns:local="clr-namespace:ddph"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FDFBD4"/>
+        <SolidColorBrush x:Key="ThemeAccentBrush" Color="#FDFBD4"/>
+        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FDFBD4"/>
+        <SolidColorBrush x:Key="ThemeAccentMutedBrush" Color="#66FDFBD4"/>
+        <SolidColorBrush x:Key="ThemeInkBrush" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="ThemeInkSoftBrush" Color="#C02C3E50"/>
+        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#802C3E50"/>
+        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="ThemeSurfaceSoftBrush" Color="#E62C3E50"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceBrush" Color="#FDFBD4"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceSoftBrush" Color="#CCFDFBD4"/>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource ThemeBaseBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource ThemeBaseBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+        </Style>
     </Application.Resources>
 </Application>

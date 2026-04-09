@@ -19,7 +19,6 @@ namespace ddph.ViewModels
         private string _paymentText = string.Empty;
         private string _searchText = string.Empty;
         private string _selectedCategory = "All";
-        private bool _showInStockOnly;
 
         public MainWindowViewModel()
         {
@@ -102,22 +101,6 @@ namespace ddph.ViewModels
                 }
 
                 _selectedCategory = value;
-                OnPropertyChanged();
-                RefreshFilters();
-            }
-        }
-
-        public bool ShowInStockOnly
-        {
-            get => _showInStockOnly;
-            set
-            {
-                if (_showInStockOnly == value)
-                {
-                    return;
-                }
-
-                _showInStockOnly = value;
                 OnPropertyChanged();
                 RefreshFilters();
             }
@@ -246,11 +229,6 @@ namespace ddph.ViewModels
                 return false;
             }
 
-            if (ShowInStockOnly && product.Stock.GetValueOrDefault() <= 0)
-            {
-                return false;
-            }
-
             if (!string.IsNullOrWhiteSpace(SearchText) &&
                 !product.ProductName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase))
             {
@@ -264,7 +242,6 @@ namespace ddph.ViewModels
         {
             SearchText = string.Empty;
             SelectedCategory = "All";
-            ShowInStockOnly = false;
             RefreshFilters();
         }
 

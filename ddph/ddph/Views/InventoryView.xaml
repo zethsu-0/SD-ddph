@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="680"
              d:DesignWidth="1100"
-             Background="#F5F2EC">
+             Background="{StaticResource ThemeBaseBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,23 +14,48 @@
         </Grid.RowDefinitions>
 
         <!-- Close Button Overlay -->
-        <Button Content="✕"
-                Width="36"
+        <Button Width="100"
                 Height="36"
                 Margin="0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Panel.ZIndex="100"
-                FontSize="14"
-                FontWeight="Bold"
-                Background="#FDECEA"
-                Foreground="#C0392B"
-                BorderBrush="#F5C6C2"
-                ToolTip="Close"
-                Click="CloseButton_Click"/>
+                FontSize="18"
+                FontWeight="SemiBold"
+                Background="{StaticResource ThemeAccentSoftBrush}"
+                Foreground="{StaticResource ThemeInkBrush}"
+                BorderBrush="{StaticResource ThemeAccentBrush}"
+                BorderThickness="1"
+                ToolTip="Back"
+                Click="CloseButton_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                        <TextBlock Text="&#x2190;"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.82"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.65"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
         <!-- Flat Top Bar -->
-        <Border Background="#FFFDFB"
+        <Border Background="{StaticResource ThemeBaseBrush}"
                 BorderThickness="0"
                 BorderBrush="Transparent"
                 Padding="18,14">
@@ -44,27 +69,27 @@
                            VerticalAlignment="Center"
                            FontSize="24"
                            FontWeight="SemiBold"
-                           Foreground="#2E241D"/>
+                           Foreground="{StaticResource ThemeInkBrush}"/>
 
-                <Border Grid.Column="1"
+                <Border
                         Padding="14,10"
-                        Margin="0,0,48,0"
-                        Background="White"
-                        BorderBrush="#E8DED3"
+                        Margin="849,3,93,-3"
+                        Background="{StaticResource ThemeAccentSoftBrush}"
+                        BorderBrush="{StaticResource ThemeBorderBrush}"
                         BorderThickness="1"
-                        CornerRadius="10">
+                        CornerRadius="10" Grid.ColumnSpan="2">
                     <StackPanel>
                         <TextBlock Text="{Binding VisibleProductCount, StringFormat={}{0} visible items}"
                                    HorizontalAlignment="Center"
                                    FontFamily="Consolas"
                                    FontSize="13"
                                    FontWeight="Bold"
-                                   Foreground="#0C3B66"/>
+                                   Foreground="{StaticResource ThemeInkBrush}"/>
                         <TextBlock Text="Live inventory view"
                                    Margin="0,4,0,0"
                                    HorizontalAlignment="Center"
                                    FontSize="11"
-                                   Foreground="#9A7F6B"/>
+                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -73,7 +98,7 @@
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
-                      Background="#F5F2EC">
+                      Background="{StaticResource ThemeBaseBrush}">
             <Grid Margin="18">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -84,8 +109,8 @@
                 <Border Grid.Row="1"
                     Margin="0,18,0,0"
                     Padding="18"
-                    Background="#FFFDFB"
-                    BorderBrush="#E6DDD1"
+                    Background="{StaticResource ThemeSurfaceBrush}"
+                    BorderBrush="{StaticResource ThemeBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <Button Content="+ Add New Item"
@@ -93,9 +118,9 @@
                         Height="40"
                         HorizontalAlignment="Left"
                         Command="{Binding AddProductCommand}"
-                        Background="#2C8ED6"
-                        Foreground="White"
-                        BorderBrush="#2C8ED6"
+                        Background="{StaticResource ThemeAccentBrush}"
+                        Foreground="{StaticResource ThemeInkBrush}"
+                        BorderBrush="{StaticResource ThemeAccentBrush}"
                         FontWeight="SemiBold"/>
                 </Border>
 
@@ -112,8 +137,8 @@
                             <Border Width="318"
                                 Margin="0,0,12,12"
                                 Padding="18"
-                                Background="#FFFDFB"
-                                BorderBrush="#E6DDD1"
+                                Background="{StaticResource ThemeSurfaceBrush}"
+                                BorderBrush="{StaticResource ThemeBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="12">
                                 <Grid>
@@ -125,7 +150,7 @@
 
                                     <Border Width="46"
                                         Height="46"
-                                        Background="#F4EFE8"
+                                        Background="{StaticResource ThemeAccentSoftBrush}"
                                         CornerRadius="10">
                                         <TextBlock Text="{Binding Icon}"
                                                HorizontalAlignment="Center"
@@ -138,12 +163,12 @@
                                         <TextBlock Text="{Binding Count}"
                                                FontSize="26"
                                                FontWeight="Bold"
-                                               Foreground="#163A63"/>
+                                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                                         <TextBlock Text="{Binding Title}"
                                                TextTrimming="CharacterEllipsis"
                                                FontSize="12"
                                                TextWrapping="Wrap"
-                                               Foreground="#7A6A5D"/>
+                                               Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -154,8 +179,8 @@
                 <Border Grid.Row="3"
                     Margin="0,6,0,0"
                     Padding="14"
-                    Background="#FFFDFB"
-                    BorderBrush="#E6DDD1"
+                    Background="{StaticResource ThemeSurfaceBrush}"
+                    BorderBrush="{StaticResource ThemeBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <Grid>
@@ -173,8 +198,8 @@
                         <Border Grid.Row="0"
                             Grid.Column="0"
                             Padding="14,4"
-                            Background="#FBF8F4"
-                            BorderBrush="#E4D8CA"
+                            Background="{StaticResource ThemeAccentSoftBrush}"
+                            BorderBrush="{StaticResource ThemeBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="10">
                             <DockPanel>
@@ -196,8 +221,8 @@
                               Padding="8,0"
                               ItemsSource="{Binding Categories}"
                               SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                              Background="#FBF8F4"
-                              BorderBrush="#E4D8CA"
+                              Background="{StaticResource ThemeAccentSoftBrush}"
+                              BorderBrush="{StaticResource ThemeBorderBrush}"
                               BorderThickness="1"/>
 
                         <ItemsControl Grid.Row="2"
@@ -212,8 +237,8 @@
                                 <DataTemplate>
                                     <Border Width="248"
                                         Margin="0,0,16,18"
-                                        Background="White"
-                                        BorderBrush="#E6DDD1"
+                                        Background="{StaticResource ThemeSurfaceBrush}"
+                                        BorderBrush="{StaticResource ThemeBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="14">
                                         <Grid>
@@ -225,7 +250,7 @@
                                             <Border Grid.Row="0"
                                                 CornerRadius="14,14,0,0"
                                                 ClipToBounds="True"
-                                                Background="#F3EDE4">
+                                                Background="{StaticResource ThemeAccentSoftBrush}">
                                                 <Grid>
                                                     <Image Source="{Binding ImageUrl}"
                                                        Stretch="UniformToFill"/>
@@ -234,12 +259,12 @@
                                                         VerticalAlignment="Top"
                                                         Margin="0,14,14,0"
                                                         Padding="10,5"
-                                                        Background="#39C97D"
+                                                        Background="{StaticResource ThemeAccentBrush}"
                                                         CornerRadius="12">
                                                         <TextBlock Text="{Binding Category}"
                                                                FontSize="11"
                                                                FontWeight="Bold"
-                                                               Foreground="White"
+                                                               Foreground="{StaticResource ThemeInkBrush}"
                                                                TextTrimming="CharacterEllipsis"/>
                                                     </Border>
                                                 </Grid>
@@ -257,7 +282,7 @@
                                                 <TextBlock Text="{Binding ProductName}"
                                                        FontSize="20"
                                                        FontWeight="SemiBold"
-                                                       Foreground="#1F2C3C"
+                                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"
                                                        TextWrapping="Wrap"/>
 
                                                 <TextBlock Grid.Row="1"
@@ -265,7 +290,7 @@
                                                        MinHeight="36"
                                                        Text="{Binding Description}"
                                                        FontSize="13"
-                                                       Foreground="#7E6E62"
+                                                       Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"
                                                        TextWrapping="Wrap"
                                                        TextTrimming="WordEllipsis"/>
 
@@ -281,10 +306,7 @@
                                                         <TextBlock Text="{Binding Price, StringFormat=₱{0:F0}}"
                                                                FontSize="24"
                                                                FontWeight="Bold"
-                                                               Foreground="#2C8ED6"/>
-                                                        <TextBlock Text="{Binding Stock, StringFormat=Stock: {0}}"
-                                                               FontSize="11"
-                                                               Foreground="#9A7F6B"/>
+                                                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                                                     </StackPanel>
 
                                                     <Button Grid.Column="1"
@@ -292,9 +314,9 @@
                                                         Height="28"
                                                         Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
-                                                        Background="#E7F5FF"
-                                                        Foreground="#2C8ED6"
-                                                        BorderBrush="#C9E8FB"
+                                                        Background="{StaticResource ThemeAccentSoftBrush}"
+                                                        Foreground="{StaticResource ThemeInkBrush}"
+                                                        BorderBrush="{StaticResource ThemeAccentBrush}"
                                                         Content="✎"/>
 
                                                     <Button Grid.Column="3"
@@ -302,9 +324,9 @@
                                                         Height="28"
                                                         Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
-                                                        Background="#FDECEC"
-                                                        Foreground="#C26161"
-                                                        BorderBrush="#F6D4D4"
+                                                        Background="{StaticResource ThemeBaseBrush}"
+                                                        Foreground="{StaticResource ThemeInkBrush}"
+                                                        BorderBrush="{StaticResource ThemeBaseBrush}"
                                                         Content="🗑"/>
                                                 </Grid>
                                             </Grid>

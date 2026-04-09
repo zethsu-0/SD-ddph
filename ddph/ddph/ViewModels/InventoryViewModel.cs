@@ -164,7 +164,7 @@ namespace ddph.ViewModels
 
                 product.ProductName = updatedProduct.ProductName;
                 product.Price = updatedProduct.Price;
-                product.Stock = updatedProduct.Stock;
+                product.ImageUrl = updatedProduct.ImageUrl;
                 product.Category = updatedProduct.Category;
 
                 RebuildCategoryData();
