@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Online Orders"
+        Title="Orders"
         Height="760"
         Width="1320"
         MinHeight="640"
@@ -13,35 +13,38 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None">
-    <Grid Margin="18">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Close Button Overlay -->
         <Button Width="100"
-                Height="36"
-                Margin="0,-18,-18,0"
+                Height="40"
+                Margin="0,-24,-24,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Panel.ZIndex="100"
                 FontSize="18"
                 FontWeight="SemiBold"
-                Background="{StaticResource ThemeAccentBrush}"
-                Foreground="{StaticResource ThemeInkBrush}"
-                BorderBrush="{StaticResource ThemeBorderBrush}"
-                BorderThickness="1"
+                Background="{StaticResource ThemeCardBrush}"
+                Foreground="{StaticResource ThemeAccentBrush}"
+                BorderBrush="Transparent"
+                BorderThickness="0"
                 ToolTip="Back"
                 Click="CloseButton_Click">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
+                            CornerRadius="18">
                         <TextBlock Text="&#x2190;"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -61,359 +64,516 @@
             </Button.Template>
         </Button>
 
-        <Border Background="{StaticResource ThemeBaseBrush}"
-                BorderThickness="0"
-                BorderBrush="Transparent"
-                Margin="-18,-18,-18,0"
-                Padding="18,14">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
 
-                <StackPanel>
-                    <TextBlock Text="Online Orders"
-                               FontSize="24"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource ThemeInkBrush}"/>
-                    <TextBlock Margin="0,6,0,0"
-                               Text="Scan live website orders, review details, and update their status."
-                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Orders"
+                           FontSize="30"
+                           FontFamily="{StaticResource ThemeHeadlineFont}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                <TextBlock Margin="0,6,0,0"
+                           Text="Review website orders and register tickets from one history board."
+                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
+            </StackPanel>
 
-                <TextBox
-                         Width="280"
-                         Height="38"
-                         VerticalContentAlignment="Center"
-                         Padding="12,0"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="816,8,76,8"/>
+            <Border Grid.Column="1"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource ThemeSurfaceBrush}"
+                    CornerRadius="22">
+                <TextBox VerticalContentAlignment="Center"
+                         Padding="14,0"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+            </Border>
 
-                <Button
-                        Width="90"
-                        Height="38"
-                        Content="Refresh"
-                        Command="{Binding RefreshCommand}" Margin="1146,8,26,8"/>
+            <Button Grid.Column="3"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    Content="Refresh"
+                    Command="{Binding RefreshCommand}"
+                    Background="{StaticResource ThemeToastBrush}"
+                    Foreground="White"/>
+        </Grid>
 
+        <Border Grid.Row="2"
+                Background="{StaticResource ThemeSurfaceBrush}"
+                CornerRadius="22"
+                Padding="8">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Online Orders"
+                        Padding="20,10"
+                        Margin="0,0,8,0"
+                        Command="{Binding ShowOnlineOrdersCommand}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource ThemeInkSoftBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Root"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="16">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding IsOnlineTabSelected}" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource ThemeAccentBrush}"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-            </Grid>
+                <Button Content="Register Orders"
+                        Padding="20,10"
+                        Command="{Binding ShowRegisterOrdersCommand}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource ThemeInkSoftBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Root"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="16">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding IsRegisterTabSelected}" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource ThemeAccentBrush}"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
         </Border>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="380"/>
-                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="2.1*"/>
+                <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Background="{StaticResource ThemeSurfaceBrush}"
-                    BorderBrush="{StaticResource ThemeBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="14"
-                    Padding="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Incoming Orders"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
+                    <Border Background="{StaticResource ThemeSurfaceBrush}"
+                            CornerRadius="26"
+                            Padding="24">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ActiveTabLabel}"
+                                       FontSize="22"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                            <TextBlock Margin="0,6,0,0"
+                                       Text="{Binding ActiveOrderCount, StringFormat={}{0} results}"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                        </StackPanel>
+                    </Border>
 
-                    <ListBox Grid.Row="2"
-                             ItemsSource="{Binding FilteredOrders}"
-                             SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
-                             BorderThickness="0"
-                             Background="Transparent"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Margin" Value="0,0,0,12"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Padding="14"
-                                        Background="{StaticResource ThemeBaseBrush}"
-                                        BorderBrush="{StaticResource ThemeBorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="12">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
+                    <Border Grid.Column="2"
+                            Background="{StaticResource ThemeCardBrush}"
+                            CornerRadius="26"
+                            Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="{Binding PrimaryMetricLabel}"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="{Binding ActiveOrderCount}"
+                                       FontSize="28"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                        </StackPanel>
+                    </Border>
 
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding DisplayName}"
-                                                       FontSize="17"
-                                                       FontWeight="SemiBold"
-                                                       Foreground="{StaticResource ThemeInkBrush}"/>
-                                            <TextBlock Margin="0,5,0,0"
-                                                       Text="{Binding CustomerPhone}"
-                                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                                            <TextBlock Margin="0,3,0,0"
-                                                       Text="{Binding CustomerEmail}"
-                                                       Foreground="{StaticResource ThemeInkSoftBrush}"
-                                                       TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Margin="0,8,0,0"
-                                                       Text="{Binding PickupDate, StringFormat=Pickup: {0}}"
-                                                       Foreground="{StaticResource ThemeInkBrush}"
-                                                       FontWeight="SemiBold"/>
-                                        </StackPanel>
+                    <Border Grid.Column="4"
+                            Background="{StaticResource ThemeCardBrush}"
+                            CornerRadius="26"
+                            Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Revenue"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="{Binding ActiveRevenue, StringFormat={}PHP {0:N2}}"
+                                       FontSize="24"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                        </StackPanel>
+                    </Border>
 
-                                        <StackPanel Grid.Column="1"
-                                                    HorizontalAlignment="Right">
-                                            <Border Padding="10,5"
-                                                    Background="{StaticResource ThemeBaseBrush}"
-                                                    CornerRadius="12">
-                                                <TextBlock Text="{Binding Status}"
-                                                           Foreground="{StaticResource ThemeInkBrush}"
-                                                           FontWeight="Bold"/>
-                                            </Border>
-                                            <TextBlock Margin="0,12,0,0"
-                                                       HorizontalAlignment="Right"
-                                                       Text="{Binding Total, StringFormat=₱{0:F2}}"
-                                                       FontWeight="Bold"
-                                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <Border Grid.Column="6"
+                            Background="{StaticResource ThemeCardBrush}"
+                            CornerRadius="26"
+                            Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="{Binding SecondaryMetricLabel}"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="{Binding SecondaryMetricValue}"
+                                       FontSize="28"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
-            </Border>
 
-            <Border Grid.Column="2"
-                    Background="{StaticResource ThemeSurfaceBrush}"
-                    BorderBrush="{StaticResource ThemeBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="14"
-                    Padding="16">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
+                <Border Grid.Row="2"
+                        Background="{StaticResource ThemeSurfaceBrush}"
+                        CornerRadius="28"
+                        Padding="18">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="145"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="120"/>
                             </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="Order Details"
-                                       FontSize="22"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
+                            <TextBlock Text="Order ID" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="1" Text="Customer" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="2" Text="Source" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="3" Text="Date" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="4" Text="Total" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
                         </Grid>
 
-                        <Border Margin="0,16,0,0"
-                                Padding="18"
-                                Background="#f0e8de"
-                                BorderBrush="#c5b09a"
-                                BorderThickness="1"
-                                CornerRadius="14">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="14"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                        <ListBox Grid.Row="2"
+                                 ItemsSource="{Binding ActiveOrdersView}"
+                                 SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="18"
+                                            Background="{StaticResource ThemeCardBrush}"
+                                            CornerRadius="22">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="145"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="120"/>
+                                            </Grid.ColumnDefinitions>
 
-                                <Border Width="62"
-                                        Height="62"
-                                        Background="#4b607f"
-                                        CornerRadius="31">
-                                    <TextBlock Text="👤"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="28"/>
-                                </Border>
+                                            <TextBlock VerticalAlignment="Center"
+                                                       Text="{Binding Id}"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource ThemeAccentBrush}"/>
 
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="{Binding SelectedOrder.DisplayName}"
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource ThemeInkBrush}"/>
+                                                <TextBlock Margin="0,4,0,0"
+                                                           Text="{Binding Status}"
+                                                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="2"
+                                                    Padding="10,5"
+                                                    HorizontalAlignment="Left"
+                                                    Background="{StaticResource ThemeAccentSoftBrush}"
+                                                    CornerRadius="14">
+                                                <TextBlock Text="{Binding SourceLabel}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="3"
+                                                       VerticalAlignment="Center"
+                                                       Text="{Binding Date}"
+                                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+
+                                            <TextBlock Grid.Column="4"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right"
+                                                       Text="{Binding Total, StringFormat={}PHP {0:N2}}"
+                                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+            </Grid>
+            <ScrollViewer Grid.Column="2"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Border Background="{StaticResource ThemeSurfaceBrush}"
+                            CornerRadius="28"
+                            Padding="24">
+                        <StackPanel>
+                            <TextBlock Text="Order Details"
+                                       FontSize="24"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeAccentBrush}"/>
+
+                            <Border Margin="0,18,0,0"
+                                    Padding="18"
+                                    Background="{StaticResource ThemeCardBrush}"
+                                    CornerRadius="22">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding SelectedOrder.DisplayName, TargetNullValue=No order selected}"
+                                               FontSize="20"
+                                               FontFamily="{StaticResource ThemeHeadlineFont}"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <TextBlock Margin="0,8,0,0"
+                                               Text="{Binding SelectedOrder.SourceLabel, StringFormat={}Source: {0}}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                    <TextBlock Margin="0,4,0,0"
+                                               Text="{Binding SelectedOrder.Date, StringFormat={}Placed: {0}}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                    <TextBlock Margin="0,4,0,0"
+                                               Text="{Binding SelectedOrder.CustomerPhone, StringFormat={}Phone: {0}}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                    <TextBlock Margin="0,4,0,0"
+                                               Text="{Binding SelectedOrder.CustomerEmail, StringFormat={}Info: {0}}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Margin="0,16,0,0"
+                                    Padding="18"
+                                    Background="{StaticResource ThemeCardBrush}"
+                                    CornerRadius="22">
+                                <StackPanel>
+                                    <TextBlock Text="Order Summary"
+                                               FontSize="18"
+                                               FontFamily="{StaticResource ThemeHeadlineFont}"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <TextBlock Margin="0,8,0,0"
+                                               Text="{Binding SelectedOrderItemCount, StringFormat={}{0} items in this ticket}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+
+                                    <ItemsControl Margin="0,14,0,0"
+                                                  ItemsSource="{Binding SelectedOrder.Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{StaticResource ThemeInkBrush}"/>
+                                                        <TextBlock Margin="0,4,0,0"
+                                                                   Text="{Binding Quantity, StringFormat={}Qty {0}}"
+                                                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                                    </StackPanel>
+
+                                                    <TextBlock Grid.Column="1"
+                                                               VerticalAlignment="Center"
+                                                               Text="{Binding Subtotal, StringFormat={}PHP {0:N2}}"
+                                                               FontWeight="Bold"
+                                                               Foreground="{StaticResource ThemeAccentBrush}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock Margin="0,10,0,0"
+                                               HorizontalAlignment="Right"
+                                               Text="{Binding SelectedOrder.Total, StringFormat={}Total: PHP {0:N2}}"
+                                               FontSize="22"
+                                               FontFamily="{StaticResource ThemeHeadlineFont}"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Margin="0,16,0,0"
+                                    Padding="18"
+                                    Background="{StaticResource ThemeCardBrush}"
+                                    CornerRadius="22">
+                                <StackPanel>
+                                    <TextBlock Text="Status"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <Border Margin="0,12,0,0"
+                                            Padding="12"
+                                            Background="{StaticResource ThemeAccentSoftBrush}"
+                                            CornerRadius="16">
+                                        <TextBlock Text="{Binding SelectedOrder.Status}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource ThemeAccentBrush}"/>
+                                    </Border>
+
+                                    <StackPanel Margin="0,16,0,0"
+                                                Visibility="{Binding CanEditOnlineOrder, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <TextBlock Text="Change Status"
+                                                   FontSize="16"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource ThemeInkBrush}"/>
+                                        <ComboBox Margin="0,10,0,0"
+                                                  Height="40"
+                                                  ItemsSource="{Binding StatusOptions}"
+                                                  SelectedItem="{Binding SelectedStatus, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <UniformGrid Margin="0,14,0,0"
+                                                     Columns="2"
+                                                     Rows="2">
+                                            <Button Margin="0,0,10,10"
+                                                    Height="42"
+                                                    Command="{Binding ConfirmOrderCommand}"
+                                                    Background="{StaticResource ThemeGreenSoftBrush}"
+                                                    Foreground="{StaticResource ThemeGreenBrush}"
+                                                    Content="Confirm"/>
+                                            <Button Margin="0,0,0,10"
+                                                    Height="42"
+                                                    Command="{Binding NeedsAdjustmentCommand}"
+                                                    Background="{StaticResource ThemeAccentSoftBrush}"
+                                                    Foreground="{StaticResource ThemeAccentBrush}"
+                                                    Content="Adjust"/>
+                                            <Button Margin="0,0,10,0"
+                                                    Height="42"
+                                                    Command="{Binding MarkCompleteCommand}"
+                                                    Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                                    Foreground="{StaticResource ThemeAccentBrush}"
+                                                    Content="Complete"/>
+                                            <Button Height="42"
+                                                    Command="{Binding CancelOrderCommand}"
+                                                    Background="{StaticResource ThemeRoseSoftBrush}"
+                                                    Foreground="{StaticResource ThemeRoseBrush}"
+                                                    Content="Cancel"/>
+                                        </UniformGrid>
+                                        <Button Margin="0,12,0,0"
+                                                Height="42"
+                                                Width="128"
+                                                HorizontalAlignment="Left"
+                                                Command="{Binding SaveStatusCommand}"
+                                                Background="{StaticResource ThemeToastBrush}"
+                                                Foreground="White"
+                                                Content="Save Status"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,16,0,0"
+                                                Visibility="{Binding IsRegisterTabSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding SelectedOrder.Payment, StringFormat={}Payment: PHP {0:N2}}"
+                                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                        <TextBlock Margin="0,6,0,0"
+                                                   Text="{Binding SelectedOrder.Change, StringFormat={}Change: PHP {0:N2}}"
+                                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Margin="0,16,0,0"
+                                    Padding="18"
+                                    Background="{StaticResource ThemeCardBrush}"
+                                    CornerRadius="22">
+                                <StackPanel>
+                                    <TextBlock Text="Daily Overview"
+                                               FontSize="18"
+                                               FontFamily="{StaticResource ThemeHeadlineFont}"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource ThemeAccentBrush}"/>
+                                    <TextBlock Margin="0,12,0,0"
+                                               Text="{Binding ActiveRevenue, StringFormat={}Revenue: PHP {0:N2}}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <TextBlock Margin="0,6,0,0"
+                                               Text="{Binding ActiveAverageTicket, StringFormat={}Average Ticket: PHP {0:N2}}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                    <TextBlock Margin="0,16,0,0"
+                                               Text="Popular Today"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <TextBlock Margin="0,6,0,0"
+                                               Text="{Binding TopProductName}"
+                                               FontFamily="{StaticResource ThemeHeadlineFont}"
                                                FontSize="20"
                                                FontWeight="Bold"
-                                               Foreground="#2c1f12"/>
-                                    <TextBlock Margin="0,8,0,0"
-                                               Text="{Binding SelectedOrder.CustomerPhone}"
-                                               Foreground="#8a7060"/>
+                                               Foreground="{StaticResource ThemeInkBrush}"/>
                                     <TextBlock Margin="0,4,0,0"
-                                               Text="{Binding SelectedOrder.CustomerEmail}"
-                                               Foreground="#8a7060"/>
+                                               Text="{Binding TopProductSales, StringFormat={}{0} sold}"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
                                 </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <Border Margin="0,16,0,0"
-                                Padding="18"
-                                Background="#f4ece2"
-                                BorderBrush="#E6DDD1"
-                                BorderThickness="1"
-                                CornerRadius="14">
-                            <StackPanel>
-                                <TextBlock Text="Order Summary"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"
-                                           Foreground="#4b607f"/>
-
-                                <ItemsControl Margin="0,16,0,0"
-                                              ItemsSource="{Binding SelectedOrder.Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,0,0,14">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="14"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Border Width="54"
-                                                        Height="54"
-                                                        Background="#F6EFE5"
-                                                        BorderBrush="#E6DDD1"
-                                                        BorderThickness="1"
-                                                        CornerRadius="10">
-                                                    <TextBlock Text="🧁"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center"
-                                                               FontSize="24"/>
-                                                </Border>
-
-                                                <StackPanel Grid.Column="2"
-                                                            VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               FontSize="16"
-                                                               FontWeight="SemiBold"
-                                                               Foreground="#2c1f12"/>
-                                                    <TextBlock Margin="0,4,0,0"
-                                                               Text="{Binding Quantity, StringFormat=Qty: {0}}"
-                                                               Foreground="#8a7060"/>
-                                                </StackPanel>
-
-                                                <TextBlock Grid.Column="3"
-                                                           VerticalAlignment="Center"
-                                                           Text="{Binding Subtotal, StringFormat=₱{0:F0}}"
-                                                           FontWeight="Bold"
-                                                           Foreground="#4b607f"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <Separator Margin="0,8,0,12"/>
-
-                                <TextBlock HorizontalAlignment="Right"
-                                           Text="{Binding SelectedOrder.Total, StringFormat=Total: ₱{0:F2}}"
-                                           FontSize="24"
-                                           FontWeight="Bold"
-                                           Foreground="#4b607f"/>
-                            </StackPanel>
-                        </Border>
-
-                        <TextBlock Margin="0,18,0,10"
-                                   Text="Quick Actions"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Foreground="#2c1f12"/>
-
-                        <UniformGrid Columns="2"
-                                     Rows="2">
-                            <Button Margin="0,0,10,10"
-                                    Height="42"
-                                    Command="{Binding ConfirmOrderCommand}"
-                                    Background="#DDF2E0"
-                                    BorderBrush="#4CAF68"
-                                    Foreground="#1C6A34"
-                                    Content="Confirm Order"/>
-                            <Button Margin="0,0,0,10"
-                                    Height="42"
-                                    Command="{Binding NeedsAdjustmentCommand}"
-                                    Background="#FFF0D8"
-                                    BorderBrush="#F2A43C"
-                                    Foreground="#A85D00"
-                                    Content="Needs Adjustment"/>
-                            <Button Margin="0,0,10,0"
-                                    Height="42"
-                                    Command="{Binding MarkCompleteCommand}"
-                                    Background="#d8e2ef"
-                                    BorderBrush="#4b607f"
-                                    Foreground="#4b607f"
-                                    Content="Mark Complete"/>
-                            <Button Height="42"
-                                    Command="{Binding CancelOrderCommand}"
-                                    Background="#FFE1E1"
-                                    BorderBrush="#E36464"
-                                    Foreground="#A63131"
-                                    Content="Cancel Order"/>
-                        </UniformGrid>
-
-                        <Border Margin="0,18,0,0"
-                                Padding="18"
-                                Background="#f0e8de"
-                                BorderBrush="#c5b09a"
-                                BorderThickness="1"
-                                CornerRadius="14">
-                            <StackPanel>
-                                <TextBlock Text="Current Status"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="#2c1f12"/>
-
-                                <Border Margin="0,12,0,0"
-                                        Padding="12"
-                                        BorderBrush="#E6DDD1"
-                                        BorderThickness="1"
-                                        CornerRadius="10"
-                                        Background="#f4ece2">
-                                    <TextBlock Text="{Binding SelectedOrder.Status}"
-                                               FontWeight="Bold"
-                                               Foreground="#B44343"/>
-                                </Border>
-
-                                <TextBlock Margin="0,18,0,0"
-                                           Text="Change Status"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="#2c1f12"/>
-
-                                <ComboBox Margin="0,10,0,0"
-                                          Height="38"
-                                          ItemsSource="{Binding StatusOptions}"
-                                          SelectedItem="{Binding SelectedStatus, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <Button Margin="0,12,0,0"
-                                        Height="40"
-                                        HorizontalAlignment="Left"
-                                        Width="120"
-                                        Command="{Binding SaveStatusCommand}"
-                                        Content="Save Status"/>
-
-                                <TextBlock Margin="0,18,0,0"
-                                           Text="Internal Notes"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="#20354F"/>
-
-                                <TextBox Margin="0,10,0,0"
-                                         MinHeight="90"
-                                         Text="{Binding SelectedOrder.Notes}"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         IsReadOnly="True"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>

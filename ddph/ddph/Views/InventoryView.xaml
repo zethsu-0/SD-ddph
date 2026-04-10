@@ -4,340 +4,373 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="680"
-             d:DesignWidth="1100"
-             Background="{StaticResource ThemeBaseBrush}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+             d:DesignHeight="800"
+             d:DesignWidth="1280"
+             Background="#FFF8EF">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="InvShellBrush" Color="#FFF8EF"/>
+        <SolidColorBrush x:Key="InvPanelBrush" Color="#F5EDDE"/>
+        <SolidColorBrush x:Key="InvPanelSoftBrush" Color="#FBF3E4"/>
+        <SolidColorBrush x:Key="InvCardBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="InvPrimaryBrush" Color="#765449"/>
+        <SolidColorBrush x:Key="InvPrimarySoftBrush" Color="#916C60"/>
+        <SolidColorBrush x:Key="InvTextBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="InvTextSoftBrush" Color="#504441"/>
+        <SolidColorBrush x:Key="InvOutlineBrush" Color="#827470"/>
+        <SolidColorBrush x:Key="InvGreenBrush" Color="#266931"/>
+        <SolidColorBrush x:Key="InvGreenSoftBrush" Color="#F2F6F1"/>
+        <SolidColorBrush x:Key="InvRoseBrush" Color="#805062"/>
+        <SolidColorBrush x:Key="InvRoseSoftBrush" Color="#FDF3F5"/>
+        <LinearGradientBrush x:Key="InvBreadBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#765449" Offset="0"/>
+            <GradientStop Color="#916C60" Offset="1"/>
+        </LinearGradientBrush>
+    </UserControl.Resources>
 
-        <!-- Close Button Overlay -->
-        <Button Width="100"
-                Height="36"
-                Margin="0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Panel.ZIndex="100"
-                FontSize="18"
-                FontWeight="SemiBold"
-                Background="{StaticResource ThemeAccentSoftBrush}"
-                Foreground="{StaticResource ThemeInkBrush}"
-                BorderBrush="{StaticResource ThemeAccentBrush}"
-                BorderThickness="1"
-                ToolTip="Back"
-                Click="CloseButton_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="border"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
-                        <TextBlock Text="&#x2190;"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="18"
+    <Grid Background="{StaticResource InvShellBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="96"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border x:Name="HeaderBar"
+                    Grid.Row="0"
+                    Background="#CCFFF8EF">
+                <Grid Margin="32,0,32,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="30"
+                               FontWeight="ExtraBold"
+                               Foreground="{StaticResource InvPrimaryBrush}"
+                               Text="Inventory"/>
+
+                    <Border Grid.Column="2"
+                            Padding="14,0"
+                            Height="40"
+                            VerticalAlignment="Center"
+                            Background="{StaticResource InvPanelBrush}"
+                            CornerRadius="20">
+                        <TextBlock VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   Foreground="{TemplateBinding Foreground}"/>
+                                   Foreground="{StaticResource InvTextBrush}"
+                                   Text="Manager"/>
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Opacity" Value="0.82"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Opacity" Value="0.65"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                </Grid>
+            </Border>
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          Background="{StaticResource InvShellBrush}" Margin="-96,0,0,0">
+                <Grid Margin="32,24,32,32">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-        <!-- Flat Top Bar -->
-        <Border Background="{StaticResource ThemeBaseBrush}"
-                BorderThickness="0"
-                BorderBrush="Transparent"
-                Padding="18,14">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="Menu Items Management"
-                           VerticalAlignment="Center"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource ThemeInkBrush}"/>
-
-                <Border
-                        Padding="14,10"
-                        Margin="849,3,93,-3"
-                        Background="{StaticResource ThemeAccentSoftBrush}"
-                        BorderBrush="{StaticResource ThemeBorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="10" Grid.ColumnSpan="2">
-                    <StackPanel>
-                        <TextBlock Text="{Binding VisibleProductCount, StringFormat={}{0} visible items}"
-                                   HorizontalAlignment="Center"
-                                   FontFamily="Consolas"
-                                   FontSize="13"
-                                   FontWeight="Bold"
-                                   Foreground="{StaticResource ThemeInkBrush}"/>
-                        <TextBlock Text="Live inventory view"
-                                   Margin="0,4,0,0"
-                                   HorizontalAlignment="Center"
-                                   FontSize="11"
-                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
-
-        <!-- Scrollable Content -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto"
-                      Background="{StaticResource ThemeBaseBrush}">
-            <Grid Margin="18">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="1"
-                    Margin="0,18,0,0"
-                    Padding="18"
-                    Background="{StaticResource ThemeSurfaceBrush}"
-                    BorderBrush="{StaticResource ThemeBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
-                    <Button Content="+ Add New Item"
-                        Width="132"
-                        Height="40"
-                        HorizontalAlignment="Left"
-                        Command="{Binding AddProductCommand}"
-                        Background="{StaticResource ThemeAccentBrush}"
-                        Foreground="{StaticResource ThemeInkBrush}"
-                        BorderBrush="{StaticResource ThemeAccentBrush}"
-                        FontWeight="SemiBold"/>
-                </Border>
-
-                <ItemsControl Grid.Row="2"
-                          Margin="0,18,0,0"
-                          ItemsSource="{Binding CategorySummaries}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Width="318"
-                                Margin="0,0,12,12"
-                                Padding="18"
-                                Background="{StaticResource ThemeSurfaceBrush}"
-                                BorderBrush="{StaticResource ThemeBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="12"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Border Width="46"
-                                        Height="46"
-                                        Background="{StaticResource ThemeAccentSoftBrush}"
-                                        CornerRadius="10">
-                                        <TextBlock Text="{Binding Icon}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="24"/>
-                                    </Border>
-
-                                    <StackPanel Grid.Column="2"
-                                            VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Count}"
-                                               FontSize="26"
-                                               FontWeight="Bold"
-                                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
-                                        <TextBlock Text="{Binding Title}"
-                                               TextTrimming="CharacterEllipsis"
-                                               FontSize="12"
-                                               TextWrapping="Wrap"
-                                               Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <Border Grid.Row="3"
-                    Margin="0,6,0,0"
-                    Padding="14"
-                    Background="{StaticResource ThemeSurfaceBrush}"
-                    BorderBrush="{StaticResource ThemeBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="18"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="12"/>
-                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   FontWeight="Medium"
+                                   Foreground="{StaticResource InvTextSoftBrush}"
+                                   Text="Manage your artisanal batches and daily supply."/>
+                        <Button Grid.Column="1"
+                                Height="56"
+                                Padding="28,0"
+                                Command="{Binding AddProductCommand}"
+                                Background="{StaticResource InvBreadBrush}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                                           Margin="0,0,8,0"
+                                           VerticalAlignment="Center"
+                                           Foreground="White"
+                                           Text="&#xE710;"/>
+                                <TextBlock VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           Text="Add New Item"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Grid Grid.Row="2"
+                              Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.4*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="1.2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Padding="18,0"
+                                    Height="52"
+                                    Background="{StaticResource InvCardBrush}"
+                                    BorderBrush="{StaticResource InvPanelBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="18">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               Foreground="{StaticResource InvPrimaryBrush}"
+                                               Text="&#xE721;"/>
+                                    <TextBox Grid.Column="1"
+                                             Margin="12,0,0,0"
+                                             VerticalContentAlignment="Center"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             FontSize="14"
+                                             Foreground="{StaticResource InvTextBrush}"
+                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Grid>
+                            </Border>
+
+                            <ComboBox Grid.Column="2"
+                                      Height="52"
+                                      Padding="14,0"
+                                      Background="{StaticResource InvCardBrush}"
+                                      BorderBrush="{StaticResource InvPanelBrush}"
+                                      BorderThickness="1"
+                                      Foreground="{StaticResource InvTextBrush}"
+                                      ItemsSource="{Binding Categories}"
+                                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="8*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Row="0"
-                            Grid.Column="0"
-                            Padding="14,4"
-                            Background="{StaticResource ThemeAccentSoftBrush}"
-                            BorderBrush="{StaticResource ThemeBorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                            <DockPanel>
-                                <TextBlock Text="🔎"
-                                       Margin="0,0,8,0"
-                                       VerticalAlignment="Center"
-                                       FontSize="14"/>
-                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     FontSize="14"
-                                     VerticalContentAlignment="Center"/>
-                            </DockPanel>
-                        </Border>
+                        <StackPanel Grid.Column="0" Margin="0,0,134,0">
 
-                        <ComboBox Grid.Row="0"
-                              Grid.Column="2"
-                              Height="38"
-                              Padding="8,0"
-                              ItemsSource="{Binding Categories}"
-                              SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                              Background="{StaticResource ThemeAccentSoftBrush}"
-                              BorderBrush="{StaticResource ThemeBorderBrush}"
-                              BorderThickness="1"/>
+                            <Border Padding="28"
+                                    Background="{StaticResource InvPanelBrush}"
+                                    CornerRadius="24" Width="263">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="28"
+                                                   Foreground="{StaticResource InvRoseBrush}"
+                                                   Text="&#xE7BA;"/>
+                                        <TextBlock Margin="0,16,0,0"
+                                                   FontSize="34"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource InvTextBrush}"
+                                                   Text="{Binding VisibleProductCount}"/>
+                                        <TextBlock Margin="0,4,0,0"
+                                                   Foreground="{StaticResource InvTextSoftBrush}"
+                                                   Text="Visible inventory items"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="88"
+                                               Opacity="0.07"
+                                               Foreground="{StaticResource InvPrimaryBrush}"
+                                               Text="&#xE14C;"/>
+                                </Grid>
+                            </Border>
 
-                        <ItemsControl Grid.Row="2"
-                                  Grid.ColumnSpan="3"
-                                  ItemsSource="{Binding FilteredProducts}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Width="248"
-                                        Margin="0,0,16,18"
-                                        Background="{StaticResource ThemeSurfaceBrush}"
-                                        BorderBrush="{StaticResource ThemeBorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="14">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="180"/>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
+                            <Border Margin="0,24,0,0"
+                                    Padding="28"
+                                    Background="{StaticResource InvGreenSoftBrush}"
+                                    CornerRadius="24">
+                                <StackPanel>
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                               FontSize="26"
+                                               Foreground="{StaticResource InvGreenBrush}"
+                                               Text="&#xE945;"/>
+                                    <TextBlock Margin="0,16,0,0"
+                                               FontSize="26"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource InvGreenBrush}"
+                                               Text="Fresh Batch"/>
+                                    <TextBlock Margin="0,6,0,0"
+                                               Foreground="{StaticResource InvTextSoftBrush}"
+                                               Text="Sourdough Midnight Bloom scheduled for tomorrow restock."
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
 
-                                            <Border Grid.Row="0"
-                                                CornerRadius="14,14,0,0"
-                                                ClipToBounds="True"
-                                                Background="{StaticResource ThemeAccentSoftBrush}">
+                        <Border
+                                Background="{StaticResource InvCardBrush}"
+                                CornerRadius="24" Grid.ColumnSpan="3" Margin="362,0,0,0">
+                            <Grid Margin="-38,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Background="{StaticResource InvPanelSoftBrush}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2.8*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                        <ColumnDefinition Width="0.9*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="24,18" FontSize="14" FontWeight="Bold" Foreground="{StaticResource InvOutlineBrush}" Text="Product Name"/>
+                                    <TextBlock Grid.Column="1" Margin="20,18" FontSize="14" FontWeight="Bold" Foreground="{StaticResource InvOutlineBrush}" Text="Category"/>
+                                    <TextBlock Grid.Column="2" Margin="20,18" FontSize="14" FontWeight="Bold" Foreground="{StaticResource InvOutlineBrush}" Text="Unit Price"/>
+                                    <TextBlock Grid.Column="3" Margin="20,18" FontSize="14" FontWeight="Bold" Foreground="{StaticResource InvOutlineBrush}" Text="Action"/>
+                                </Grid>
+
+                                <ListBox Grid.Row="1"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         ItemsSource="{Binding FilteredProducts}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="-24,0,0,68" Grid.RowSpan="2">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#33D4C3BE"
+                                                    BorderThickness="0,0,0,1"
+                                                    Background="Transparent">
                                                 <Grid>
-                                                    <Image Source="{Binding ImageUrl}"
-                                                       Stretch="UniformToFill"/>
-                                                    <Border Background="#0F0F0F10"/>
-                                                    <Border HorizontalAlignment="Right"
-                                                        VerticalAlignment="Top"
-                                                        Margin="0,14,14,0"
-                                                        Padding="10,5"
-                                                        Background="{StaticResource ThemeAccentBrush}"
-                                                        CornerRadius="12">
-                                                        <TextBlock Text="{Binding Category}"
-                                                               FontSize="11"
-                                                               FontWeight="Bold"
-                                                               Foreground="{StaticResource ThemeInkBrush}"
-                                                               TextTrimming="CharacterEllipsis"/>
-                                                    </Border>
-                                                </Grid>
-                                            </Border>
-
-                                            <Grid Grid.Row="1"
-                                              Margin="16,14,16,16">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="18"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-
-                                                <TextBlock Text="{Binding ProductName}"
-                                                       FontSize="20"
-                                                       FontWeight="SemiBold"
-                                                       Foreground="{StaticResource ThemeOnSurfaceBrush}"
-                                                       TextWrapping="Wrap"/>
-
-                                                <TextBlock Grid.Row="1"
-                                                       Margin="0,8,0,0"
-                                                       MinHeight="36"
-                                                       Text="{Binding Description}"
-                                                       FontSize="13"
-                                                       Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"
-                                                       TextWrapping="Wrap"
-                                                       TextTrimming="WordEllipsis"/>
-
-                                                <Grid Grid.Row="3">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="8"/>
-                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="2.8*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="1.3*"/>
+                                                        <ColumnDefinition Width="0.9*"/>
                                                     </Grid.ColumnDefinitions>
 
-                                                    <StackPanel VerticalAlignment="Bottom">
-                                                        <TextBlock Text="{Binding Price, StringFormat=₱{0:F0}}"
-                                                               FontSize="24"
-                                                               FontWeight="Bold"
-                                                               Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
+                                                    <StackPanel Margin="24,18" Orientation="Horizontal">
+                                                        <Border Width="56" Height="56" CornerRadius="12" ClipToBounds="True" Background="{StaticResource InvPanelBrush}">
+                                                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                                        </Border>
+                                                        <StackPanel Margin="16,0,0,0">
+                                                            <TextBlock FontSize="16" FontWeight="Bold" Foreground="{StaticResource InvTextBrush}" Text="{Binding ProductName}"/>
+                                                            <TextBlock Margin="0,4,0,0" FontSize="14" Foreground="{StaticResource InvTextSoftBrush}" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
+                                                        </StackPanel>
                                                     </StackPanel>
 
-                                                    <Button Grid.Column="1"
-                                                        Width="28"
-                                                        Height="28"
-                                                        Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                        CommandParameter="{Binding}"
-                                                        Background="{StaticResource ThemeAccentSoftBrush}"
-                                                        Foreground="{StaticResource ThemeInkBrush}"
-                                                        BorderBrush="{StaticResource ThemeAccentBrush}"
-                                                        Content="✎"/>
+                                                    <Border Grid.Column="1" Margin="20,28" Padding="12,6" HorizontalAlignment="Left" Background="{StaticResource InvPanelBrush}" CornerRadius="14">
+                                                        <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource InvPrimaryBrush}" Text="{Binding Category}"/>
+                                                    </Border>
 
-                                                    <Button Grid.Column="3"
-                                                        Width="28"
-                                                        Height="28"
-                                                        Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                        CommandParameter="{Binding}"
-                                                        Background="{StaticResource ThemeBaseBrush}"
-                                                        Foreground="{StaticResource ThemeInkBrush}"
-                                                        BorderBrush="{StaticResource ThemeBaseBrush}"
-                                                        Content="🗑"/>
+                                                    <TextBlock Grid.Column="2" Margin="20,28" VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource InvTextBrush}" Text="{Binding Price, StringFormat={}{0:C}}"/>
+
+                                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="20,20">
+                                                        <Button Width="36" Height="36" Margin="0,0,8,0" Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource InvPrimaryBrush}" Text="&#xE70F;"/>
+                                                        </Button>
+                                                        <Button Width="36" Height="36" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource InvRoseBrush}" Text="&#xE74D;"/>
+                                                        </Button>
+                                                    </StackPanel>
                                                 </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Border Grid.Row="2"
+                                        Padding="24,18"
+                                        Background="{StaticResource InvPanelSoftBrush}" Margin="-26,0,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="{StaticResource InvOutlineBrush}"
+                                               Text="{Binding VisibleProductCount, StringFormat=Showing {0} products}"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                                <TextBlock FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource InvPrimaryBrush}" Text="&#xE76B;"/>
+                                            </Button>
+                                            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                                <TextBlock FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource InvPrimaryBrush}" Text="&#xE76C;"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
                     </Grid>
-                </Border>
-            </Grid>
-        </ScrollViewer>
+
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Padding="20" Background="{StaticResource InvGreenSoftBrush}" CornerRadius="24">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="48" Height="48" Background="{StaticResource InvGreenBrush}" CornerRadius="24">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="White" Text="&#xE8B9;"/>
+                                </Border>
+                                <StackPanel Margin="16,0,0,0">
+                                    <TextBlock FontSize="11" FontWeight="Bold" Foreground="{StaticResource InvGreenBrush}" Text="TOP PERFORMER"/>
+                                    <TextBlock Margin="0,4,0,0" FontWeight="Bold" Foreground="{StaticResource InvTextBrush}" Text="Pain au Chocolat"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Padding="20" Background="{StaticResource InvRoseSoftBrush}" CornerRadius="24">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="48" Height="48" Background="{StaticResource InvRoseBrush}" CornerRadius="24">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="White" Text="&#xE7BF;"/>
+                                </Border>
+                                <StackPanel Margin="16,0,0,0">
+                                    <TextBlock FontSize="11" FontWeight="Bold" Foreground="{StaticResource InvRoseBrush}" Text="STOCK VALUATION"/>
+                                    <TextBlock Margin="0,4,0,0" FontWeight="Bold" Foreground="{StaticResource InvTextBrush}" Text="$4,120.50"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="4" Padding="20" Background="{StaticResource InvPanelBrush}" CornerRadius="24">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="48" Height="48" Background="{StaticResource InvPrimaryBrush}" CornerRadius="24">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="White" Text="&#xE806;"/>
+                                </Border>
+                                <StackPanel Margin="16,0,0,0">
+                                    <TextBlock FontSize="11" FontWeight="Bold" Foreground="{StaticResource InvPrimaryBrush}" Text="NEXT SUPPLY"/>
+                                    <TextBlock Margin="0,4,0,0" FontWeight="Bold" Foreground="{StaticResource InvTextBrush}" Text="Tomorrow, 6 AM"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </Border>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

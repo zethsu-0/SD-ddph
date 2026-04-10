@@ -4,34 +4,55 @@
              xmlns:local="clr-namespace:ddph"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FDFBD4"/>
-        <SolidColorBrush x:Key="ThemeAccentBrush" Color="#FDFBD4"/>
-        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FDFBD4"/>
-        <SolidColorBrush x:Key="ThemeAccentMutedBrush" Color="#66FDFBD4"/>
-        <SolidColorBrush x:Key="ThemeInkBrush" Color="#2C3E50"/>
-        <SolidColorBrush x:Key="ThemeInkSoftBrush" Color="#C02C3E50"/>
-        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#802C3E50"/>
-        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#2C3E50"/>
-        <SolidColorBrush x:Key="ThemeSurfaceSoftBrush" Color="#E62C3E50"/>
-        <SolidColorBrush x:Key="ThemeOnSurfaceBrush" Color="#FDFBD4"/>
-        <SolidColorBrush x:Key="ThemeOnSurfaceSoftBrush" Color="#CCFDFBD4"/>
+        <FontFamily x:Key="ThemeHeadlineFont">Georgia</FontFamily>
+        <FontFamily x:Key="ThemeBodyFont">Segoe UI</FontFamily>
+
+        <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FFF8EF"/>
+        <SolidColorBrush x:Key="ThemeAccentBrush" Color="#765449"/>
+        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FBF3E4"/>
+        <SolidColorBrush x:Key="ThemeAccentMutedBrush" Color="#33D4C3BE"/>
+        <SolidColorBrush x:Key="ThemeInkBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="ThemeInkSoftBrush" Color="#80504441"/>
+        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#26D4C3BE"/>
+        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#F5EDDE"/>
+        <SolidColorBrush x:Key="ThemeSurfaceSoftBrush" Color="#EFE7D9"/>
+        <SolidColorBrush x:Key="ThemeCardBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeRoseBrush" Color="#805062"/>
+        <SolidColorBrush x:Key="ThemeRoseSoftBrush" Color="#FDF3F5"/>
+        <SolidColorBrush x:Key="ThemeGreenBrush" Color="#266931"/>
+        <SolidColorBrush x:Key="ThemeGreenSoftBrush" Color="#F2F6F1"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceSoftBrush" Color="#80504441"/>
+        <LinearGradientBrush x:Key="ThemeToastBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#765449" Offset="0"/>
+            <GradientStop Color="#916C60" Offset="1"/>
+        </LinearGradientBrush>
 
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="{StaticResource ThemeBaseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontFamily" Value="{StaticResource ThemeBodyFont}"/>
         </Style>
 
         <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="{StaticResource ThemeBaseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontFamily" Value="{StaticResource ThemeBodyFont}"/>
         </Style>
 
         <Style TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="{StaticResource ThemeBodyFont}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Application.Resources>
 </Application>

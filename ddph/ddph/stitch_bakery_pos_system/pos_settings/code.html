@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,700&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      font-family: 'Work Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-headline {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .toast-gradient {
+      background: linear-gradient(135deg, #765449 0%, #916c60 100%);
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-low": "#fbf3e4",
+                  "secondary-fixed-dim": "#f2b6cb",
+                  "on-error": "#ffffff",
+                  "primary-container": "#916c60",
+                  "on-tertiary-fixed-variant": "#07521d",
+                  "outline": "#827470",
+                  "primary": "#765449",
+                  "tertiary-fixed": "#abf4ac",
+                  "secondary-container": "#fec1d6",
+                  "primary-fixed": "#ffdbcf",
+                  "tertiary": "#266931",
+                  "on-tertiary-fixed": "#002107",
+                  "on-tertiary": "#ffffff",
+                  "surface-container-highest": "#e9e2d3",
+                  "primary-fixed-dim": "#e9bdae",
+                  "inverse-surface": "#343026",
+                  "on-primary": "#ffffff",
+                  "tertiary-fixed-dim": "#90d792",
+                  "surface-container-lowest": "#ffffff",
+                  "on-primary-fixed": "#2d150d",
+                  "surface-variant": "#e9e2d3",
+                  "surface-tint": "#79564b",
+                  "outline-variant": "#d4c3be",
+                  "surface": "#fff8ef",
+                  "tertiary-container": "#408348",
+                  "on-surface": "#1e1b13",
+                  "on-secondary-container": "#7b4c5e",
+                  "surface-dim": "#e1d9cb",
+                  "surface-container-high": "#efe7d9",
+                  "on-primary-fixed-variant": "#5e3f35",
+                  "error-container": "#ffdad6",
+                  "on-tertiary-container": "#fafff5",
+                  "on-error-container": "#93000a",
+                  "secondary": "#805062",
+                  "inverse-primary": "#e9bdae",
+                  "error": "#ba1a1a",
+                  "inverse-on-surface": "#f8f0e1",
+                  "background": "#fff8ef",
+                  "on-secondary": "#ffffff",
+                  "surface-container": "#f5edde",
+                  "on-secondary-fixed-variant": "#65394b",
+                  "secondary-fixed": "#ffd9e4",
+                  "on-primary-container": "#fffcff",
+                  "on-surface-variant": "#504441",
+                  "on-background": "#1e1b13",
+                  "on-secondary-fixed": "#330f1f",
+                  "surface-bright": "#fff8ef"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "fontFamily": {
+                  "headline": [
+                          "Plus Jakarta Sans"
+                  ],
+                  "body": [
+                          "Work Sans"
+                  ],
+                  "label": [
+                          "Work Sans"
+                  ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar: Authority from JSON -->
+<aside class="flex flex-col items-center py-8 gap-6 h-screen sticky left-0 h-full w-24 border-none bg-[#f5edde] dark:bg-stone-900 z-50">
+<div class="mb-6">
+<div class="text-xl font-bold text-[#765449] dark:text-[#d7ccc8] italic">Hearth</div>
+</div>
+<nav class="flex flex-col gap-4 w-full px-2">
+<a class="flex flex-col items-center py-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors scale-95 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-[10px] font-headline font-semibold tracking-tight">Register</span>
+</a>
+<a class="flex flex-col items-center py-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors scale-95 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-[10px] font-headline font-semibold tracking-tight">Orders</span>
+</a>
+<a class="flex flex-col items-center py-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors scale-95 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="text-[10px] font-headline font-semibold tracking-tight">Inventory</span>
+</a>
+<a class="flex flex-col items-center py-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors scale-95 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="text-[10px] font-headline font-semibold tracking-tight">Analytics</span>
+</a>
+<!-- ACTIVE STATE: Settings -->
+<a class="flex flex-col items-center py-3 gap-1 text-[#765449] dark:text-[#d7ccc8] bg-[#ffffff] dark:bg-stone-800 rounded-xl shadow-sm transition-colors scale-95 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-headline font-semibold tracking-tight">Settings</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar: Authority from JSON -->
+<header class="flex justify-between items-center px-8 w-full sticky top-0 z-40 bg-[#fff8ef]/80 dark:bg-stone-950/80 backdrop-blur-xl w-full h-20 no-line-rule tonal-shift">
+<div class="flex items-center gap-6 flex-1">
+<h1 class="font-headline text-headline-md font-bold text-[#765449] dark:text-[#d7ccc8]">Settings</h1>
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container border-none rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" placeholder="Search settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-3 rounded-full hover:bg-surface-container transition-colors text-[#765449]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-3 rounded-full hover:bg-surface-container transition-colors text-[#765449]">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</header>
+<!-- Settings Content -->
+<div class="p-8 max-w-6xl w-full mx-auto space-y-12">
+<!-- Store Info Section -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-4">
+<h2 class="font-headline text-2xl font-bold text-on-surface mb-2">Store Info</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed">Manage your bakery's public profile, address, and contact details that appear on receipts and digital storefronts.</p>
+</div>
+<div class="md:col-span-8 bg-surface-container-low rounded-[2rem] p-8 space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant px-1">Bakery Name</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/20" type="text" value="The Flourished Hearth"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant px-1">Store ID</label>
+<input class="w-full bg-surface-dim border-none rounded-xl py-4 px-4 text-on-surface-variant italic" disabled="" type="text" value="TFH-MAN-01"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant px-1">Physical Address</label>
+<textarea class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-4 h-32 focus:ring-2 focus:ring-primary/20">124 Artisanal Way, Flour District, 
+San Francisco, CA 94110</textarea>
+</div>
+<div class="flex justify-end">
+<button class="toast-gradient text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:scale-95">Save Changes</button>
+</div>
+</div>
+</section>
+<!-- Printer Settings & Staff Management (Asymmetric Bento Grid) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Printer Settings -->
+<section class="bg-surface-container rounded-[2rem] p-8 flex flex-col">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Printer Settings</h2>
+</div>
+<div class="space-y-4 flex-1">
+<div class="bg-surface-container-lowest p-5 rounded-2xl flex items-center justify-between border-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle">check_circle</span>
+<div>
+<p class="font-bold text-on-surface">Main Thermal Printer</p>
+<p class="text-xs text-on-surface-variant">IP: 192.168.1.45 • Epson TM-T88VI</p>
+</div>
+</div>
+<button class="text-primary font-bold text-sm">Configure</button>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl flex items-center justify-between opacity-60">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="error_outline">error_outline</span>
+<div>
+<p class="font-bold text-on-surface">Kitchen Labeler</p>
+<p class="text-xs text-on-surface-variant">Offline • Zebra ZD410</p>
+</div>
+</div>
+<button class="text-primary font-bold text-sm">Retry</button>
+</div>
+</div>
+<button class="mt-8 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-bold">Add New Printer</span>
+</button>
+</section>
+<!-- Staff Management -->
+<section class="bg-surface-container-high rounded-[2rem] p-8">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Staff Management</h2>
+</div>
+<button class="text-sm font-bold text-primary underline underline-offset-4">Manage Roles</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl shadow-sm">
+<img alt="Avatar" class="w-12 h-12 rounded-xl object-cover" data-alt="portrait of a cheerful baker with a dusting of flour on his face and a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARArl-dW3oW4tA1bfTin7YcDEwwwBUUFcrlBxaO_gtmXY6ILnQ1mzkFkS6LIN_ElNVLVIWn53gkOlgDWJxytrRjHPFE8yFDoDQC8sB05l03AiXoVAk3gtSQ6OwKu4YRk5puXj3DVClpxHc68PtmXPeFC8W-2PfVA0GW8dMHI6hIvK2jXyDAz9zLtXQzE575LveTSBI5Ae2ENlY5G1eU_7wxVFXOTirjq70oO8RE2hda44H5k85OkFLNpOoKjSqOMTZYZRWPAroJbs"/>
+<div class="flex-1">
+<p class="font-bold text-sm">Elias Vance</p>
+<p class="text-xs text-on-surface-variant">Admin / Head Baker</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl shadow-sm">
+<img alt="Avatar" class="w-12 h-12 rounded-xl object-cover" data-alt="profile photo of a young woman with tied-back hair wearing a modern denim apron in a bakery setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzbyX3zcd9SOqPXRreSA3R9Nd3rrCvdgLnJmJsJjgPnFYfciJnyDlQ-O-JrErnETktjS4z5vWCmmfWXMTHtZqp-iBr4pmRmWV7YkiSAPmetRk4gOPJ3ajAgedmoN88-JhEZls8kdR9kIVe0WLvqgsIFk9WmHotO1YLpDH4tDyy_bzEqgnX_eHzU-w_ZZmaB-MQ9ZdmFBER0GQ7ugwuqGkrlghlP8th5CukPptBvzB0-aQsFqIk-n3z8kdaTuLy82IhY22MhH9WZVI"/>
+<div class="flex-1">
+<p class="font-bold text-sm">Maya Sterling</p>
+<p class="text-xs text-on-surface-variant">Cashier / Staff</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl shadow-sm">
+<img alt="Avatar" class="w-12 h-12 rounded-xl object-cover" data-alt="professional headshot of a friendly man with short hair looking directly at camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyzVqHfr4xQ7PISp5dx_fVgiRUoaL18NJ-fngittcFoCbj2-hsckF-6XOBBu7k1pESNb1YmMDUYljFmS_JNePDbmqF5OmsIVzNmUhs_fvjJIoa9WI37kBB0m53vvthfZ--CIe_p1rQ6VxZnIikFjfqfZYOlaRv4pmevI75pYtHtn5O1_6cE4CaH6JWWh11I2A4HkHB2grrlho2uPdsGqYjmtxPnOvh6xadIWX9RrX8JBns1Cc56KdVJuz_uFCXpTafBrnMTE1vMKs"/>
+<div class="flex-1">
+<p class="font-bold text-sm">Julian Rossi</p>
+<p class="text-xs text-on-surface-variant">Shift Lead</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Tax Rates Section -->
+<section class="bg-surface rounded-[2rem] p-1 border-none shadow-none">
+<div class="p-8 bg-surface-container-low rounded-[1.8rem]">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div>
+<h2 class="font-headline text-2xl font-bold text-on-surface">Tax Rates</h2>
+<p class="text-on-surface-variant text-sm">Define regional tax rules and VAT exemptions for your artisanal products.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold self-start">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+              New Tax Rule
+            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="text-on-surface-variant text-xs font-bold uppercase tracking-widest">
+<th class="px-6 pb-2">Tax Name</th>
+<th class="px-6 pb-2">Rate</th>
+<th class="px-6 pb-2">Applied to</th>
+<th class="px-6 pb-2 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="space-y-2">
+<tr class="bg-surface-container-lowest rounded-2xl">
+<td class="px-6 py-5 rounded-l-2xl font-bold">Standard Sales Tax</td>
+<td class="px-6 py-5">8.5%</td>
+<td class="px-6 py-5">
+<span class="bg-surface-variant text-on-surface-variant text-[10px] px-2 py-1 rounded-full font-bold">ALL PRODUCTS</span>
+</td>
+<td class="px-6 py-5 rounded-r-2xl text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors" data-icon="edit">edit</button>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest rounded-2xl">
+<td class="px-6 py-5 rounded-l-2xl font-bold">Prepared Food Tax</td>
+<td class="px-6 py-5">1.5%</td>
+<td class="px-6 py-5">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-1 rounded-full font-bold">CAFE ITEMS</span>
+</td>
+<td class="px-6 py-5 rounded-r-2xl text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors" data-icon="edit">edit</button>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest rounded-2xl">
+<td class="px-6 py-5 rounded-l-2xl font-bold">Eco-Surcharge</td>
+<td class="px-6 py-5">$0.25</td>
+<td class="px-6 py-5">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] px-2 py-1 rounded-full font-bold">PLASTIC PKG</span>
+</td>
+<td class="px-6 py-5 rounded-r-2xl text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors" data-icon="edit">edit</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="pt-8 border-t border-outline-variant/30">
+<div class="flex flex-col md:flex-row items-center justify-between gap-6 bg-error-container/20 p-8 rounded-[2rem]">
+<div>
+<h3 class="font-headline text-xl font-bold text-error">System Resets</h3>
+<p class="text-on-surface-variant text-sm">Permanently clear cache, local order history, or factory reset the terminal.</p>
+</div>
+<button class="border-2 border-error text-error font-bold px-8 py-3 rounded-xl hover:bg-error hover:text-white transition-all">Advanced Tools</button>
+</div>
+</section>
+</div>
+<!-- Footer spacer for mobile nav -->
+<div class="h-24 md:hidden"></div>
+</main>
+<!-- Mobile BottomNavBar (Responsive Pivot Rule) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-surface-container-lowest flex items-center justify-around z-50 border-none shadow-[0_-8px_30px_rgba(0,0,0,0.04)] px-6">
+<a class="flex flex-col items-center gap-1 text-[#8d6e63]" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-[10px]">Register</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#8d6e63]" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-[10px]">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#8d6e63]" href="#">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="text-[10px]">Bakery</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#765449]" href="#">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-[10px] font-bold">Settings</span>
+</a>
+</nav>
+</body></html>

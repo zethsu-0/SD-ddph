@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using ddph.Models;
 
 namespace ddph.Data
@@ -9,7 +10,7 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public List<OnlineOrder> GetOrders()
+        public List<OnlineOrder> GetOnlineOrders()
         {
             var orders = _firebaseClient
                 .GetAsync<Dictionary<string, FirebaseOrderRecord>>("orders")
@@ -24,6 +25,34 @@ namespace ddph.Data
             return orders
                 .Where(entry => entry.Value != null)
                 .Select(entry => MapOrder(entry.Key, entry.Value!))
+                .OrderByDescending(order => order.Date)
+                .ToList();
+        }
+
+        public List<OnlineOrder> GetRegisterOrders()
+        {
+            var orders = _firebaseClient
+                .GetAsync<Dictionary<string, JsonElement>>("walk-in-orders")
+                .GetAwaiter()
+                .GetResult();
+
+            if (orders == null)
+            {
+                return new List<OnlineOrder>();
+            }
+
+            return orders
+                .Where(entry => !entry.Key.StartsWith("_") && entry.Value.ValueKind == JsonValueKind.Object)
+                .Select(entry => new
+                {
+                    entry.Key,
+                    Record = entry.Value.Deserialize<FirebaseWalkInOrderRecord>(new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    })
+                })
+                .Where(entry => entry.Record != null)
+                .Select(entry => MapWalkInOrder(entry.Key, entry.Record!))
                 .OrderByDescending(order => order.Date)
                 .ToList();
         }
@@ -89,6 +118,7 @@ namespace ddph.Data
                 CustomerName = record.CustomerName ?? string.Empty,
                 CustomerPhone = record.CustomerPhone ?? string.Empty,
                 CustomerEmail = record.CustomerEmail ?? string.Empty,
+                OrderSource = "Online",
                 Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "unpaid",
                 PickupDate = record.PickupDate ?? string.Empty,
@@ -121,6 +151,68 @@ namespace ddph.Data
             return order;
         }
 
+        private static OnlineOrder MapWalkInOrder(string id, FirebaseWalkInOrderRecord record)
+        {
+            var order = new OnlineOrder
+            {
+                Id = id,
+                CustomerName = string.IsNullOrWhiteSpace(record.CustomerName) ? "Walk-in Customer" : record.CustomerName!,
+                CustomerPhone = string.Empty,
+                CustomerEmail = string.IsNullOrWhiteSpace(record.CashierName) ? string.Empty : $"Cashier: {record.CashierName}",
+                OrderSource = "Register",
+                Status = record.Status ?? "completed",
+                PaymentStatus = record.PaymentStatus ?? "paid",
+                PickupDate = string.Empty,
+                PickupTime = string.Empty,
+                Notes = record.Notes ?? string.Empty,
+                Subtotal = record.Subtotal,
+                Total = record.Total,
+                Payment = record.Payment,
+                Change = record.Change,
+                Date = FormatDate(record.CreatedAt)
+            };
+
+            if (record.Items != null)
+            {
+                foreach (var item in record.Items)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    order.Items.Add(new OnlineOrderItem
+                    {
+                        Name = item.Name ?? string.Empty,
+                        Category = item.Category ?? string.Empty,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    });
+                }
+            }
+
+            return order;
+        }
+
+        private static string FormatDate(string? createdAt)
+        {
+            if (string.IsNullOrWhiteSpace(createdAt))
+            {
+                return string.Empty;
+            }
+
+            if (System.DateTime.TryParse(
+                createdAt,
+                CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.RoundtripKind,
+                out var parsed))
+            {
+                return parsed.ToLocalTime().ToString("MMM dd, yyyy, hh:mm tt", CultureInfo.InvariantCulture);
+            }
+
+            return createdAt;
+        }
+
         private sealed class FirebaseOrderRecord
         {
             public string? CustomerEmail { get; set; }
@@ -143,6 +235,21 @@ namespace ddph.Data
             public string? Name { get; set; }
             public decimal Price { get; set; }
             public int Quantity { get; set; }
+        }
+
+        private sealed class FirebaseWalkInOrderRecord
+        {
+            public string? CashierName { get; set; }
+            public decimal Change { get; set; }
+            public string? CreatedAt { get; set; }
+            public string? CustomerName { get; set; }
+            public List<FirebaseOrderItemRecord?>? Items { get; set; }
+            public string? Notes { get; set; }
+            public decimal Payment { get; set; }
+            public string? PaymentStatus { get; set; }
+            public string? Status { get; set; }
+            public decimal Subtotal { get; set; }
+            public decimal Total { get; set; }
         }
 
         public sealed class CustomOrderSubmission

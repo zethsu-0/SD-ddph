@@ -12,11 +12,14 @@ namespace ddph.Models
         private string _customerEmail = string.Empty;
         private string _status = string.Empty;
         private string _paymentStatus = string.Empty;
+        private string _orderSource = string.Empty;
         private string _pickupDate = string.Empty;
         private string _pickupTime = string.Empty;
         private string _notes = string.Empty;
         private decimal _subtotal;
         private decimal _total;
+        private decimal _payment;
+        private decimal _change;
         private string _date = string.Empty;
 
         public OnlineOrder()
@@ -85,6 +88,17 @@ namespace ddph.Models
             }
         }
 
+        public string OrderSource
+        {
+            get => _orderSource;
+            set
+            {
+                _orderSource = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SourceLabel));
+            }
+        }
+
         public string PickupDate
         {
             get => _pickupDate;
@@ -135,6 +149,26 @@ namespace ddph.Models
             }
         }
 
+        public decimal Payment
+        {
+            get => _payment;
+            set
+            {
+                _payment = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public decimal Change
+        {
+            get => _change;
+            set
+            {
+                _change = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string Date
         {
             get => _date;
@@ -148,6 +182,7 @@ namespace ddph.Models
         public ObservableCollection<OnlineOrderItem> Items { get; }
 
         public string DisplayName => string.IsNullOrWhiteSpace(CustomerName) ? "Walk-in Customer" : CustomerName;
+        public string SourceLabel => string.IsNullOrWhiteSpace(OrderSource) ? "Online" : OrderSource;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

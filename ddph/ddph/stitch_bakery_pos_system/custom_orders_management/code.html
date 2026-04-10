@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Flourished Hearth - Custom Orders</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1e1b13",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#266931",
+                        "surface-dim": "#e1d9cb",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fff8ef",
+                        "outline": "#827470",
+                        "surface-container-high": "#efe7d9",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e9e2d3",
+                        "on-primary-fixed-variant": "#5e3f35",
+                        "on-primary-container": "#fffcff",
+                        "secondary": "#805062",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#f2b6cb",
+                        "surface-container-low": "#fbf3e4",
+                        "inverse-primary": "#e9bdae",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "tertiary-fixed-dim": "#90d792",
+                        "inverse-surface": "#343026",
+                        "on-primary-fixed": "#2d150d",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#fec1d6",
+                        "primary": "#765449",
+                        "surface": "#fff8ef",
+                        "primary-fixed-dim": "#e9bdae",
+                        "on-secondary-fixed": "#330f1f",
+                        "on-secondary-container": "#7b4c5e",
+                        "on-background": "#1e1b13",
+                        "tertiary-fixed": "#abf4ac",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#408348",
+                        "primary-container": "#916c60",
+                        "surface-variant": "#e9e2d3",
+                        "primary-fixed": "#ffdbcf",
+                        "background": "#fff8ef",
+                        "surface-container": "#f5edde",
+                        "on-surface-variant": "#504441",
+                        "outline-variant": "#d4c3be",
+                        "on-tertiary-fixed": "#002107",
+                        "on-tertiary-container": "#fafff5",
+                        "secondary-fixed": "#ffd9e4",
+                        "inverse-on-surface": "#f8f0e1",
+                        "surface-tint": "#79564b",
+                        "on-secondary-fixed-variant": "#65394b",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Work Sans"],
+                        "label": ["Work Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bread-gradient {
+            background: linear-gradient(135deg, #765449 0%, #916c60 100%);
+        }
+        body { font-family: 'Work Sans', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="flex flex-col items-center py-8 gap-6 h-screen sticky left-0 h-full w-24 border-none bg-[#f5edde] dark:bg-stone-900 z-50">
+<div class="mb-4">
+<span class="text-xl font-bold text-[#765449] dark:text-[#d7ccc8] italic">FH</span>
+</div>
+<nav class="flex flex-col gap-4 w-full px-2">
+<!-- Register -->
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors group scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-[10px] font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Register</span>
+</button>
+<!-- Orders (Active) -->
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#765449] dark:text-[#d7ccc8] bg-[#ffffff] dark:bg-stone-800 rounded-xl shadow-sm group scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-[10px] font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Orders</span>
+</button>
+<!-- Inventory -->
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors group scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="text-[10px] font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Inventory</span>
+</button>
+<!-- Analytics -->
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors group scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="text-[10px] font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Analytics</span>
+</button>
+<!-- Settings -->
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors group scale-95 duration-200 ease-in-out mt-auto">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Settings</span>
+</button>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center px-8 w-full h-20 sticky top-0 z-40 bg-[#fff8ef]/80 dark:bg-stone-950/80 backdrop-blur-xl no-line-rule tonal-shift">
+<div class="flex items-center gap-6 flex-1">
+<h1 class="text-[#765449] dark:text-[#d7ccc8] font-['Plus_Jakarta_Sans'] text-2xl font-extrabold tracking-tight">Custom Orders</h1>
+<div class="relative w-full max-w-md ml-4">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-2.5 rounded-full border-none bg-surface-container-low focus:ring-2 focus:ring-primary-container text-body text-on-surface" placeholder="Search orders by name or ID..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-8">
+<button class="p-2 text-[#8d6e63] hover:text-[#916c60] transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="flex items-center gap-3 bg-surface-container px-3 py-1.5 rounded-full">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+</div>
+<span class="text-sm font-semibold text-primary font-body">Chef Elena</span>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex flex-1 gap-8 p-8 overflow-hidden">
+<!-- Left Panel: Active Orders List -->
+<section class="w-[45%] flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-on-surface">Active Custom Orders</h2>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-xs font-semibold text-primary hover:bg-surface-container-highest transition-colors">Today</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-xs font-semibold text-on-surface-variant hover:bg-surface-container-high transition-colors">Upcoming</button>
+</div>
+</div>
+<!-- Order Cards Container -->
+<div class="space-y-4">
+<!-- Order Card 1 -->
+<div class="p-6 rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-all cursor-pointer group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-mono text-outline-variant uppercase tracking-widest">ORD-2849</span>
+<h3 class="text-lg font-bold text-on-surface mt-1">Julianna Thorne</h3>
+</div>
+<span class="px-3 py-1 rounded-full bg-tertiary-container text-[10px] font-bold text-on-tertiary-container uppercase tracking-wider">Ready for Pickup</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-medium">Oct 24, 2023 • 10:30 AM</span>
+</div>
+<div class="p-3 bg-surface-container rounded-lg flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="close-up of a three-tier vanilla bean cake with elegant white frosting and edible gold leaf accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9pq2L9HDBPxHeB1TdODjBSgX8r9whWHgvb_AuurMWTrQqxz8L15XJQ_zxweZ2bQauqyiffuVBLqVopzWwnC2Qt_wdK4XNxr1NS79P0hVmM1vJHeCialMG3wB6b3c0TR9Vcx7OPhume--SwBlkU3hRCGECwxXqIiKEH4GoXBVQH1o720hdpDaSKUah78oiNn-y12KplXMWE3BVoBqDD5Oa6mUBlaa2ZBLlgIPnQrMugHqUYVmv5jxZlFD3X-i6X_upZ_ESndwuKBQ"/>
+<div>
+<p class="text-sm font-bold text-on-surface">3-Tier Vanilla Bean Cake</p>
+<p class="text-xs text-on-surface-variant italic">"Happy 50th Birthday Julianna!"</p>
+</div>
+</div>
+</div>
+<!-- Order Card 2 -->
+<div class="p-6 rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-all cursor-pointer group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-container"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-mono text-outline-variant uppercase tracking-widest">ORD-2852</span>
+<h3 class="text-lg font-bold text-on-surface mt-1">Marcus Miller</h3>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-[10px] font-bold text-on-secondary-container uppercase tracking-wider">In Progress</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-medium">Oct 25, 2023 • 02:00 PM</span>
+</div>
+<div class="p-3 bg-surface-container rounded-lg flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="batch of artisanal dark chocolate cupcakes with swirl frosting and sea salt sprinkles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVK58mL1yWaf6xL2L-2Vj4KQHHMBzz3_aVrf1UN8ffVDKCAfUazr_5F55pYSIqAohHbbU15S-__-rPDCxoUzY1RqKH532d35m8QEO3f0pV9FWnfjFYM84EBCzAhdXTX__uBFvJ_A-y7vBrenIPMr3z2EgutmEFbD9XZZ7mExw6Ka1goeAcdtLmg7jqUk-x_yeTjWSKLr1HkQ4L0cSPffDVkLd6aUyvO-f7_pELgXlg6tUNcKuS9fqir7vOTq4PYycy1Av1bgeA5vc"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Artisan Cupcake Dozen</p>
+<p class="text-xs text-on-surface-variant italic">Mixed flavors: Chocolate, Lavender, Lemon</p>
+</div>
+</div>
+</div>
+<!-- Order Card 3 -->
+<div class="p-6 rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-all cursor-pointer group relative overflow-hidden opacity-80">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-outline-variant"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-mono text-outline-variant uppercase tracking-widest">ORD-2855</span>
+<h3 class="text-lg font-bold text-on-surface mt-1">Sophia Chen</h3>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-variant text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Upcoming</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-medium">Oct 27, 2023 • 09:00 AM</span>
+</div>
+<div class="p-3 bg-surface-container rounded-lg flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="rustic wooden crate filled with assorted freshly baked sourdough loaves and herb foccacia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGIx7zebzvKOlZ1TxcKbKsIWo_qCbWqy_M9QXsw9k_nf6qtDqLZlaDIQTKZ1azVy90lUTECHz_FHZfQ1qWptKRzI9aw_iZ1k3NYVbMAYgu_kB-GRqP14judipvuaz4jicn8o9jbJJZfgz3YTPewcautb1vlwxL1pdCpK46UuoBnb9OQYeoBsTHoVK67on5iL_Ds9DGezUegwOy2wQFvW979kivfGjD7NUPCefxWl1Ab9Qzujpqf3ElodYcMrWYx082elm-Z3s0Z5M"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Bakery Event Platter</p>
+<p class="text-xs text-on-surface-variant italic">Assorted sourdough, 5 loaves total</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: New Custom Order Form -->
+<section class="flex-1 bg-surface-container-highest rounded-xl flex flex-col shadow-lg overflow-hidden">
+<div class="p-6 bg-surface-container flex items-center justify-between border-b border-outline-variant/10">
+<h2 class="text-xl font-extrabold text-primary tracking-tight">New Custom Order</h2>
+<button class="p-2 hover:bg-surface-dim rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+<form class="space-y-10">
+<!-- Section 1: Customer Information -->
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-primary mb-2">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+<h3 class="text-sm font-bold uppercase tracking-widest">Customer Information</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2">
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Full Name</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="e.g. Eleanor Rigby" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Phone Number</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="(555) 000-0000" type="tel"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Email Address</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="name@example.com" type="email"/>
+</div>
+</div>
+</div>
+<!-- Section 2: Order Details -->
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-primary mb-2">
+<span class="material-symbols-outlined" data-icon="cake">cake</span>
+<h3 class="text-sm font-bold uppercase tracking-widest">Order Details</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Item Type</label>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20">
+<option>Select Type...</option>
+<option>Custom Cake</option>
+<option>Cupcake Batch</option>
+<option>Cookie Platter</option>
+<option>Specialty Pastry</option>
+</select>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Flavor Profile</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="e.g. Vanilla with Raspberry" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Size / Quantity</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="e.g. 8 inch double tier" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Dietary Notes</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="e.g. Nut-free facility" type="text"/>
+</div>
+<div class="col-span-2">
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Special Instructions &amp; Inscriptions</label>
+<textarea class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="Write message here..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<!-- Section 3: Fulfillment -->
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-primary mb-2">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<h3 class="text-sm font-bold uppercase tracking-widest">Fulfillment</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Pickup Date</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" type="date"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Pickup Time</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary-container/20" type="time"/>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="payments">payments</span>
+<span class="text-sm font-semibold text-on-surface">Deposit Paid?</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+</label>
+</div>
+</div>
+</form>
+</div>
+<!-- Footer CTA -->
+<div class="p-6 bg-surface-container border-t border-outline-variant/10 flex items-center justify-between gap-6">
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Total Estimated</span>
+<span class="text-2xl font-black text-primary">$185.00</span>
+</div>
+<button class="flex-1 bread-gradient text-on-primary py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Create Custom Order
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e9e2d3;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d4c3be;
+        }
+    </style>
+</body></html>

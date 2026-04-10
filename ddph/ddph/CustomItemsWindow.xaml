@@ -13,11 +13,11 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None">
-    <Window.Resources>
+        <Window.Resources>
         <Style x:Key="SubmitButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ThemeToastBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
@@ -44,10 +44,10 @@
                 Panel.ZIndex="100"
                 FontSize="18"
                 FontWeight="SemiBold"
-                Background="{StaticResource ThemeAccentSoftBrush}"
+                Background="{StaticResource ThemeCardBrush}"
                 Foreground="{StaticResource ThemeInkBrush}"
-                BorderBrush="{StaticResource ThemeBorderBrush}"
-                BorderThickness="1"
+                BorderBrush="Transparent"
+                BorderThickness="0"
                 ToolTip="Back"
                 Click="CloseButton_Click">
             <Button.Template>
@@ -56,7 +56,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
+                            CornerRadius="18">
                         <TextBlock Text="&#x2190;"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -89,8 +89,9 @@
 
                 <StackPanel>
                     <TextBlock Text="Custom Order"
-                               FontSize="28"
-                               FontWeight="SemiBold"
+                               FontSize="30"
+                               FontFamily="{StaticResource ThemeHeadlineFont}"
+                               FontWeight="Bold"
                                Foreground="{StaticResource ThemeInkBrush}"/>
                     <TextBlock Margin="0,8,0,0"
                                Text="Compact cashier intake for website-style custom orders"
@@ -103,9 +104,9 @@
 
         <Border Grid.Row="2"
                 Background="{StaticResource ThemeSurfaceBrush}"
-                BorderBrush="{StaticResource ThemeBorderBrush}"
-                BorderThickness="1"
-                CornerRadius="14"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CornerRadius="28"
                 Padding="20">
             <Grid>
                 <Grid.RowDefinitions>
@@ -122,11 +123,11 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.ColumnSpan="3"
-                        Background="{StaticResource ThemeAccentSoftBrush}"
-                        BorderBrush="{StaticResource ThemeAccentBrush}"
-                        BorderThickness="1,0,0,0"
-                        Padding="12"
-                        CornerRadius="10">
+                        Background="{StaticResource ThemeCardBrush}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Padding="16"
+                        CornerRadius="20">
                     <TextBlock Foreground="{StaticResource ThemeInkBrush}"
                                TextWrapping="Wrap">
                         <Run Text="Tip: "/><Run Text="Keep the details concise and clear so the baker can confirm the custom design quickly."/>
@@ -275,11 +276,11 @@
 
                 <Border Grid.Row="4"
                         Grid.ColumnSpan="3"
-                        Background="{StaticResource ThemeAccentSoftBrush}"
-                        BorderBrush="{StaticResource ThemeBorderBrush}"
-                        BorderThickness="1,0,0,0"
-                        Padding="12"
-                        CornerRadius="10" Margin="0,33,0,0">
+                        Background="{StaticResource ThemeCardBrush}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Padding="16"
+                        CornerRadius="20" Margin="0,33,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

@@ -30,10 +30,10 @@
                 Panel.ZIndex="100"
                 FontSize="18"
                 FontWeight="SemiBold"
-                Background="{StaticResource ThemeAccentSoftBrush}"
+                Background="{StaticResource ThemeCardBrush}"
                 Foreground="{StaticResource ThemeInkBrush}"
-                BorderBrush="{StaticResource ThemeAccentBrush}"
-                BorderThickness="1"
+                BorderBrush="Transparent"
+                BorderThickness="0"
                 ToolTip="Back"
                 Click="CloseButton_Click">
             <Button.Template>
@@ -42,7 +42,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
+                            CornerRadius="18">
                         <TextBlock Text="&#x2190;"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -65,7 +65,8 @@
         <StackPanel>
             <TextBlock x:Name="WindowTitleTextBlock"
                        Text="Add Product"
-                       FontSize="24"
+                       FontSize="28"
+                       FontFamily="{StaticResource ThemeHeadlineFont}"
                        FontWeight="Bold"
                        Foreground="{StaticResource ThemeInkBrush}"/>
             <TextBlock x:Name="WindowSubtitleTextBlock"
@@ -77,9 +78,9 @@
         <Border Grid.Row="2"
                 Padding="18"
                 Background="{StaticResource ThemeSurfaceBrush}"
-                BorderBrush="{StaticResource ThemeBorderBrush}"
-                BorderThickness="1"
-                CornerRadius="14">
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CornerRadius="28">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -103,9 +104,9 @@
                         <Border x:Name="ImagePreviewBorder"
                                 Height="130"
                                 CornerRadius="10"
-                                Background="{StaticResource ThemeAccentSoftBrush}"
-                                BorderBrush="{StaticResource ThemeBorderBrush}"
-                                BorderThickness="1"
+                                Background="{StaticResource ThemeCardBrush}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
                                 ClipToBounds="True"
                                 Margin="0,0,0,8">
                             <Grid>
@@ -139,7 +140,7 @@
                                     Width="80"
                                     Height="34"
                                     Background="{StaticResource ThemeAccentSoftBrush}"
-                                    BorderBrush="{StaticResource ThemeBorderBrush}"
+                                    BorderBrush="Transparent"
                                     FontWeight="SemiBold"
                                     Click="BrowseImageButton_Click"/>
                         </Grid>
@@ -190,9 +191,9 @@
                     Content="Save"
                     Width="100"
                     Height="36"
-                    Background="{StaticResource ThemeAccentBrush}"
-                    Foreground="{StaticResource ThemeInkBrush}"
-                    BorderBrush="{StaticResource ThemeAccentBrush}"
+                    Background="{StaticResource ThemeToastBrush}"
+                    Foreground="White"
+                    BorderBrush="Transparent"
                     Click="SaveButton_Click"/>
         </StackPanel>
     </Grid>

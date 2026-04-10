@@ -4,60 +4,124 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ddph"
+        xmlns:views="clr-namespace:ddph.Views"
         mc:Ignorable="d"
         Title="POS System"
         Height="720"
         Width="1378"
         MinHeight="600"
-        MinWidth="900"
-        Background="{StaticResource ThemeBaseBrush}"
+        MinWidth="1100"
+        Background="#FFF8EF"
         WindowState="Maximized"
         WindowStyle="None">
     <Window.Resources>
+        <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FFF8EF"/>
+        <SolidColorBrush x:Key="ThemeAccentBrush" Color="#765449"/>
+        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FBF3E4"/>
+        <SolidColorBrush x:Key="ThemeInkBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="ThemeInkSoftBrush" Color="#80504441"/>
+        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#26D4C3BE"/>
+        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#F5EDDE"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="ThemeOnSurfaceSoftBrush" Color="#80504441"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#F5EDDE"/>
+        <SolidColorBrush x:Key="PanelSoftBrush" Color="#FBF3E4"/>
+        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#765449"/>
+        <SolidColorBrush x:Key="AccentRoseBrush" Color="#FEC1D6"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#1E1B13"/>
+        <SolidColorBrush x:Key="TextSoftBrush" Color="#504441"/>
+        <LinearGradientBrush x:Key="ToastBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#765449" Offset="0"/>
+            <GradientStop Color="#916C60" Offset="1"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="72"/>
+            <Setter Property="Height" Value="72"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="TopActionStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Background" Value="{StaticResource PanelSoftBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="CategoryComboStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Background" Value="{StaticResource PanelSoftBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style x:Key="ProductCardButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="Height" Value="312"/>
+            <Setter Property="Margin" Value="0,0,20,20"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
         <Style x:Key="SurfaceCardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="CornerRadius" Value="26"/>
         </Style>
 
         <Style x:Key="HeaderActionButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
             <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ThemeAccentBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="SecondaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Window.Resources>
 
-    <Grid Margin="0,1,0,18">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="53*"/>
-            <ColumnDefinition Width="463*"/>
-            <ColumnDefinition Width="155*"/>
+            <ColumnDefinition Width="96"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="384"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
         </Grid.RowDefinitions>
 
         <!-- Close Button Overlay -->
@@ -65,6 +129,7 @@
                 Width="36"
                 Height="36"
                 Margin="0,-1,0,0"
+                Visibility="Collapsed"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Panel.ZIndex="100"
@@ -77,77 +142,229 @@
                 Grid.Column="2"
                 Click="CloseButton_Click"/>
 
+        <Border Grid.RowSpan="5"
+                Grid.Column="0"
+                Background="{StaticResource PanelBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="0,30,0,0"
+                           HorizontalAlignment="Center"
+                           FontFamily="Georgia"
+                           FontSize="24"
+                           FontStyle="Italic"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource AccentBrush}"
+                           Text="H"/>
+                <StackPanel Grid.Row="1"
+                            Margin="0,26,0,0"
+                            HorizontalAlignment="Center">
+                    <Button Width="72"
+                            Height="72"
+                            Margin="0,0,0,14"
+                            Background="{StaticResource CardBrush}"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="RegisterTab_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE719;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Register"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="72"
+                            Height="72"
+                            Margin="0,0,0,14"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="OrdersButton_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE8A1;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Orders"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="72"
+                            Height="72"
+                            Margin="0,0,0,14"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="Button_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE14C;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Inventory"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="72"
+                            Height="72"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="CustomItemsButton_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE9D2;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Custom"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button Grid.Row="2"
+                        Width="72"
+                        Height="72"
+                        Margin="0,0,0,24"
+                        HorizontalAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Click="CloseButton_Click">
+                    <StackPanel>
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   FontSize="18"
+                                   HorizontalAlignment="Center"
+                                   Text="&#xE8BB;"/>
+                        <TextBlock Margin="0,4,0,0"
+                                   HorizontalAlignment="Center"
+                                   FontSize="10"
+                                   FontWeight="SemiBold"
+                                   Text="Close"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
         <!-- Top Bar -->
         <Border Grid.Row="0"
-                Grid.ColumnSpan="3"
-                Margin="0,0,0,0"
-                Padding="18,14"
-                Background="{StaticResource ThemeBaseBrush}"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Padding="32,0"
+                Background="#CCFFF8EF"
                 BorderThickness="0"
                 BorderBrush="Transparent">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="420"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0"
                             VerticalAlignment="Center">
-                    <TextBlock Text="DreamDough POS"
-                               FontSize="28"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource ThemeInkBrush}"/>
-                    <TextBlock Margin="0,4,0,0"
-                               Text="Warm bakery checkout for walk-in customers"
-                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                    <TextBlock Text="Menu"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource ThemeAccentBrush}"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1"
-                            Margin="0,-14,48,0"
-                            HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Button Content="Products"
-                                Width="100"
-                                Style="{StaticResource HeaderActionButtonStyle}"
-                                Click="Button_Click"/>
-                        <Button Content="Online Orders"
-                                Width="120"
-                                Style="{StaticResource HeaderActionButtonStyle}"
-                                Click="OrdersButton_Click"/>
-                        <Button Content="Custom Order"
-                                Width="120"
-                                Margin="0"
-                                Style="{StaticResource HeaderActionButtonStyle}"
-                                Click="CustomItemsButton_Click"/>
-                    </StackPanel>
-                </StackPanel>
-                <TextBlock Margin="0,47,-4,-9"
-                               Text="User: Staff"
-                               HorizontalAlignment="Right"
-                               FontWeight="Bold"
-                               FontSize="14"
-                               Foreground="{StaticResource ThemeInkBrush}" Grid.Column="1"/>
+                <Border x:Name="MainSearchPanel"
+                        Grid.Column="2"
+                        Height="46"
+                        VerticalAlignment="Center"
+                        Background="#E9E2D3"
+                        CornerRadius="16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="42"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   Foreground="#827470"
+                                   Text="&#xE721;"/>
+                        <TextBox Grid.Column="1"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 VerticalContentAlignment="Center"
+                                 FontSize="14"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </Border>
+
+                <Button Grid.Column="4"
+                        Width="48"
+                        Height="48"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                               FontSize="18"
+                               Foreground="{StaticResource AccentBrush}"
+                               Text="&#xE7F4;"/>
+                </Button>
+
+                <Border Grid.Column="6"
+                        Width="48"
+                        Height="48"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource PanelSoftBrush}"
+                        CornerRadius="24">
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="18"
+                               Foreground="{StaticResource AccentBrush}"
+                               Text="&#xE77B;"/>
+                </Border>
             </Grid>
         </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Row="2" Grid.ColumnSpan="3">
+        <Grid x:Name="RegisterContent"
+              Grid.Row="2"
+              Grid.Column="1"
+              Grid.ColumnSpan="2"
+              Margin="32,0,32,24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.1*"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="0.95*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="384"/>
             </Grid.ColumnDefinitions>
 
             <!-- Product Grid -->
             <Border Grid.Column="0"
-                    Style="{StaticResource SurfaceCardStyle}"
-                    Padding="16">
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="0">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -158,9 +375,10 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel>
-                            <TextBlock Text="Product Gallery"
+                            <TextBlock Text="All Products"
                                        FontSize="24"
-                                       FontWeight="SemiBold"
+                                       FontFamily="Georgia"
+                                       FontWeight="Bold"
                                        Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Margin="0,10,0,0"
                                      Width="260"
@@ -184,7 +402,7 @@
                                            FontSize="24"
                                            FontWeight="Bold"
                                            Foreground="{StaticResource ThemeInkBrush}"/>
-                                <TextBlock Text="Visible Today"
+                                <TextBlock Text="Visible"
                                            HorizontalAlignment="Center"
                                            Foreground="{StaticResource ThemeInkSoftBrush}"/>
                             </StackPanel>
@@ -218,19 +436,23 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="190"
-                                            Height="148"
+                                    <Button Width="220"
+                                            Height="312"
                                             Margin="0,0,14,14"
                                             Padding="0"
                                             BorderThickness="0"
                                             Background="Transparent"
                                             Command="{Binding DataContext.ProductButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}">
-                                        <Border CornerRadius="18"
+                                        <Border CornerRadius="26"
                                                 BorderBrush="{StaticResource ThemeBorderBrush}"
                                                 BorderThickness="1"
                                                 ClipToBounds="True">
                                             <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="170"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
                                                 <Border Background="{StaticResource ThemeAccentSoftBrush}"/>
                                                 <Image Source="{Binding ImageUrl}"
                                                        Stretch="UniformToFill"/>
@@ -238,13 +460,13 @@
                                                     <Rectangle.Fill>
                                                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                                             <GradientStop Color="#00000000" Offset="0"/>
-                                                            <GradientStop Color="#33000000" Offset="0.45"/>
-                                                            <GradientStop Color="#B52C2C2E" Offset="1"/>
+                                                            <GradientStop Color="#08000000" Offset="0.55"/>
+                                                            <GradientStop Color="#00000000" Offset="1"/>
                                                         </LinearGradientBrush>
                                                     </Rectangle.Fill>
                                                 </Rectangle>
 
-                                                <Grid Margin="14">
+                                                <Grid Grid.Row="1" Margin="16,12,16,16">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="*"/>
                                                         <RowDefinition Height="Auto"/>
@@ -256,21 +478,22 @@
                                                                Padding="10,5"
                                                                FontSize="11"
                                                                FontWeight="SemiBold"
-                                                               Foreground="White">
+                                                               Foreground="{StaticResource ThemeAccentBrush}">
                                                         <TextBlock.Background>
-                                                            <SolidColorBrush Color="#CC2C2C2E"/>
+                                                            <SolidColorBrush Color="#CCFFFFFF"/>
                                                         </TextBlock.Background>
                                                     </TextBlock>
 
                                                     <StackPanel Grid.Row="1">
                                                         <TextBlock Text="{Binding ProductName}"
-                                                                   FontSize="17"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="White"
+                                                                   FontSize="18"
+                                                                   FontFamily="Georgia"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{StaticResource ThemeInkBrush}"
                                                                    TextWrapping="Wrap"/>
                                                         <TextBlock Margin="0,6,0,0"
                                                                    Text="{Binding Price, StringFormat={}{0:C}}"
-                                                                   FontSize="15"
+                                                                   FontSize="20"
                                                                    FontWeight="Bold"
                                                                    Foreground="{StaticResource ThemeAccentBrush}"/>
                                                     </StackPanel>
@@ -287,32 +510,208 @@
 
             <!-- Cart / Order Summary -->
             <Border Grid.Column="2"
-                    Style="{StaticResource SurfaceCardStyle}"
-                    Padding="16">
+                    Background="{StaticResource ThemeSurfaceBrush}"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="28"
+                    Padding="0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="0"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="14"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="0"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel>
+                    <Border Padding="24"
+                            Background="#EFE7D9"
+                            CornerRadius="28,28,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
                         <TextBlock Text="Current Order"
                                    FontSize="24"
-                                   FontWeight="SemiBold"
+                                   FontWeight="Bold"
                                    Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
-                        <TextBlock Margin="0,4,0,0"
-                                   Text="Review quantities, payment, and finalize the sale."
+                        <TextBlock Margin="0,6,0,0"
+                                   Text="Dine-in Table 04"
                                    Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"/>
-                    </StackPanel>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       Text="#4921"/>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="2"
+                          Margin="24,20,24,24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding CartItems}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,12"
+                                                Padding="14"
+                                                Background="{StaticResource CardBrush}"
+                                                CornerRadius="18">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="44"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Width="40"
+                                                        Height="40"
+                                                        Background="{StaticResource PanelSoftBrush}"
+                                                        CornerRadius="12">
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"
+                                                               FontWeight="Bold"
+                                                               Foreground="{StaticResource AccentBrush}"
+                                                               Text="{Binding Qty}"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="1"
+                                                            Margin="12,0,0,0">
+                                                    <TextBlock FontWeight="Bold"
+                                                               Foreground="{StaticResource ThemeInkBrush}"
+                                                               Text="{Binding Item}"
+                                                               TextWrapping="Wrap"/>
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               FontSize="12"
+                                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                                               Text="{Binding Price, StringFormat=Unit {0:C}}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock HorizontalAlignment="Right"
+                                                               FontWeight="Bold"
+                                                               Foreground="{StaticResource ThemeInkBrush}"
+                                                               Text="{Binding Price, StringFormat={}{0:C}}"/>
+                                                    <Button Width="32"
+                                                            Height="32"
+                                                            Margin="0,10,0,0"
+                                                            HorizontalAlignment="Right"
+                                                            Background="{StaticResource AccentRoseBrush}"
+                                                            BorderBrush="Transparent"
+                                                            BorderThickness="0"
+                                                            Command="{Binding DataContext.RemoveCartItemCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <TextBlock VerticalAlignment="Center"
+                                                                   HorizontalAlignment="Center"
+                                                                   FontFamily="Segoe MDL2 Assets"
+                                                                   Foreground="{StaticResource AccentBrush}"
+                                                                   Text="&#xE711;"/>
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <Border Grid.Row="1"
+                                Padding="24"
+                                Margin="0,16,0,0"
+                                Background="{StaticResource CardBrush}"
+                                CornerRadius="24">
+                            <StackPanel>
+                                <Border Padding="14"
+                                        BorderBrush="#66D4C3BE"
+                                        BorderThickness="2"
+                                        CornerRadius="18">
+                                    <TextBlock HorizontalAlignment="Center"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                               Text="Add note or discount"/>
+                                </Border>
+                                <Grid Margin="0,18,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource ThemeInkSoftBrush}"
+                                               Text="Total"/>
+                                    <TextBlock Grid.Column="1"
+                                               FontSize="28"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               Text="{Binding CartTotal, StringFormat={}{0:C}}"/>
+                                </Grid>
+                                <Border Margin="0,18,0,0"
+                                        Background="#E9E2D3"
+                                        CornerRadius="16">
+                                    <TextBox x:Name="PaymentTextBox"
+                                             Height="48"
+                                             Padding="14,0"
+                                             BorderThickness="0"
+                                             Background="Transparent"
+                                             VerticalContentAlignment="Center"
+                                             Text="{Binding PaymentText, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+                                <Button Height="64"
+                                        Margin="0,16,0,0"
+                                        Background="{StaticResource ToastBrush}"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding CheckoutCommand}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   Foreground="White"
+                                                   Text="Complete Sale"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Margin="0,0,20,0"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   Text="&#xE8C7;"/>
+                                    </Grid>
+                                </Button>
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0"
+                                            Height="46"
+                                            Background="#EFE7D9"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Command="{Binding RefreshProductsCommand}"
+                                            Content="Receipt"/>
+                                    <Button Grid.Column="2"
+                                            Height="46"
+                                            Background="#EFE7D9"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Command="{Binding ClearCartCommand}"
+                                            Content="Clear"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
 
                     <DataGrid Grid.Row="2"
+                              Visibility="Collapsed"
                               ItemsSource="{Binding CartItems}"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
@@ -365,6 +764,7 @@
                     </DataGrid>
 
                     <Border Grid.Row="4"
+                            Visibility="Collapsed"
                             Padding="14"
                             Background="{StaticResource ThemeAccentSoftBrush}"
                             BorderBrush="{StaticResource ThemeBorderBrush}"
@@ -389,12 +789,13 @@
                         </Grid>
                     </Border>
 
-                    <StackPanel Grid.Row="6">
+                    <StackPanel Grid.Row="6"
+                                Visibility="Collapsed">
                         <TextBlock Text="Payment"
                                    Margin="0,0,0,6"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
-                        <TextBox x:Name="PaymentTextBox"
+                        <TextBox x:Name="LegacyPaymentTextBox"
                                  Height="40"
                                  VerticalContentAlignment="Center"
                                  Padding="12,0"
@@ -402,6 +803,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="8"
+                                Visibility="Collapsed"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right">
                         <Button Content="Checkout"
@@ -420,8 +822,16 @@
             </Border>
         </Grid>
 
+        <ContentControl x:Name="TabContentHost"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        Margin="0"
+                        Visibility="Collapsed"/>
+
         <!-- Filters -->
         <Border Grid.Row="4"
+                Visibility="Collapsed"
                 Style="{StaticResource SurfaceCardStyle}"
                 Padding="16" Grid.ColumnSpan="3">
             <Grid>

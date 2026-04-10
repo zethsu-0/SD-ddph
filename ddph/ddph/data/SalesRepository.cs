@@ -37,7 +37,7 @@ namespace ddph.Data
                 ["updatedAt"] = createdAt
             };
 
-            _firebaseClient.PostAsync<object>("posSales", salePayload).GetAwaiter().GetResult();
+            _firebaseClient.PostAsync<object>("walk-in-orders", salePayload).GetAwaiter().GetResult();
 
         }
 

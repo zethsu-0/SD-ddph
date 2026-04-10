@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#fbf3e4",
+                    "secondary-fixed-dim": "#f2b6cb",
+                    "on-error": "#ffffff",
+                    "primary-container": "#916c60",
+                    "on-tertiary-fixed-variant": "#07521d",
+                    "outline": "#827470",
+                    "primary": "#765449",
+                    "tertiary-fixed": "#abf4ac",
+                    "secondary-container": "#fec1d6",
+                    "primary-fixed": "#ffdbcf",
+                    "tertiary": "#266931",
+                    "on-tertiary-fixed": "#002107",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e9e2d3",
+                    "primary-fixed-dim": "#e9bdae",
+                    "inverse-surface": "#343026",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#90d792",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#2d150d",
+                    "surface-variant": "#e9e2d3",
+                    "surface-tint": "#79564b",
+                    "outline-variant": "#d4c3be",
+                    "surface": "#fff8ef",
+                    "tertiary-container": "#408348",
+                    "on-surface": "#1e1b13",
+                    "on-secondary-container": "#7b4c5e",
+                    "surface-dim": "#e1d9cb",
+                    "surface-container-high": "#efe7d9",
+                    "on-primary-fixed-variant": "#5e3f35",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#fafff5",
+                    "on-error-container": "#93000a",
+                    "secondary": "#805062",
+                    "inverse-primary": "#e9bdae",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f8f0e1",
+                    "background": "#fff8ef",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#f5edde",
+                    "on-secondary-fixed-variant": "#65394b",
+                    "secondary-fixed": "#ffd9e4",
+                    "on-primary-container": "#fffcff",
+                    "on-surface-variant": "#504441",
+                    "on-background": "#1e1b13",
+                    "on-secondary-fixed": "#330f1f",
+                    "surface-bright": "#fff8ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Work Sans"],
+                    "label": ["Work Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-toast-gradient {
+            background: linear-gradient(135deg, #765449 0%, #916c60 100%);
+        }
+        .order-ribbon-shadow {
+            box-shadow: 0 12px 40px rgba(30, 27, 19, 0.06);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface selection:bg-secondary-container">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="flex flex-col items-center py-8 gap-6 h-screen sticky left-0 w-24 border-none bg-[#f5edde] dark:bg-stone-900 z-50">
+<div class="mb-4">
+<span class="text-xl font-bold text-[#765449] dark:text-[#d7ccc8] italic">H</span>
+</div>
+<nav class="flex flex-col gap-4 w-full px-2">
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#765449] dark:text-[#d7ccc8] bg-[#ffffff] dark:bg-stone-800 rounded-xl shadow-sm scale-95 duration-200 ease-in-out font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<span class="material-symbols-outlined" data-icon="point_of_sale" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+<span class="text-[10px]">Register</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-[10px]">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="text-[10px]">Inventory</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="text-[10px]">Analytics</span>
+</button>
+<div class="mt-auto">
+<button class="flex flex-col items-center justify-center p-3 gap-1 text-[#8d6e63] dark:text-stone-500 hover:bg-[#ffffff]/50 dark:hover:bg-stone-800/50 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px]">Settings</span>
+</button>
+</div>
+</nav>
+</aside>
+<div class="flex-1 flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-8 w-full h-20 sticky top-0 z-40 bg-[#fff8ef]/80 dark:bg-stone-950/80 backdrop-blur-xl no-line-rule tonal-shift">
+<div class="flex items-center gap-6">
+<h1 class="font-headline text-headline-md font-bold text-[#765449] dark:text-[#d7ccc8] tracking-tight text-2xl">Menu</h1>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline-variant">search</span>
+</div>
+<input class="bg-surface-variant border-none rounded-xl py-2.5 pl-11 pr-4 w-96 text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" placeholder="Search menu items..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 flex items-center justify-center rounded-full text-[#765449] hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-low text-[#765449] hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</header>
+<main class="p-8 flex gap-8 h-[calc(100vh-5rem)] overflow-hidden">
+<!-- Product Grid Area -->
+<div class="flex-1 overflow-y-auto pr-4 scrollbar-hide">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Country Sourdough -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="artisan sourdough bread loaf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcXoYnmep52LLWbRhekfZpF-iJqAt2Tev8SFNYJjfBguMFv-RRQ4-5lsID30KHJv2lR-pzHg91TvZMpo9Sk2XvuhpcsGTYW4FOW12dEggkiSUdzbJyCDGxuufjoMlZJ5Tu3jLM7M7w-V3JCWKauCfu8JvJN__2wRwKnsY5ZVkUe1k2FtpRF1w5KOU4dtRJV3aR-nQ2Km8Ax-sNXQ5eDwYbPu3pa3Sq0LFOSkO-I7AZ5JKFBQngF-YCCumccmE7XGDjQ0y-qIiZaUY"/>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Country Sourdough</h3>
+<p class="text-on-surface-variant text-sm mb-4">Daily Signature Loaf</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$8.50</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Butter Croissant -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="flaky butter croissant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_AZb8kbDgfOlGm-p0XMxPC1D9bKAHFaipms2VrUTKZPO2LeVIDbaSsmjR1XHaIT9eRgWwENDJy-zb2aPW8TxaKCJDmX_yrV7RetDZ7500S-Xd-UqR8tW9RFHMUhG6a1-7PDxo67HypEgJAx1TzKnHRB9xEegzXHIwdXZ89RXjgU65mbx7d1DZA0n5gS3yvLpBB7H8lE0Oel_dZfK_w3Ozg9vp3fRHiicNNEauBIWbxFVszBPs2Zpbl0foO3a7uERvMYwt4lTT0Co"/>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Butter Croissant</h3>
+<p class="text-on-surface-variant text-sm mb-4">French high-fat butter</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$4.25</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Sea Salt Cookie -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="chocolate chip cookie with sea salt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg-KGZQoYfjz76UPgpipQy0i-wU1wV7vw2boPz5sGXY_bRIMSJ2Nvb7QmcYfzshvIO94yhNjz5zollFTehYgew250UFz08gEGOiyb5k4H2dR6qpRWodn-gIrRtB4SExCl9nkcLxqWClzcPVv38vMhGYsB_xaf8Z0Ho57RA6lzq-Xp9eKC6D29SoUle9ycXV1FIqnhSH-yH7D6pJl30PGnqVumPqMjtKOTnIS1l44hHS3hoKSwKl9CAsA7abvTcgOdhrZbnulp-BvY"/>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Sea Salt Cookie</h3>
+<p class="text-on-surface-variant text-sm mb-4">Dark chocolate pools</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$3.50</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Lavender Cake -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="lavender infused cupcake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuxfc_ajJvnambUgEa0UiuWMOrB1mYBWLPRrYHbooki33Poigp7xry5FZsroNMwEbHw69rSKx91PZRXud-Qy0gqDF1vg_JJvphcqYlMYdOUrEUsegoE5WlWGhFgSary-DBd0XD2EYKbc3IWYce_HTHSQXwFRPoit59ZrrQEelIy-OvyOF0-oHg-LgYP-dGsSoefgqu7gPV60Vt4UVlCXiQNEPCiifBmPcA9XjYiUvsrEgabbCjiSCUJRl6djbbh5btPtC3kp5oXek"/>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Lavender Cake</h3>
+<p class="text-on-surface-variant text-sm mb-4">Organic flower petals</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$5.00</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Chocolate Ganache Cake -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl bg-surface-variant/20">
+<div class="flex items-center justify-center h-full text-outline-variant italic">Image Coming Soon</div>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Chocolate Ganache</h3>
+<p class="text-on-surface-variant text-sm mb-4">70% Valrhona dark chocolate</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$6.50</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Whole Wheat Rustic -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl bg-surface-variant/20">
+<div class="flex items-center justify-center h-full text-outline-variant italic">Image Coming Soon</div>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Whole Wheat Rustic</h3>
+<p class="text-on-surface-variant text-sm mb-4">Stone-ground local wheat</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$7.50</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Almond Macarons -->
+<div class="bg-surface-container-low rounded-3xl p-4 flex flex-col group cursor-pointer hover:bg-surface-container transition-all hover:shadow-md">
+<div class="relative w-full aspect-square mb-4 overflow-hidden rounded-2xl bg-surface-variant/20">
+<div class="flex items-center justify-center h-full text-outline-variant italic">Image Coming Soon</div>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="font-headline font-bold text-on-surface text-lg">Almond Macarons</h3>
+<p class="text-on-surface-variant text-sm mb-4">Box of 6, assorted flavors</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-bold text-primary text-xl">$12.00</span>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Summary Sidebar -->
+<aside class="w-96 flex flex-col order-ribbon-shadow bg-surface-container rounded-3xl overflow-hidden border border-outline-variant/10">
+<div class="p-6 bg-surface-container-high">
+<div class="flex justify-between items-center mb-1">
+<h2 class="font-headline text-xl font-bold">Current Order</h2>
+<span class="text-sm font-medium text-primary">#4921</span>
+</div>
+<p class="text-sm text-on-surface-variant">Dine-in • Table 04</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+<!-- Item 1 -->
+<div class="flex justify-between items-start bg-surface-container-lowest p-4 rounded-2xl shadow-sm">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center font-bold text-primary">1</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-sm">Country Sourdough</p>
+<p class="text-xs text-on-surface-variant">Whole Loaf</p>
+</div>
+</div>
+<p class="font-bold text-on-surface text-sm">$8.50</p>
+</div>
+<!-- Item 2 -->
+<div class="flex justify-between items-start bg-surface-container-lowest p-4 rounded-2xl shadow-sm">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center font-bold text-primary">2</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-sm">Butter Croissant</p>
+<p class="text-xs text-on-surface-variant">Fresh Morning Batch</p>
+</div>
+</div>
+<p class="font-bold text-on-surface text-sm">$8.50</p>
+</div>
+<!-- Item 3 -->
+<div class="flex justify-between items-start bg-surface-container-lowest p-4 rounded-2xl shadow-sm">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center font-bold text-primary">1</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-sm">Lavender Cake Slice</p>
+<p class="text-xs text-on-surface-variant">Organic Lavender</p>
+</div>
+</div>
+<p class="font-bold text-on-surface text-sm">$5.00</p>
+</div>
+<!-- Coupon/Notes Area -->
+<div class="mt-4 p-4 rounded-2xl border-2 border-dashed border-outline-variant flex items-center justify-center gap-2 text-outline cursor-pointer hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">add_comment</span>
+<span class="text-sm font-semibold">Add note or discount</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container-lowest flex flex-col gap-4">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-on-surface-variant text-sm">
+<span>Subtotal</span>
+<span>$22.00</span>
+</div>
+<div class="flex justify-between text-on-surface-variant text-sm">
+<span>Tax (8%)</span>
+<span>$1.76</span>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-surface-variant">
+<span class="font-headline text-lg font-bold">Total</span>
+<span class="font-headline text-2xl font-extrabold text-primary">$23.76</span>
+</div>
+</div>
+<button class="w-full h-16 bg-toast-gradient text-white rounded-2xl font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Complete Sale
+                        <span class="material-symbols-outlined">payments</span>
+</button>
+<div class="grid grid-cols-2 gap-3">
+<button class="h-12 bg-surface-container-high rounded-xl font-semibold text-on-surface flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xl">print</span>
+                            Receipt
+                        </button>
+<button class="h-12 bg-surface-container-high rounded-xl font-semibold text-secondary flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+                            Clear
+                        </button>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</div>
+</body></html>

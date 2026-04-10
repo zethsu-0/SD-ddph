@@ -16,10 +16,13 @@ namespace ddph.ViewModels
         private string _searchText = string.Empty;
         private OnlineOrder? _selectedOrder;
         private string _selectedStatus = "pending";
+        private string _selectedTab = "Online";
 
         public OnlineOrdersViewModel()
         {
-            Orders = new ObservableCollection<OnlineOrder>();
+            OnlineOrders = new ObservableCollection<OnlineOrder>();
+            RegisterOrders = new ObservableCollection<OnlineOrder>();
+
             StatusOptions = new ObservableCollection<string>
             {
                 "pending",
@@ -30,22 +33,28 @@ namespace ddph.ViewModels
                 "cancelled"
             };
 
-            FilteredOrders = CollectionViewSource.GetDefaultView(Orders);
-            FilteredOrders.Filter = FilterOrders;
+            OnlineOrdersView = CollectionViewSource.GetDefaultView(OnlineOrders);
+            RegisterOrdersView = CollectionViewSource.GetDefaultView(RegisterOrders);
+            OnlineOrdersView.Filter = FilterOrders;
+            RegisterOrdersView.Filter = FilterOrders;
 
             RefreshCommand = new RelayCommand(_ => LoadOrders());
-            ConfirmOrderCommand = new RelayCommand(_ => ApplyQuickStatus("confirmed"), _ => SelectedOrder != null);
-            NeedsAdjustmentCommand = new RelayCommand(_ => ApplyQuickStatus("adjustment"), _ => SelectedOrder != null);
-            MarkCompleteCommand = new RelayCommand(_ => ApplyQuickStatus("completed"), _ => SelectedOrder != null);
-            CancelOrderCommand = new RelayCommand(_ => ApplyQuickStatus("cancelled"), _ => SelectedOrder != null);
-            SaveStatusCommand = new RelayCommand(_ => SaveSelectedStatus(), _ => SelectedOrder != null);
+            ShowOnlineOrdersCommand = new RelayCommand(_ => SelectTab("Online"));
+            ShowRegisterOrdersCommand = new RelayCommand(_ => SelectTab("Register"));
+            ConfirmOrderCommand = new RelayCommand(_ => ApplyQuickStatus("confirmed"), _ => CanEditOnlineOrder);
+            NeedsAdjustmentCommand = new RelayCommand(_ => ApplyQuickStatus("adjustment"), _ => CanEditOnlineOrder);
+            MarkCompleteCommand = new RelayCommand(_ => ApplyQuickStatus("completed"), _ => CanEditOnlineOrder);
+            CancelOrderCommand = new RelayCommand(_ => ApplyQuickStatus("cancelled"), _ => CanEditOnlineOrder);
+            SaveStatusCommand = new RelayCommand(_ => SaveSelectedStatus(), _ => CanEditOnlineOrder);
 
             LoadOrders();
         }
 
-        public ObservableCollection<OnlineOrder> Orders { get; }
+        public ObservableCollection<OnlineOrder> OnlineOrders { get; }
+        public ObservableCollection<OnlineOrder> RegisterOrders { get; }
         public ObservableCollection<string> StatusOptions { get; }
-        public ICollectionView FilteredOrders { get; }
+        public ICollectionView OnlineOrdersView { get; }
+        public ICollectionView RegisterOrdersView { get; }
 
         public string SearchText
         {
@@ -59,9 +68,45 @@ namespace ddph.ViewModels
 
                 _searchText = value;
                 OnPropertyChanged();
-                FilteredOrders.Refresh();
+                OnlineOrdersView.Refresh();
+                RegisterOrdersView.Refresh();
+                SyncSelection();
+                RaiseSummaryProperties();
             }
         }
+
+        public string SelectedTab
+        {
+            get => _selectedTab;
+            set
+            {
+                if (_selectedTab == value)
+                {
+                    return;
+                }
+
+                _selectedTab = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsOnlineTabSelected));
+                OnPropertyChanged(nameof(IsRegisterTabSelected));
+                OnPropertyChanged(nameof(ActiveOrdersView));
+                OnPropertyChanged(nameof(ActiveTabLabel));
+                OnPropertyChanged(nameof(PrimaryMetricLabel));
+                OnPropertyChanged(nameof(SecondaryMetricLabel));
+                OnPropertyChanged(nameof(CanEditOnlineOrder));
+                SyncSelection();
+                RaiseSummaryProperties();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        public bool IsOnlineTabSelected => string.Equals(SelectedTab, "Online", System.StringComparison.Ordinal);
+        public bool IsRegisterTabSelected => string.Equals(SelectedTab, "Register", System.StringComparison.Ordinal);
+        public string ActiveTabLabel => IsOnlineTabSelected ? "Online Orders" : "Register Orders";
+        public string PrimaryMetricLabel => IsOnlineTabSelected ? "Orders" : "Walk-ins";
+        public string SecondaryMetricLabel => IsOnlineTabSelected ? "Awaiting Action" : "Paid Tickets";
+
+        public ICollectionView ActiveOrdersView => IsOnlineTabSelected ? OnlineOrdersView : RegisterOrdersView;
 
         public OnlineOrder? SelectedOrder
         {
@@ -72,6 +117,8 @@ namespace ddph.ViewModels
                 SelectedStatus = value?.Status ?? StatusOptions.First();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelectedOrder));
+                OnPropertyChanged(nameof(CanEditOnlineOrder));
+                OnPropertyChanged(nameof(SelectedOrderItemCount));
                 CommandManager.InvalidateRequerySuggested();
             }
         }
@@ -92,8 +139,47 @@ namespace ddph.ViewModels
         }
 
         public bool HasSelectedOrder => SelectedOrder != null;
+        public bool CanEditOnlineOrder => IsOnlineTabSelected && SelectedOrder != null;
+        public int ActiveOrderCount => ActiveOrdersView.Cast<object>().Count();
+        public decimal ActiveRevenue => ActiveOrdersView.Cast<OnlineOrder>().Sum(order => order.Total);
+        public decimal ActiveAverageTicket => ActiveOrderCount == 0 ? 0 : ActiveRevenue / ActiveOrderCount;
+        public int SecondaryMetricValue => IsOnlineTabSelected
+            ? ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.Status != "completed" && order.Status != "cancelled")
+            : ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.PaymentStatus == "paid");
+        public int SelectedOrderItemCount => SelectedOrder?.Items.Sum(item => item.Quantity) ?? 0;
+
+        public string TopProductName
+        {
+            get
+            {
+                var product = ActiveOrdersView
+                    .Cast<OnlineOrder>()
+                    .SelectMany(order => order.Items)
+                    .GroupBy(item => item.Name)
+                    .OrderByDescending(group => group.Sum(item => item.Quantity))
+                    .FirstOrDefault();
+
+                return product?.Key ?? "No orders yet";
+            }
+        }
+
+        public int TopProductSales
+        {
+            get
+            {
+                return ActiveOrdersView
+                    .Cast<OnlineOrder>()
+                    .SelectMany(order => order.Items)
+                    .GroupBy(item => item.Name)
+                    .OrderByDescending(group => group.Sum(item => item.Quantity))
+                    .Select(group => group.Sum(item => item.Quantity))
+                    .FirstOrDefault();
+            }
+        }
 
         public ICommand RefreshCommand { get; }
+        public ICommand ShowOnlineOrdersCommand { get; }
+        public ICommand ShowRegisterOrdersCommand { get; }
         public ICommand ConfirmOrderCommand { get; }
         public ICommand NeedsAdjustmentCommand { get; }
         public ICommand MarkCompleteCommand { get; }
@@ -112,34 +198,61 @@ namespace ddph.ViewModels
                 return true;
             }
 
-            return order.DisplayName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+            return order.Id.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+                order.DisplayName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 order.CustomerPhone.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 order.CustomerEmail.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
-                order.Status.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase);
+                order.Status.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+                order.SourceLabel.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase);
         }
 
         private void LoadOrders()
         {
             try
             {
-                Orders.Clear();
+                OnlineOrders.Clear();
+                RegisterOrders.Clear();
 
-                foreach (var order in _orderRepository.GetOrders())
+                foreach (var order in _orderRepository.GetOnlineOrders())
                 {
-                    Orders.Add(order);
+                    OnlineOrders.Add(order);
                 }
 
-                FilteredOrders.Refresh();
-                SelectedOrder ??= Orders.FirstOrDefault();
+                foreach (var order in _orderRepository.GetRegisterOrders())
+                {
+                    RegisterOrders.Add(order);
+                }
+
+                OnlineOrdersView.Refresh();
+                RegisterOrdersView.Refresh();
+                SyncSelection();
+                RaiseSummaryProperties();
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show(
-                    $"Unable to load online orders.\n\n{ex.Message}",
+                    $"Unable to load order history.\n\n{ex.Message}",
                     "Orders Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        private void SelectTab(string tab)
+        {
+            SelectedTab = tab;
+        }
+
+        private void SyncSelection()
+        {
+            var activeOrders = ActiveOrdersView.Cast<OnlineOrder>().ToList();
+
+            if (SelectedOrder != null && activeOrders.Contains(SelectedOrder))
+            {
+                return;
+            }
+
+            SelectedOrder = activeOrders.FirstOrDefault();
         }
 
         private void ApplyQuickStatus(string status)
@@ -150,7 +263,7 @@ namespace ddph.ViewModels
 
         private void SaveSelectedStatus()
         {
-            if (SelectedOrder == null)
+            if (!CanEditOnlineOrder || SelectedOrder == null)
             {
                 return;
             }
@@ -160,6 +273,7 @@ namespace ddph.ViewModels
                 _orderRepository.UpdateOrderStatus(SelectedOrder.Id, SelectedStatus);
                 SelectedOrder.Status = SelectedStatus;
                 OnPropertyChanged(nameof(SelectedOrder));
+                RaiseSummaryProperties();
                 MessageBox.Show("Order status updated.", "Orders", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)
@@ -170,6 +284,16 @@ namespace ddph.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        private void RaiseSummaryProperties()
+        {
+            OnPropertyChanged(nameof(ActiveOrderCount));
+            OnPropertyChanged(nameof(ActiveRevenue));
+            OnPropertyChanged(nameof(ActiveAverageTicket));
+            OnPropertyChanged(nameof(SecondaryMetricValue));
+            OnPropertyChanged(nameof(TopProductName));
+            OnPropertyChanged(nameof(TopProductSales));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
