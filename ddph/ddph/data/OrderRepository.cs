@@ -119,6 +119,7 @@ namespace ddph.Data
                 CustomerPhone = record.CustomerPhone ?? string.Empty,
                 CustomerEmail = record.CustomerEmail ?? string.Empty,
                 OrderSource = "Online",
+                OrderType = record.OrderType ?? "standard",
                 Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "unpaid",
                 PickupDate = record.PickupDate ?? string.Empty,
@@ -221,6 +222,7 @@ namespace ddph.Data
             public string? Date { get; set; }
             public List<FirebaseOrderItemRecord?>? Items { get; set; }
             public string? Notes { get; set; }
+            public string? OrderType { get; set; }
             public string? PaymentStatus { get; set; }
             public string? PickupDate { get; set; }
             public string? PickupTime { get; set; }

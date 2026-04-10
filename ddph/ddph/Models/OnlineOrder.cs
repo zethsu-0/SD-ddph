@@ -13,6 +13,7 @@ namespace ddph.Models
         private string _status = string.Empty;
         private string _paymentStatus = string.Empty;
         private string _orderSource = string.Empty;
+        private string _orderType = string.Empty;
         private string _pickupDate = string.Empty;
         private string _pickupTime = string.Empty;
         private string _notes = string.Empty;
@@ -96,6 +97,16 @@ namespace ddph.Models
                 _orderSource = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SourceLabel));
+            }
+        }
+
+        public string OrderType
+        {
+            get => _orderType;
+            set
+            {
+                _orderType = value;
+                OnPropertyChanged();
             }
         }
 

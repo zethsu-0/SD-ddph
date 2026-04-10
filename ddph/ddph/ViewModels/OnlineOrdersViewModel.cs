@@ -21,6 +21,7 @@ namespace ddph.ViewModels
         public OnlineOrdersViewModel()
         {
             OnlineOrders = new ObservableCollection<OnlineOrder>();
+            CustomOrders = new ObservableCollection<OnlineOrder>();
             RegisterOrders = new ObservableCollection<OnlineOrder>();
 
             StatusOptions = new ObservableCollection<string>
@@ -34,12 +35,15 @@ namespace ddph.ViewModels
             };
 
             OnlineOrdersView = CollectionViewSource.GetDefaultView(OnlineOrders);
+            CustomOrdersView = CollectionViewSource.GetDefaultView(CustomOrders);
             RegisterOrdersView = CollectionViewSource.GetDefaultView(RegisterOrders);
             OnlineOrdersView.Filter = FilterOrders;
+            CustomOrdersView.Filter = FilterOrders;
             RegisterOrdersView.Filter = FilterOrders;
 
             RefreshCommand = new RelayCommand(_ => LoadOrders());
             ShowOnlineOrdersCommand = new RelayCommand(_ => SelectTab("Online"));
+            ShowCustomOrdersCommand = new RelayCommand(_ => SelectTab("Custom"));
             ShowRegisterOrdersCommand = new RelayCommand(_ => SelectTab("Register"));
             ConfirmOrderCommand = new RelayCommand(_ => ApplyQuickStatus("confirmed"), _ => CanEditOnlineOrder);
             NeedsAdjustmentCommand = new RelayCommand(_ => ApplyQuickStatus("adjustment"), _ => CanEditOnlineOrder);
@@ -51,9 +55,11 @@ namespace ddph.ViewModels
         }
 
         public ObservableCollection<OnlineOrder> OnlineOrders { get; }
+        public ObservableCollection<OnlineOrder> CustomOrders { get; }
         public ObservableCollection<OnlineOrder> RegisterOrders { get; }
         public ObservableCollection<string> StatusOptions { get; }
         public ICollectionView OnlineOrdersView { get; }
+        public ICollectionView CustomOrdersView { get; }
         public ICollectionView RegisterOrdersView { get; }
 
         public string SearchText
@@ -69,6 +75,7 @@ namespace ddph.ViewModels
                 _searchText = value;
                 OnPropertyChanged();
                 OnlineOrdersView.Refresh();
+                CustomOrdersView.Refresh();
                 RegisterOrdersView.Refresh();
                 SyncSelection();
                 RaiseSummaryProperties();
@@ -88,6 +95,7 @@ namespace ddph.ViewModels
                 _selectedTab = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsOnlineTabSelected));
+                OnPropertyChanged(nameof(IsCustomTabSelected));
                 OnPropertyChanged(nameof(IsRegisterTabSelected));
                 OnPropertyChanged(nameof(ActiveOrdersView));
                 OnPropertyChanged(nameof(ActiveTabLabel));
@@ -101,12 +109,13 @@ namespace ddph.ViewModels
         }
 
         public bool IsOnlineTabSelected => string.Equals(SelectedTab, "Online", System.StringComparison.Ordinal);
+        public bool IsCustomTabSelected => string.Equals(SelectedTab, "Custom", System.StringComparison.Ordinal);
         public bool IsRegisterTabSelected => string.Equals(SelectedTab, "Register", System.StringComparison.Ordinal);
-        public string ActiveTabLabel => IsOnlineTabSelected ? "Online Orders" : "Register Orders";
-        public string PrimaryMetricLabel => IsOnlineTabSelected ? "Orders" : "Walk-ins";
-        public string SecondaryMetricLabel => IsOnlineTabSelected ? "Awaiting Action" : "Paid Tickets";
+        public string ActiveTabLabel => IsOnlineTabSelected ? "Online Orders" : IsCustomTabSelected ? "Custom Orders" : "Register Orders";
+        public string PrimaryMetricLabel => IsRegisterTabSelected ? "Walk-ins" : "Orders";
+        public string SecondaryMetricLabel => IsRegisterTabSelected ? "Paid Tickets" : IsCustomTabSelected ? "Custom Queue" : "Awaiting Action";
 
-        public ICollectionView ActiveOrdersView => IsOnlineTabSelected ? OnlineOrdersView : RegisterOrdersView;
+        public ICollectionView ActiveOrdersView => IsOnlineTabSelected ? OnlineOrdersView : IsCustomTabSelected ? CustomOrdersView : RegisterOrdersView;
 
         public OnlineOrder? SelectedOrder
         {
@@ -139,13 +148,15 @@ namespace ddph.ViewModels
         }
 
         public bool HasSelectedOrder => SelectedOrder != null;
-        public bool CanEditOnlineOrder => IsOnlineTabSelected && SelectedOrder != null;
+        public bool CanEditOnlineOrder => (IsOnlineTabSelected || IsCustomTabSelected) && SelectedOrder != null;
         public int ActiveOrderCount => ActiveOrdersView.Cast<object>().Count();
         public decimal ActiveRevenue => ActiveOrdersView.Cast<OnlineOrder>().Sum(order => order.Total);
         public decimal ActiveAverageTicket => ActiveOrderCount == 0 ? 0 : ActiveRevenue / ActiveOrderCount;
-        public int SecondaryMetricValue => IsOnlineTabSelected
-            ? ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.Status != "completed" && order.Status != "cancelled")
-            : ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.PaymentStatus == "paid");
+        public int SecondaryMetricValue => IsRegisterTabSelected
+            ? ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.PaymentStatus == "paid")
+            : IsCustomTabSelected
+                ? ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.Status != "completed" && order.Status != "cancelled")
+                : ActiveOrdersView.Cast<OnlineOrder>().Count(order => order.Status != "completed" && order.Status != "cancelled");
         public int SelectedOrderItemCount => SelectedOrder?.Items.Sum(item => item.Quantity) ?? 0;
 
         public string TopProductName
@@ -179,6 +190,7 @@ namespace ddph.ViewModels
 
         public ICommand RefreshCommand { get; }
         public ICommand ShowOnlineOrdersCommand { get; }
+        public ICommand ShowCustomOrdersCommand { get; }
         public ICommand ShowRegisterOrdersCommand { get; }
         public ICommand ConfirmOrderCommand { get; }
         public ICommand NeedsAdjustmentCommand { get; }
@@ -211,11 +223,19 @@ namespace ddph.ViewModels
             try
             {
                 OnlineOrders.Clear();
+                CustomOrders.Clear();
                 RegisterOrders.Clear();
 
                 foreach (var order in _orderRepository.GetOnlineOrders())
                 {
-                    OnlineOrders.Add(order);
+                    if (string.Equals(order.OrderType, "custom", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        CustomOrders.Add(order);
+                    }
+                    else
+                    {
+                        OnlineOrders.Add(order);
+                    }
                 }
 
                 foreach (var order in _orderRepository.GetRegisterOrders())
@@ -224,6 +244,7 @@ namespace ddph.ViewModels
                 }
 
                 OnlineOrdersView.Refresh();
+                CustomOrdersView.Refresh();
                 RegisterOrdersView.Refresh();
                 SyncSelection();
                 RaiseSummaryProperties();
