@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using ddph.ViewModels;
 
 namespace ddph
@@ -14,6 +16,20 @@ namespace ddph
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void DigitsOnlyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = e.Text.Any(character => !char.IsDigit(character));
+        }
+
+        private void LettersOnlyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = e.Text.Any(character =>
+                !char.IsLetter(character) &&
+                !char.IsWhiteSpace(character) &&
+                character != '\'' &&
+                character != '-');
         }
     }
 }

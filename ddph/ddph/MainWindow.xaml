@@ -46,6 +46,28 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="NavBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="24">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#E7D8C9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="TopActionStyle" TargetType="Button">
@@ -76,6 +98,27 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ProductCardHost"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="26">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ProductCardHost" Property="Background" Value="#F3E6DA"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ProductCardHost" Property="Background" Value="#E7D8C9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="SurfaceCardStyle" TargetType="Border">
@@ -107,6 +150,33 @@
             <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="CloseNavButtonStyle" TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CloseNavBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="24">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CloseNavBorder" Property="Background" Value="#FCE2E0"/>
+                                <Setter Property="Foreground" Value="#B42318"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="CloseNavBorder" Property="Background" Value="#F7C9C5"/>
+                                <Setter Property="Foreground" Value="#912018"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -158,11 +228,13 @@
                            FontStyle="Italic"
                            FontWeight="Bold"
                            Foreground="{StaticResource AccentBrush}"
-                           Text="H"/>
+                           Text="DDPH"/>
                 <StackPanel Grid.Row="1"
                             Margin="0,26,0,0"
                             HorizontalAlignment="Center">
-                    <Button Width="72"
+                    <Button x:Name="RegisterNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Width="72"
                             Height="72"
                             Margin="0,0,0,14"
                             Background="{StaticResource CardBrush}"
@@ -181,7 +253,9 @@
                                        Text="Register"/>
                         </StackPanel>
                     </Button>
-                    <Button Width="72"
+                    <Button x:Name="OrdersNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Width="72"
                             Height="72"
                             Margin="0,0,0,14"
                             Background="Transparent"
@@ -200,7 +274,9 @@
                                        Text="Orders"/>
                         </StackPanel>
                     </Button>
-                    <Button Width="72"
+                    <Button x:Name="InventoryNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Width="72"
                             Height="72"
                             Margin="0,0,0,14"
                             Background="Transparent"
@@ -219,7 +295,9 @@
                                        Text="Inventory"/>
                         </StackPanel>
                     </Button>
-                    <Button Width="72"
+                    <Button x:Name="CustomNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Width="72"
                             Height="72"
                             Background="Transparent"
                             BorderBrush="Transparent"
@@ -239,6 +317,7 @@
                     </Button>
                 </StackPanel>
                 <Button Grid.Row="2"
+                        Style="{StaticResource CloseNavButtonStyle}"
                         Width="72"
                         Height="72"
                         Margin="0,0,0,24"
@@ -436,7 +515,8 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="220"
+                                    <Button Style="{StaticResource ProductCardButtonStyle}"
+                                            Width="220"
                                             Height="312"
                                             Margin="0,0,14,14"
                                             Padding="0"
@@ -537,18 +617,12 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel>
-                        <TextBlock Text="Current Order"
+                                <TextBlock Text="Current Order"
                                    FontSize="24"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
-                        <TextBlock Margin="0,6,0,0"
-                                   Text="Dine-in Table 04"
-                                   Foreground="{StaticResource ThemeOnSurfaceSoftBrush}"/>
+
                             </StackPanel>
-                            <TextBlock Grid.Column="1"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource AccentBrush}"
-                                       Text="#4921"/>
                         </Grid>
                     </Border>
 
@@ -576,11 +650,20 @@
                                                         Height="40"
                                                         Background="{StaticResource PanelSoftBrush}"
                                                         CornerRadius="12">
-                                                    <TextBlock VerticalAlignment="Center"
-                                                               HorizontalAlignment="Center"
-                                                               FontWeight="Bold"
-                                                               Foreground="{StaticResource AccentBrush}"
-                                                               Text="{Binding Qty}"/>
+                                                    <TextBox Width="32"
+                                                             Padding="0"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center"
+                                                             HorizontalContentAlignment="Center"
+                                                             VerticalContentAlignment="Center"
+                                                             FontWeight="Bold"
+                                                             Foreground="{StaticResource AccentBrush}"
+                                                             Background="Transparent"
+                                                             BorderThickness="0"
+                                                             PreviewTextInput="CartQtyTextBox_PreviewTextInput"
+                                                             LostFocus="CartQtyTextBox_LostFocus"
+                                                             KeyDown="CartQtyTextBox_KeyDown"
+                                                             Text="{Binding Qty}"/>
                                                 </Border>
                                                 <StackPanel Grid.Column="1"
                                                             Margin="12,0,0,0">
@@ -626,23 +709,70 @@
                                 Background="{StaticResource CardBrush}"
                                 CornerRadius="24">
                             <StackPanel>
-                                <Border Padding="14"
-                                        BorderBrush="#66D4C3BE"
-                                        BorderThickness="2"
-                                        CornerRadius="18">
-                                    <TextBlock HorizontalAlignment="Center"
-                                               FontWeight="SemiBold"
-                                               Foreground="{StaticResource ThemeInkSoftBrush}"
-                                               Text="Add note or discount"/>
-                                </Border>
+                                <Button Height="56"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Click="DiscountButton_Click">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Padding="14"
+                                                    Background="#FFFDFC"
+                                                    BorderBrush="#66D4C3BE"
+                                                    BorderThickness="2"
+                                                    CornerRadius="18">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                                               Text="{Binding DiscountSummary}"/>
+                                                    <TextBlock Grid.Column="1"
+                                                               VerticalAlignment="Center"
+                                                               FontFamily="Segoe MDL2 Assets"
+                                                               Foreground="{StaticResource AccentBrush}"
+                                                               Text="&#xE70D;"/>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
                                 <Grid Margin="0,18,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
                                     <TextBlock Foreground="{StaticResource ThemeInkSoftBrush}"
-                                               Text="Total"/>
+                                               Text="Subtotal"/>
                                     <TextBlock Grid.Column="1"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ThemeInkBrush}"
+                                               Text="{Binding CartSubtotal, StringFormat={}{0:C}}"/>
+                                    <TextBlock Grid.Row="1"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                               Text="Discount"/>
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="1"
+                                               Margin="0,8,0,0"
+                                               FontWeight="SemiBold"
+                                               Foreground="#0F6E56"
+                                               Text="{Binding DiscountAmount, StringFormat=-{0:C}}"/>
+                                    <TextBlock Grid.Row="2"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource ThemeInkSoftBrush}"
+                                               Text="Total"/>
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="1"
+                                               Margin="0,8,0,0"
                                                FontSize="28"
                                                FontWeight="Bold"
                                                Foreground="{StaticResource AccentBrush}"
@@ -657,6 +787,7 @@
                                              BorderThickness="0"
                                              Background="Transparent"
                                              VerticalContentAlignment="Center"
+                                             PreviewTextInput="PaymentTextBox_PreviewTextInput"
                                              Text="{Binding PaymentText, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Border>
                                 <Button Height="64"

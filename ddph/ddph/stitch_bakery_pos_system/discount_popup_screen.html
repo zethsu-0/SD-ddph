@@ -1,0 +1,328 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.popup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  background: var(--color-background-tertiary);
+  padding: 2rem;
+}
+
+.popup {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-xl);
+  width: 320px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.close-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+.popup-header {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+  padding-right: 24px;
+}
+
+.popup-sub {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: -8px;
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.type-btn {
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-primary);
+  padding: 14px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.type-btn:hover {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.type-btn.active {
+  border: 1.5px solid #1D9E75;
+  background: #E1F5EE;
+}
+
+.type-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.type-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.badge-pwd { background: #E6F1FB; color: #185FA5; }
+.badge-senior { background: #FAEEDA; color: #854F0B; }
+
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.discount-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.disc-btn {
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-primary);
+  padding: 10px 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.disc-btn:hover {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.disc-btn.active {
+  border: 1.5px solid #1D9E75;
+  background: #E1F5EE;
+  color: #0F6E56;
+}
+
+.custom-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.custom-input {
+  flex: 1;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 9px 10px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  outline: none;
+}
+
+.custom-input:focus {
+  border-color: #1D9E75;
+  box-shadow: 0 0 0 2px rgba(29,158,117,0.15);
+}
+
+.custom-label { font-size: 13px; color: var(--color-text-secondary); }
+
+.preview-bar {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.preview-amount {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0F6E56;
+}
+
+.apply-btn {
+  width: 100%;
+  background: #1D9E75;
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.apply-btn:hover { opacity: 0.88; }
+.apply-btn:active { transform: scale(0.98); }
+
+.type-icon-svg {
+  width: 22px;
+  height: 22px;
+}
+</style>
+
+<div class="popup-wrapper">
+  <div class="popup">
+
+    <button class="close-btn" onclick="closePopup()" aria-label="Close">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div>
+      <p class="popup-header">Apply Discount</p>
+      <p class="popup-sub">Select customer type, then choose a discount rate.</p>
+    </div>
+
+    <div class="type-row">
+      <button class="type-btn" id="btn-pwd" onclick="selectType('pwd')">
+        <svg class="type-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="4.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9 9h6l1 5h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 11.5l-2 6a4 4 0 1 0 7.2 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="type-label">PWD</span>
+        <span class="type-badge badge-pwd">Person w/ Disability</span>
+      </button>
+      <button class="type-btn" id="btn-senior" onclick="selectType('senior')">
+        <svg class="type-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M10 17l-2 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M8 21h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="type-label">Senior Citizen</span>
+        <span class="type-badge badge-senior">60 years & above</span>
+      </button>
+    </div>
+
+    <hr class="divider">
+
+    <div>
+      <p class="section-label">Discount rate</p>
+      <div class="discount-grid">
+        <button class="disc-btn" id="d-5" onclick="selectDiscount(5)">5%</button>
+        <button class="disc-btn" id="d-10" onclick="selectDiscount(10)">10%</button>
+        <button class="disc-btn" id="d-15" onclick="selectDiscount(15)">15%</button>
+        <button class="disc-btn" id="d-20" onclick="selectDiscount(20)">20%</button>
+        <button class="disc-btn" id="d-25" onclick="selectDiscount(25)">25%</button>
+        <button class="disc-btn" id="d-50" onclick="selectDiscount(50)">50%</button>
+      </div>
+    </div>
+
+    <div class="custom-row">
+      <input class="custom-input" type="number" id="custom-pct" placeholder="Custom %" min="1" max="100" oninput="selectCustom(this.value)">
+      <span class="custom-label">%</span>
+    </div>
+
+    <div class="preview-bar">
+      <span style="color: var(--color-text-secondary);">Discount applied</span>
+      <span class="preview-amount" id="preview-text">— select above</span>
+    </div>
+
+    <button class="apply-btn" onclick="applyDiscount()">Apply Discount</button>
+  </div>
+</div>
+
+<script>
+let selectedType = null;
+let selectedDiscount = null;
+
+function selectType(type) {
+  selectedType = type;
+  document.getElementById('btn-pwd').classList.toggle('active', type === 'pwd');
+  document.getElementById('btn-senior').classList.toggle('active', type === 'senior');
+  updatePreview();
+}
+
+function selectDiscount(val) {
+  selectedDiscount = val;
+  document.getElementById('custom-pct').value = '';
+  ['5','10','15','20','25','50'].forEach(v => {
+    document.getElementById('d-' + v).classList.toggle('active', parseInt(v) === val);
+  });
+  updatePreview();
+}
+
+function selectCustom(val) {
+  if (!val) return;
+  selectedDiscount = parseFloat(val);
+  ['5','10','15','20','25','50'].forEach(v => {
+    document.getElementById('d-' + v).classList.remove('active');
+  });
+  updatePreview();
+}
+
+function updatePreview() {
+  const el = document.getElementById('preview-text');
+  if (selectedDiscount !== null) {
+    el.textContent = selectedDiscount + '% off' + (selectedType ? ' (' + (selectedType === 'pwd' ? 'PWD' : 'Senior') + ')' : '');
+  } else {
+    el.textContent = '— select above';
+  }
+}
+
+function applyDiscount() {
+  if (!selectedType || selectedDiscount === null) {
+    alert('Please select a customer type and a discount rate.');
+    return;
+  }
+  alert('Applied ' + selectedDiscount + '% discount for ' + (selectedType === 'pwd' ? 'PWD' : 'Senior Citizen') + ' customer.');
+}
+
+function closePopup() {
+  const popup = document.querySelector('.popup');
+  popup.style.opacity = '0';
+  popup.style.transform = 'scale(0.96)';
+  popup.style.transition = 'opacity 0.15s, transform 0.15s';
+  setTimeout(() => { popup.style.display = 'none'; }, 150);
+}
+</script>

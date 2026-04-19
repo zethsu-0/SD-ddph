@@ -57,11 +57,11 @@ namespace ddph.Data
                 .ToList();
         }
 
-        public void UpdateOrderStatus(string orderId, string status)
+        public void UpdateOrderStatus(string orderId, string status, bool isRegisterOrder = false)
         {
             _firebaseClient
                 .PatchAsync(
-                    $"orders/{orderId}",
+                    $"{(isRegisterOrder ? "walk-in-orders" : "orders")}/{orderId}",
                     new Dictionary<string, object?>
                     {
                         ["status"] = status,

@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 using ddph.ViewModels;
 using ddph.Views;
 
@@ -21,6 +22,8 @@ namespace ddph
         private UIElement? _inventoryContent;
         private UIElement? _ordersContent;
         private UIElement? _customContent;
+        private readonly Brush _activeNavBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+        private readonly Brush _inactiveNavBrush = Brushes.Transparent;
 
         public MainWindow()
         {
@@ -56,13 +59,71 @@ namespace ddph
             PaymentTextBox.SelectAll();
         }
 
+        private void PaymentTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (sender is not TextBox textBox)
+            {
+                return;
+            }
+
+            var nextText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            nextText = nextText.Insert(textBox.CaretIndex, e.Text);
+            e.Handled = !decimal.TryParse(nextText, out _);
+        }
+
+        private void CartQtyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = e.Text.Any(character => !char.IsDigit(character));
+        }
+
+        private void CartQtyTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CommitCartQuantityEdit(sender as TextBox);
+        }
+
+        private void CartQtyTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+            {
+                return;
+            }
+
+            CommitCartQuantityEdit(sender as TextBox);
+        }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
+        private void DiscountButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not MainWindowViewModel viewModel)
+            {
+                return;
+            }
+
+            var discountWindow = new DiscountWindow(viewModel.DiscountRate, viewModel.HasDiscount ? viewModel.DiscountTypeLabel : null)
+            {
+                Owner = this
+            };
+
+            var result = discountWindow.ShowDialog();
+            if (result == true)
+            {
+                viewModel.ApplyDiscount(discountWindow.SelectedDiscountRate, discountWindow.SelectedCustomerType);
+                return;
+            }
+
+            if (discountWindow.WasCleared)
+            {
+                viewModel.ClearDiscount();
+            }
+        }
+
         private void ShowRegisterTab()
         {
+            SetActiveNavButton(RegisterNavButton);
             RegisterContent.Visibility = Visibility.Visible;
             TabContentHost.Visibility = Visibility.Collapsed;
             TabContentHost.Content = null;
@@ -72,19 +133,21 @@ namespace ddph
         private void ShowInventoryTab()
         {
             _inventoryContent ??= new InventoryView();
-
+            SetActiveNavButton(InventoryNavButton);
             ShowEmbeddedTab(_inventoryContent);
         }
 
         private void ShowOrdersTab()
         {
             _ordersContent ??= CreateEmbeddedWindowContent(new OnlineOrders());
+            SetActiveNavButton(OrdersNavButton);
             ShowEmbeddedTab(_ordersContent);
         }
 
         private void ShowCustomTab()
         {
             _customContent ??= CreateEmbeddedWindowContent(new CustomItemsWindow());
+            SetActiveNavButton(CustomNavButton);
             ShowEmbeddedTab(_customContent);
         }
 
@@ -121,6 +184,44 @@ namespace ddph
             }
 
             return content;
+        }
+
+        private void CommitCartQuantityEdit(TextBox? textBox)
+        {
+            if (textBox?.DataContext is not CartItem cartItem ||
+                DataContext is not MainWindowViewModel viewModel)
+            {
+                return;
+            }
+
+            if (!int.TryParse(textBox.Text, out var quantity))
+            {
+                textBox.Text = cartItem.Qty.ToString();
+                return;
+            }
+
+            if (quantity == 0)
+            {
+                viewModel.RemoveCartItem(cartItem);
+                return;
+            }
+
+            if (quantity > 100)
+            {
+                quantity = 100;
+            }
+
+            viewModel.UpdateCartItemQuantity(cartItem, quantity);
+            textBox.Text = quantity.ToString();
+        }
+
+        private void SetActiveNavButton(Button activeButton)
+        {
+            RegisterNavButton.Background = _inactiveNavBrush;
+            OrdersNavButton.Background = _inactiveNavBrush;
+            InventoryNavButton.Background = _inactiveNavBrush;
+            CustomNavButton.Background = _inactiveNavBrush;
+            activeButton.Background = _activeNavBrush;
         }
     }
 

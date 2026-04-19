@@ -9,9 +9,11 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public void CheckoutSale(List<CartItem> cartItems, string cashierName, decimal payment)
+        public void CheckoutSale(List<CartItem> cartItems, string cashierName, decimal payment, decimal discountRate, string? discountType)
         {
-            var totalAmount = cartItems.Sum(item => item.Price * item.Qty);
+            var subtotalAmount = cartItems.Sum(item => item.Price * item.Qty);
+            var discountAmount = Math.Round(subtotalAmount * (discountRate / 100m), 2, MidpointRounding.AwayFromZero);
+            var totalAmount = subtotalAmount - discountAmount;
             var changeAmount = payment - totalAmount;
             var createdAt = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
 
@@ -29,8 +31,13 @@ namespace ddph.Data
                 ["cashierName"] = cashierName,
                 ["saleType"] = "walk-in",
                 ["items"] = items,
-                ["subtotal"] = totalAmount,
+                ["subtotal"] = subtotalAmount,
+                ["discountRate"] = discountRate,
+                ["discountType"] = discountType,
+                ["discountAmount"] = discountAmount,
                 ["total"] = totalAmount,
+                ["status"] = "completed",
+                ["paymentStatus"] = "paid",
                 ["payment"] = payment,
                 ["change"] = changeAmount,
                 ["createdAt"] = createdAt,

@@ -53,7 +53,7 @@ namespace ddph {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/ddph;V1.0.0.0;component/products.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ddph;component/products.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\Products.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -1,0 +1,36 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\ddphkiosk\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\ddphkiosk\\ddphkiosk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|solutionrelative:ddphkiosk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 271,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "ddphkiosk\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
+              "RelativeToolTip": "ddphkiosk\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-19T12:26:43.399Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

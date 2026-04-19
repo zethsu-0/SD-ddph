@@ -148,7 +148,7 @@ namespace ddph.ViewModels
         }
 
         public bool HasSelectedOrder => SelectedOrder != null;
-        public bool CanEditOnlineOrder => (IsOnlineTabSelected || IsCustomTabSelected) && SelectedOrder != null;
+        public bool CanEditOnlineOrder => SelectedOrder != null;
         public int ActiveOrderCount => ActiveOrdersView.Cast<object>().Count();
         public decimal ActiveRevenue => ActiveOrdersView.Cast<OnlineOrder>().Sum(order => order.Total);
         public decimal ActiveAverageTicket => ActiveOrderCount == 0 ? 0 : ActiveRevenue / ActiveOrderCount;
@@ -291,7 +291,7 @@ namespace ddph.ViewModels
 
             try
             {
-                _orderRepository.UpdateOrderStatus(SelectedOrder.Id, SelectedStatus);
+                _orderRepository.UpdateOrderStatus(SelectedOrder.Id, SelectedStatus, IsRegisterTabSelected);
                 SelectedOrder.Status = SelectedStatus;
                 OnPropertyChanged(nameof(SelectedOrder));
                 RaiseSummaryProperties();

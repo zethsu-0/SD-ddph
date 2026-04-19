@@ -108,6 +108,8 @@
                 Padding="8">
             <StackPanel Orientation="Horizontal">
                 <Button Content="Online Orders"
+                        Height="44"
+                        Width="150"
                         Padding="20,10"
                         Margin="0,0,8,0"
                         Command="{Binding ShowOnlineOrdersCommand}"
@@ -145,6 +147,8 @@
 
                 <Button Content="Custom Orders"
                         Padding="20,10"
+                        Height="44"
+                        Width="150"
                         Margin="0,0,8,0"
                         Command="{Binding ShowCustomOrdersCommand}"
                         BorderBrush="Transparent"
@@ -181,6 +185,8 @@
 
                 <Button Content="Register Orders"
                         Padding="20,10"
+                        Height="44"
+                        Width="150"
                         Command="{Binding ShowRegisterOrdersCommand}"
                         BorderBrush="Transparent"
                         BorderThickness="0">
@@ -326,14 +332,16 @@
                                 <ColumnDefinition Width="145"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="120"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Order ID" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
                             <TextBlock Grid.Column="1" Text="Customer" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="2" Text="Source" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="3" Text="Date" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="4" Text="Total" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="2" Text="Status" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="3" Text="Source" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="4" Text="Date" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock Grid.Column="5" Text="Total" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
                         </Grid>
 
                         <ListBox Grid.Row="2"
@@ -359,6 +367,7 @@
                                                 <ColumnDefinition Width="145"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="150"/>
                                                 <ColumnDefinition Width="120"/>
                                             </Grid.ColumnDefinitions>
@@ -373,11 +382,21 @@
                                                            FontWeight="SemiBold"
                                                            Foreground="{StaticResource ThemeInkBrush}"/>
                                                 <TextBlock Margin="0,4,0,0"
-                                                           Text="{Binding Status}"
+                                                           Text="{Binding CustomerPhone}"
                                                            Foreground="{StaticResource ThemeInkSoftBrush}"/>
                                             </StackPanel>
 
                                             <Border Grid.Column="2"
+                                                    Padding="10,5"
+                                                    HorizontalAlignment="Left"
+                                                    Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                                    CornerRadius="14">
+                                                <TextBlock Text="{Binding Status}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                                            </Border>
+
+                                            <Border Grid.Column="3"
                                                     Padding="10,5"
                                                     HorizontalAlignment="Left"
                                                     Background="{StaticResource ThemeAccentSoftBrush}"
@@ -387,12 +406,12 @@
                                                            Foreground="{StaticResource ThemeAccentBrush}"/>
                                             </Border>
 
-                                            <TextBlock Grid.Column="3"
+                                            <TextBlock Grid.Column="4"
                                                        VerticalAlignment="Center"
                                                        Text="{Binding Date}"
                                                        Foreground="{StaticResource ThemeInkSoftBrush}"/>
 
-                                            <TextBlock Grid.Column="4"
+                                            <TextBlock Grid.Column="5"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Right"
                                                        Text="{Binding Total, StringFormat={}PHP {0:N2}}"

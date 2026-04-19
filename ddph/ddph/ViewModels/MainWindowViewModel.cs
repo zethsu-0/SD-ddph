@@ -19,6 +19,8 @@ namespace ddph.ViewModels
         private string _paymentText = string.Empty;
         private string _searchText = string.Empty;
         private string _selectedCategory = "All";
+        private decimal _discountRate;
+        private string? _discountCustomerType;
 
         public MainWindowViewModel()
         {
@@ -32,7 +34,7 @@ namespace ddph.ViewModels
             ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
             CheckoutCommand = new RelayCommand(_ => Checkout(), _ => CartItems.Any());
             RemoveCartItemCommand = new RelayCommand(
-                parameter => RemoveCartItem(parameter as CartItem),
+                parameter => DecreaseCartItemQuantity(parameter as CartItem),
                 parameter => parameter is CartItem);
             ProductButtonCommand = new RelayCommand(
                 parameter => AddProductToCart(parameter as Product),
@@ -47,7 +49,21 @@ namespace ddph.ViewModels
         public ICollectionView FilteredProducts { get; }
 
         public int ProductCount => FilteredProducts.Cast<object>().Count();
-        public decimal CartTotal => CartItems.Sum(item => item.Price * item.Qty);
+        public decimal CartSubtotal => CartItems.Sum(item => item.Price * item.Qty);
+        public decimal DiscountRate => _discountRate;
+        public decimal DiscountAmount => Math.Round(CartSubtotal * (_discountRate / 100m), 2, MidpointRounding.AwayFromZero);
+        public decimal CartTotal => CartSubtotal - DiscountAmount;
+        public bool HasDiscount => _discountRate > 0;
+        public string DiscountTypeLabel => string.Equals(_discountCustomerType, "pwd", StringComparison.OrdinalIgnoreCase)
+            ? "PWD"
+            : string.Equals(_discountCustomerType, "senior", StringComparison.OrdinalIgnoreCase)
+                ? "Senior"
+                : string.Empty;
+        public string DiscountSummary => HasDiscount
+            ? string.IsNullOrWhiteSpace(DiscountTypeLabel)
+                ? $"{_discountRate:0.##}% off"
+                : $"{_discountRate:0.##}% off ({DiscountTypeLabel})"
+            : "Add note or discount";
 
         public Product? SelectedProduct
         {
@@ -114,6 +130,70 @@ namespace ddph.ViewModels
         public ICommand ProductButtonCommand { get; }
         public event Action? PaymentFocusRequested;
 
+        public void ApplyDiscount(decimal discountRate, string? customerType)
+        {
+            if (discountRate <= 0)
+            {
+                ClearDiscount();
+                return;
+            }
+
+            _discountRate = discountRate;
+            _discountCustomerType = string.IsNullOrWhiteSpace(customerType) || string.Equals(customerType, "discount", StringComparison.OrdinalIgnoreCase)
+                ? null
+                : customerType.Trim();
+            RefreshCartTotals();
+        }
+
+        public void ClearDiscount()
+        {
+            _discountRate = 0;
+            _discountCustomerType = null;
+            RefreshCartTotals();
+        }
+
+        public void UpdateCartItemQuantity(CartItem? cartItem, int quantity)
+        {
+            if (cartItem == null || quantity <= 0)
+            {
+                return;
+            }
+
+            var existingCartItem = CartItems.FirstOrDefault(item => item.ProductId == cartItem.ProductId);
+            if (existingCartItem == null)
+            {
+                return;
+            }
+
+            var existingIndex = CartItems.IndexOf(existingCartItem);
+            CartItems[existingIndex] = new CartItem
+            {
+                ProductId = existingCartItem.ProductId,
+                Item = existingCartItem.Item,
+                Qty = quantity,
+                Price = existingCartItem.Price
+            };
+
+            RefreshCartTotals();
+        }
+
+        public void RemoveCartItem(CartItem? cartItem)
+        {
+            if (cartItem == null)
+            {
+                return;
+            }
+
+            var existingCartItem = CartItems.FirstOrDefault(item => item.ProductId == cartItem.ProductId);
+            if (existingCartItem == null)
+            {
+                return;
+            }
+
+            CartItems.Remove(existingCartItem);
+            RefreshCartTotals();
+        }
+
         private void LoadProducts()
         {
             try
@@ -172,18 +252,18 @@ namespace ddph.ViewModels
             }
 
             OnPropertyChanged(nameof(CartTotal));
-            CommandManager.InvalidateRequerySuggested();
+            RefreshCartTotals();
         }
 
         private void ClearCart()
         {
             CartItems.Clear();
             PaymentText = string.Empty;
-            OnPropertyChanged(nameof(CartTotal));
-            CommandManager.InvalidateRequerySuggested();
+            ClearDiscount();
+            RefreshCartTotals();
         }
 
-        private void RemoveCartItem(CartItem? cartItem)
+        private void DecreaseCartItemQuantity(CartItem? cartItem)
         {
             if (cartItem == null)
             {
@@ -212,8 +292,7 @@ namespace ddph.ViewModels
                 CartItems.Remove(existingCartItem);
             }
 
-            OnPropertyChanged(nameof(CartTotal));
-            CommandManager.InvalidateRequerySuggested();
+            RefreshCartTotals();
         }
 
         private bool FilterProducts(object item)
@@ -304,7 +383,7 @@ namespace ddph.ViewModels
 
             try
             {
-                _salesRepository.CheckoutSale(CartItems.ToList(), "Staff", payment);
+                _salesRepository.CheckoutSale(CartItems.ToList(), "Staff", payment, _discountRate, _discountCustomerType);
                 MessageBox.Show("Checkout completed successfully.", "Checkout", MessageBoxButton.OK, MessageBoxImage.Information);
                 ClearCart();
                 LoadProducts();
@@ -320,6 +399,18 @@ namespace ddph.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void RefreshCartTotals()
+        {
+            OnPropertyChanged(nameof(CartSubtotal));
+            OnPropertyChanged(nameof(DiscountRate));
+            OnPropertyChanged(nameof(DiscountAmount));
+            OnPropertyChanged(nameof(CartTotal));
+            OnPropertyChanged(nameof(HasDiscount));
+            OnPropertyChanged(nameof(DiscountTypeLabel));
+            OnPropertyChanged(nameof(DiscountSummary));
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

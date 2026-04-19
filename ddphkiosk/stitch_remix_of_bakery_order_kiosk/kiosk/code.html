@@ -1,0 +1,277 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#fff7f4",
+                    "on-surface": "#31332f",
+                    "tertiary": "#7e572e",
+                    "surface-container-low": "#f5f3ef",
+                    "on-primary-fixed": "#374325",
+                    "primary": "#576342",
+                    "primary-dim": "#4b5737",
+                    "error": "#ac3434",
+                    "on-secondary-container": "#7d422a",
+                    "inverse-surface": "#0e0e0d",
+                    "on-tertiary-fixed-variant": "#5a3811",
+                    "surface": "#fbf9f5",
+                    "on-tertiary-fixed": "#331b00",
+                    "on-background": "#31332f",
+                    "secondary-dim": "#7e432b",
+                    "primary-container": "#dae8be",
+                    "surface-dim": "#dadad4",
+                    "surface-container-highest": "#e3e3dd",
+                    "on-primary-container": "#4a5636",
+                    "surface-variant": "#e3e3dd",
+                    "surface-bright": "#fbf9f5",
+                    "inverse-primary": "#e5f4c9",
+                    "on-error-container": "#65000b",
+                    "on-primary": "#f0ffd3",
+                    "primary-fixed": "#dae8be",
+                    "on-secondary-fixed-variant": "#894b33",
+                    "tertiary-dim": "#704b23",
+                    "secondary-fixed": "#ffdbce",
+                    "on-primary-fixed-variant": "#53603f",
+                    "surface-container-lowest": "#ffffff",
+                    "outline-variant": "#b2b2ad",
+                    "on-secondary": "#fff7f5",
+                    "inverse-on-surface": "#9e9d99",
+                    "error-container": "#f56965",
+                    "tertiary-fixed": "#e1af7e",
+                    "surface-tint": "#576342",
+                    "background": "#fbf9f5",
+                    "on-tertiary-container": "#502f09",
+                    "error-dim": "#70030f",
+                    "outline": "#7a7b76",
+                    "on-error": "#fff7f6",
+                    "secondary-fixed-dim": "#ffc8b5",
+                    "tertiary-fixed-dim": "#d3a272",
+                    "on-surface-variant": "#5e605b",
+                    "on-secondary-fixed": "#66301a",
+                    "secondary": "#8d4e36",
+                    "surface-container-high": "#e9e8e3",
+                    "tertiary-container": "#e1af7e",
+                    "surface-container": "#efeee9",
+                    "primary-fixed-dim": "#cbdab0",
+                    "secondary-container": "#ffdbce"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Target 16:9 aspect ratio container */
+        .aspect-16-9-screen {
+            aspect-ratio: 16 / 9;
+            max-width: 100vw;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen">
+<div class="max-w-[1920px] mx-auto flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-[#fbf9f5] dark:bg-[#1a1a18] sticky full-width top-0 z-50 flex justify-between items-center w-full px-12 py-5 shrink-0">
+<div class="flex items-center gap-12">
+<h1 class="font-headline italic text-2xl text-[#8d4e36] dark:text-[#d17d5e]" style="">Dream Dough PH</h1>
+<nav class="hidden md:flex gap-10 items-center">
+<a class="text-[#8d4e36] dark:text-[#d17d5e] font-bold border-b-2 border-[#8d4e36] pb-1 font-headline text-lg leading-relaxed hover:text-[#8d4e36] transition-colors duration-300" href="#" style="">Cookies</a>
+<a class="text-[#576342] dark:text-[#a3b38c] opacity-80 font-headline text-lg leading-relaxed hover:text-[#8d4e36] transition-colors duration-300" href="#" style="">Cake</a>
+<a class="text-[#576342] dark:text-[#a3b38c] opacity-80 font-headline text-lg leading-relaxed hover:text-[#8d4e36] transition-colors duration-300" href="#" style="">Cupcakes</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#576342] active:scale-95 duration-150" style="">
+<span class="material-symbols-outlined" data-icon="shopping_basket" style="">shopping_basket</span>
+</button>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto no-scrollbar px-12 pb-12 pt-4">
+<!-- Hero Aesthetic Section -->
+<section class="mb-10 relative h-[320px] rounded-xl overflow-hidden group">
+<img alt="Artisan bakery display" class="w-full h-full object-cover" data-alt="close-up of artisan sourdough bread and pastries on a rustic wooden table with soft morning light and flour dusting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFUZpTXg3JpoHUnkqsroSTkTBUssSyUmt1qL1Kx4jLjnTUiEO_xj4CLMjTkbKWflp_Fv7BMOnd6_Stf1P6P1eBcJQTQXntz3A_FJNe5bVhi7ehcHormVubL383qRP-yQB7TeXcX99YivnnPKqQO3C__IJCgpga55oQ0EfZgzhN6omjQt6jUMvJO6mgqI0_VrCvRDXb20h2sJ9eTqHzwhfJJUGJ8YV7mAXNE-p0fkyMEzipSPO36CkZoLwA9pVBTldWoB0nlfAhiB_N" style="">
+<div class="absolute inset-0 bg-black/15 transition-colors group-hover:bg-black/10"></div>
+<div class="absolute bottom-10 left-10 max-w-xl">
+<h2 class="font-headline text-5xl text-surface-bright leading-tight drop-shadow-md mb-4" style="">The Morning Batch</h2>
+<p class="text-surface-bright/90 font-body text-lg max-w-md drop-shadow-sm" style="">Warm, hand-crafted treasures from our hearth to your hands. Every crumb tells a story of patience and fine ingredients.</p>
+</div>
+</section>
+<!-- Product Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Product Card 1: Large Featured -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 flex flex-col sm:flex-row gap-6 shadow-[0_40px_40px_0_rgba(49,51,47,0.06)] hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex-1 aspect-square md:aspect-[4/3] rounded-lg overflow-hidden">
+<img alt="Signature French Toast Cookie" class="w-full h-full object-cover" data-alt="overhead shot of a thick gourmet chocolate chip cookie with melting sea salt and gooey center on parchment paper" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKvfXiB4RYHDIOeJSGGpfjlixZaNPzDjZVA7iXQ8kB3hsAb6IM9bAIzpvQ5RiEbe7zHTOFuHsDIk6SU_k0mjZYmhDl_DI-uYijzSSOhftmSFRgr30qXWxgGtIHINA5O2EcuNjmzB-EpB9uQeQUp19_bIZ7BmN6cYCQxk5pBEGA3_iYinqpxc7NALeiUHqRKm6rbMNYuxmBOJ5OxOY7pZjPdQfUuAKb2S3daFqN4LSMI2yFLY0TyhcNUm5Elddk1aNyIRHAg-nXUCzL" style="">
+</div>
+<div class="flex-1 flex flex-col justify-between py-2">
+<div>
+<span class="font-label text-xs uppercase tracking-widest text-primary mb-2 block" style="">Signature Series</span>
+<h3 class="font-headline text-2xl text-on-surface mb-3" style="">Brown Butter &amp; Sea Salt Cookie</h3>
+<p class="text-on-surface-variant font-body text-sm mb-6" style="">48-hour cold-fermented dough, 70% dark Valrhona chocolate, and a whisper of smoked Maldon salt.</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-headline text-2xl text-secondary" style="">$5.50</span>
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 hover:bg-secondary-dim active:scale-95 transition-all" style="">
+<span class="" style="">Add to Order</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_40px_40px_0_rgba(49,51,47,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
+<div class="aspect-video rounded-lg overflow-hidden mb-4">
+<img alt="Earl Grey &amp; Lavender Cake" class="w-full h-full object-cover" data-alt="slice of multi-layered lavender cake with Earl Grey frosting on a delicate ceramic plate with floral garnish" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5YsGxS8l3xLT6rs5Tlnb1k8_-Ay5MGH7DlqAiwQG_3ik89kabn3LNr1OsIfxEu9MNwDmR6M-kwIRf_lzvPK-NjBSJlfUZ5H9B5bheOslS3dSTTm5YyWCIGnjfTwMGfehID4rnNFmxC01In03sfBgOxACbx0IslQWdIN-eTdyCWKQRctaXGjpiTg3Y1xj4Ty72BE0uojCltxMZHatECWqcp2XyvO3spKVthz6GYGCL2qAmAX8ozMiXvCEJ7WYGzbV1kmSweNreNHOi" style="">
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2" style="">Earl Grey Lavender Slice</h3>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2" style="">Infused with premium loose-leaf tea and organic culinary lavender.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline text-lg text-secondary" style="">$8.25</span>
+<button class="bg-surface-container-high text-primary px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary-container transition-colors" style="">
+                                Add
+                            </button>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_40px_40px_0_rgba(49,51,47,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
+<div class="aspect-video rounded-lg overflow-hidden mb-4">
+<img alt="Pistachio Cupcake" class="w-full h-full object-cover" data-alt="elegant pistachio cupcake with swirling pale green frosting and crushed nuts on a marble background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7UYbeJ513F7In7-MShbpIe488MN7JZYF_PT6OSm1rLT9bvUdiPcPTXPoHajGn3RV78RxSMy5T7srgA7tbBod66X7A0gLC0imezDaeEqUh9xD3M6GBCDjuoFPbOc-CExVxL_cPOy_Satzev6IVXLKn2_MAE5sdl4wA1IyMRT-nM03vMDsYWnqH44xGBrdvvJIpcmu2REyHEvBDx5xkMRuCyZtOry93N3YT3KulLzZIvuGIY135BYHxRBiHDojn8BWGYsn9t1FKYugc" style="">
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2" style="">Sicilian Pistachio Rose</h3>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2" style="">Delicate rosewater sponge topped with whipped pistachio buttercream.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline text-lg text-secondary" style="">$4.75</span>
+<button class="bg-surface-container-high text-primary px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary-container transition-colors" style="">
+                                Add
+                            </button>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_40px_40px_0_rgba(49,51,47,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
+<div class="aspect-video rounded-lg overflow-hidden mb-4">
+<img alt="Tahitian Vanilla Bean Cupcake" class="w-full h-full object-cover" data-alt="close up of a vanilla cupcake with speckled vanilla bean frosting and edible gold leaf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-ucIYanPlpPqypt9M-xTlWqw0cX624ewJpussfP-w3UINr2uqRvpoqrZqkFN9Dzf-g2BHUR5UVHMTvdXj2VUs_dyHQVwdopt1BunViIxRMkUb3uN6Wbf8zQiKOUe6Vm9nf6qTGiKIJ2wAS3KutKIhoOtNBPnItPcgj_8kpI601re03nuRuz9LM6Fy-gV1x7wFmK2cAuEJQ8UJCJdy1II4ZsgU24GiLraj9zTD-vN3J4_DwEqhL-B27gIVxqJExuvLsex4GDfuAU0w" style="">
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2" style="">Tahitian Vanilla Cloud</h3>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2" style="">Triple-fold vanilla bean cake with a light-as-air meringue frosting.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline text-lg text-secondary" style="">$4.50</span>
+<button class="bg-surface-container-high text-primary px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary-container transition-colors" style="">
+                                Add
+                            </button>
+</div>
+</div>
+<!-- Product Card 5: Large Horizontal -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 flex flex-col sm:flex-row-reverse gap-6 shadow-[0_40px_40px_0_rgba(49,51,47,0.06)] hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex-1 aspect-square md:aspect-[4/3] rounded-lg overflow-hidden">
+<img alt="Lemon Meringue Tart" class="w-full h-full object-cover" data-alt="lemon meringue tart with perfectly toasted peaks of meringue and vibrant yellow curd on a wooden board" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAulUiz6ee87UzlFoN5IBB0ZLcoFxpRYFmyUQkMCkfxGxWkRiq8ocdYuGek9GuGBDQMXLBXvrxSQl79i0f-2jqltGtMCDQw-2xiVr1VAkXGLrKqjeR31ueSfC4MWrsqrAAvyZPXseHHZgtrMV6NJCz3-3E46kL7ky3fA6sERQm4VrkdtlPDZCa5lVu-dCqIW158A6dGg-MQSNSCvIW6OICz3bAlxw79_QQL1Ar10zUQBcyCffcqlQVQ2XxrjKKnSxKBrMlwgUpsuELJ" style="">
+</div>
+<div class="flex-1 flex flex-col justify-center py-2">
+<span class="font-label text-xs uppercase tracking-widest text-primary mb-2 block" style="">Chef's Choice</span>
+<h3 class="font-headline text-3xl text-on-surface mb-3" style="">Meyer Lemon Cloud Cake</h3>
+<p class="text-on-surface-variant font-body text-sm mb-6" style="">Light chiffon layers filled with tangy Meyer lemon curd and toasted honey meringue.</p>
+<div class="flex items-center justify-between">
+<span class="font-headline text-2xl text-secondary" style="">$42.00</span>
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-xl font-medium flex items-center gap-2 hover:bg-secondary-dim transition-all" style="">
+<span class="" style="">Pre-order Whole</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-16 py-10 flex flex-col items-center gap-4 border-t border-on-surface/5">
+<div class="flex gap-12 mb-2">
+<a class="text-[#576342] opacity-60 font-body text-xs uppercase tracking-widest hover:opacity-100 transition-opacity" href="#" style="">Sourcing</a>
+<a class="text-[#576342] opacity-60 font-body text-xs uppercase tracking-widest hover:opacity-100 transition-opacity" href="#" style="">Allergens</a>
+<a class="text-[#576342] opacity-60 font-body text-xs uppercase tracking-widest hover:opacity-100 transition-opacity" href="#" style="">Contact</a>
+</div>
+<p class="text-[#576342] dark:text-[#a3b38c] font-body text-[10px] uppercase tracking-[0.2em]" style="">© 2024 The Artisanal Kiosk. Baked with soul.</p>
+</footer>
+</div>
+<!-- SideNavBar (Current Order Summary) -->
+<aside class="bg-[#f2efe9] dark:bg-[#2a2a28] w-[340px] flex flex-col h-full shrink-0 shadow-[ -10px_0_30px_rgba(0,0,0,0.03)] z-40 border-l border-on-surface/5">
+<div class="p-8 pb-4">
+<div class="mb-8">
+<h2 class="font-headline text-xl text-[#576342]" style="">Your Tray</h2>
+<p class="font-body text-sm opacity-60" style="">Freshly picked</p>
+</div>
+<nav class="flex flex-col gap-2 mb-8">
+<a class="bg-[#e6e2d9] dark:bg-[#363633] text-[#8d4e36] rounded-xl flex items-center gap-4 py-3 px-4 translate-x-1 transition-transform" href="#" style="">
+<span class="material-symbols-outlined" data-icon="shopping_cart" style="">shopping_cart</span>
+<span class="font-body text-sm font-medium" style="">Current Order</span>
+</a>
+<a class="text-[#576342] dark:text-[#a3b38c] flex items-center gap-4 py-3 px-4 hover:bg-[#e6e2d9] dark:hover:bg-[#363633] rounded-xl transition-all" href="#" style="">
+<span class="material-symbols-outlined" data-icon="bakery_dining" style="">bakery_dining</span>
+<span class="font-body text-sm" style="">Pastries</span>
+</a>
+<a class="text-[#576342] dark:text-[#a3b38c] flex items-center gap-4 py-3 px-4 hover:bg-[#e6e2d9] dark:hover:bg-[#363633] rounded-xl transition-all" href="#" style="">
+<span class="material-symbols-outlined" data-icon="local_cafe" style="">local_cafe</span>
+<span class="font-body text-sm" style="">Beverages</span>
+</a>
+</nav>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar px-8 py-4 border-t border-on-surface/5">
+<!-- Order Item -->
+<div class="flex gap-4 mb-6">
+<div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden shrink-0 shadow-sm">
+<img alt="Cookie" class="w-full h-full object-cover" data-alt="close up of a single chocolate chip cookie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz20DGyikur1r7xLFy0ksT5witeDIbvBRtbkx_94g8U3kGWS1rPnl7Mus_f8P78T4LQYaJlL-YtOdN0AzMpFk-WQGokwZVJKUTTD-cAtvFR8PDc_gxgc87NHNhBv3rBQxBaA3HaSIfOe7PgLMLDaD_IdCYmTCs1GEQ-vqz8UKz7R6KSCoH1memOeslMYO4NOitn7QZ1FHjWAAJW-n3_qKdMMJ4l0uuooFp2B0PUjGeVsU8SwNUZ9qlUHXJ4wHasCKZA4310v1dFrlm" style="">
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="font-medium text-sm" style="">Brown Butter Cookie</span>
+<span class="text-sm font-semibold" style="">$5.50</span>
+</div>
+<span class="text-xs text-on-surface-variant" style="">Qty: 1</span>
+</div>
+</div>
+<!-- Order Item -->
+<div class="flex gap-4 mb-6">
+<div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden shrink-0 shadow-sm">
+<img alt="Cupcake" class="w-full h-full object-cover" data-alt="pistachio cupcake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3ZrXR8UcC_-6yT9TlMLRwVlsJlRDowgmjP4MC22IJBeAsFSsuIDj-UmkHhsDs9DF685I5Ik3X6VAE8_eP2ExVaWLF3IMr6LoPqsIRkx6_vKXK2n_fnsouKjYdOgqEIDwQEg0hmRup3uQkKpUb2Lfl5Hv_R0tIJNwJIn6VQGzy2MepFyBr1GoaIDd9uEOPe6Onrc-nUkVRbbSR_TP8P-wvl0vGrzpNB9CJZ899JKyY3UD3xk8Ik6KKb_EZkGmwWgLQ2Y4iwH2ARwiG" style="">
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="font-medium text-sm" style="">Pistachio Rose</span>
+<span class="text-sm font-semibold" style="">$9.50</span>
+</div>
+<span class="text-xs text-on-surface-variant" style="">Qty: 2</span>
+</div>
+</div>
+</div>
+<div class="mt-auto p-8 border-t border-on-surface/5 bg-[#efecdf] dark:bg-[#252523]">
+<div class="flex justify-between mb-4">
+<span class="text-on-surface-variant font-medium" style="">Subtotal</span>
+<span class="font-semibold text-lg" style="">$15.00</span>
+</div>
+<button class="w-full bg-secondary text-on-secondary py-4 rounded-xl font-semibold shadow-lg active:scale-95 transition-all hover:bg-secondary-dim" style="">
+                        Complete Order
+                    </button>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

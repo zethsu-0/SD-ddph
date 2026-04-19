@@ -5,12 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Custom Order"
-        Height="760"
+        Height="700"
         Width="1180"
-        MinHeight="700"
+        MinHeight="620"
         MinWidth="1020"
         Background="{StaticResource ThemeBaseBrush}"
-        WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None">
         <Window.Resources>
@@ -102,13 +101,14 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="2"
-                Background="{StaticResource ThemeSurfaceBrush}"
-                BorderBrush="Transparent"
-                BorderThickness="0"
-                CornerRadius="28"
-                Padding="20">
-            <Grid>
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto">
+            <Border Background="{StaticResource ThemeSurfaceBrush}"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="28"
+                    Padding="20">
+                <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="14"/>
@@ -141,8 +141,10 @@
                                FontWeight="SemiBold"
                                Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
+                             x:Name="CustomerNameTextBox"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
+                             PreviewTextInput="LettersOnlyTextBox_PreviewTextInput"
                              Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Margin="0,12,0,6"
@@ -150,8 +152,10 @@
                                FontWeight="SemiBold"
                                Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                     <TextBox Height="36"
+                             x:Name="CustomerPhoneTextBox"
                              Padding="10,0"
                              VerticalContentAlignment="Center"
+                             PreviewTextInput="DigitsOnlyTextBox_PreviewTextInput"
                              Text="{Binding CustomerPhone, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Margin="0,12,0,6"
@@ -186,8 +190,10 @@
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource ThemeOnSurfaceBrush}"/>
                             <TextBox Height="36"
+                                     x:Name="QuantityTextBox"
                                      Padding="10,0"
                                      VerticalContentAlignment="Center"
+                                     PreviewTextInput="DigitsOnlyTextBox_PreviewTextInput"
                                      Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                     </Grid>
@@ -303,7 +309,8 @@
                                 Style="{StaticResource SubmitButtonStyle}"/>
                     </Grid>
                 </Border>
-            </Grid>
-        </Border>
+                </Grid>
+            </Border>
+        </ScrollViewer>
     </Grid>
 </Window>

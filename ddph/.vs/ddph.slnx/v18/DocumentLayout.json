@@ -3,12 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\customitemswindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\customitemswindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\onlineorders.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\onlineorders.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\discountwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\discountwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\addproductwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\addproductwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\inventoryview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\inventoryview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\inventoryview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -19,20 +39,8 @@
       "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\products.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\customitemswindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\customitemswindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\addproductwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\addproductwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\inventoryview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\inventoryview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddph\\ddph\\views\\addproductwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8CC38473-22B1-515F-3140-BAD8E141A59F}|ddph\\ddph.csproj|solutionrelative:ddph\\views\\addproductwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,8 +50,31 @@
       "DocumentGroups": [
         {
           "DockedWidth": 271,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\App.xaml",
+              "RelativeDocumentMoniker": "ddph\\App.xaml",
+              "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\App.xaml",
+              "RelativeToolTip": "ddph\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-15T07:43:40.028Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DiscountWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Views\\DiscountWindow.xaml",
+              "RelativeDocumentMoniker": "ddph\\Views\\DiscountWindow.xaml",
+              "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Views\\DiscountWindow.xaml",
+              "RelativeToolTip": "ddph\\Views\\DiscountWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-15T07:43:12.799Z"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 6,
@@ -58,7 +89,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "AddProductWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Views\\AddProductWindow.xaml.cs",
               "RelativeDocumentMoniker": "ddph\\Views\\AddProductWindow.xaml.cs",
@@ -70,7 +101,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "CustomItemsWindow.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\CustomItemsWindow.xaml",
               "RelativeDocumentMoniker": "ddph\\CustomItemsWindow.xaml",
@@ -81,7 +112,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Products.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Products.xaml",
               "RelativeDocumentMoniker": "ddph\\Products.xaml",
@@ -92,19 +123,18 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "OnlineOrders.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\OnlineOrders.xaml",
               "RelativeDocumentMoniker": "ddph\\OnlineOrders.xaml",
               "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\OnlineOrders.xaml",
               "RelativeToolTip": "ddph\\OnlineOrders.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-02T10:42:42.92Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-02T10:42:42.92Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "AddProductWindow.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Views\\AddProductWindow.xaml",
               "RelativeDocumentMoniker": "ddph\\Views\\AddProductWindow.xaml",
@@ -115,7 +145,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "InventoryView.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\Views\\InventoryView.xaml",
               "RelativeDocumentMoniker": "ddph\\Views\\InventoryView.xaml",
@@ -126,7 +156,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddph\\ddph\\MainWindow.xaml",
               "RelativeDocumentMoniker": "ddph\\MainWindow.xaml",

@@ -31,3 +31,5 @@ C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-wind
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\CustomItemsWindow.g.cs
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\ddph.sourcelink.json
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\App.baml
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\DiscountWindow.baml
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\DiscountWindow.g.cs
