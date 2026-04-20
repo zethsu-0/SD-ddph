@@ -289,7 +289,7 @@
                                        FontWeight="Bold"
                                        Foreground="{StaticResource ThemeInkSoftBrush}"/>
                             <TextBlock Margin="0,8,0,0"
-                                       Text="{Binding ActiveRevenue, StringFormat={}PHP {0:N2}}"
+                                       Text="{Binding ActiveRevenue, StringFormat={}{0:C}}"
                                        FontSize="24"
                                        FontFamily="{StaticResource ThemeHeadlineFont}"
                                        FontWeight="Bold"
@@ -414,7 +414,7 @@
                                             <TextBlock Grid.Column="5"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Right"
-                                                       Text="{Binding Total, StringFormat={}PHP {0:N2}}"
+                                                       Text="{Binding Total, StringFormat={}{0:C}}"
                                                        FontFamily="{StaticResource ThemeHeadlineFont}"
                                                        FontWeight="Bold"
                                                        Foreground="{StaticResource ThemeInkBrush}"/>
@@ -500,7 +500,7 @@
 
                                                     <TextBlock Grid.Column="1"
                                                                VerticalAlignment="Center"
-                                                               Text="{Binding Subtotal, StringFormat={}PHP {0:N2}}"
+                                                               Text="{Binding Subtotal, StringFormat={}{0:C}}"
                                                                FontWeight="Bold"
                                                                Foreground="{StaticResource ThemeAccentBrush}"/>
                                                 </Grid>
@@ -510,11 +510,22 @@
 
                                     <TextBlock Margin="0,10,0,0"
                                                HorizontalAlignment="Right"
-                                               Text="{Binding SelectedOrder.Total, StringFormat={}Total: PHP {0:N2}}"
+                                               Text="{Binding SelectedOrder.Total, StringFormat={}Total: {0:C}}"
                                                FontSize="22"
                                                FontFamily="{StaticResource ThemeHeadlineFont}"
                                                FontWeight="Bold"
                                                Foreground="{StaticResource ThemeInkBrush}"/>
+                                    <StackPanel Margin="0,16,0,0"
+                                                Visibility="{Binding IsRegisterTabSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding SelectedOrder.Payment, StringFormat={}Payment: {0:C}}"
+                                                   Foreground="{StaticResource ThemeInkSoftBrush}"
+                                                   HorizontalAlignment="Right"/>
+                                        <TextBlock Margin="0,6,0,0"
+                                                   Text="{Binding SelectedOrder.Change, StringFormat={}Change: {0:C}}"
+                                                   Foreground="{StaticResource ThemeInkSoftBrush}"
+                                                   HorizontalAlignment="Right"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
 
@@ -582,14 +593,6 @@
                                                 Foreground="White"
                                                 Content="Save Status"/>
                                     </StackPanel>
-                                    <StackPanel Margin="0,16,0,0"
-                                                Visibility="{Binding IsRegisterTabSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-                                        <TextBlock Text="{Binding SelectedOrder.Payment, StringFormat={}Payment: PHP {0:N2}}"
-                                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                                        <TextBlock Margin="0,6,0,0"
-                                                   Text="{Binding SelectedOrder.Change, StringFormat={}Change: PHP {0:N2}}"
-                                                   Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                                    </StackPanel>
                                 </StackPanel>
                             </Border>
 
@@ -604,11 +607,11 @@
                                                FontWeight="Bold"
                                                Foreground="{StaticResource ThemeAccentBrush}"/>
                                     <TextBlock Margin="0,12,0,0"
-                                               Text="{Binding ActiveRevenue, StringFormat={}Revenue: PHP {0:N2}}"
+                                               Text="{Binding ActiveRevenue, StringFormat={}Revenue: {0:C}}"
                                                FontWeight="SemiBold"
                                                Foreground="{StaticResource ThemeInkBrush}"/>
                                     <TextBlock Margin="0,6,0,0"
-                                               Text="{Binding ActiveAverageTicket, StringFormat={}Average Ticket: PHP {0:N2}}"
+                                               Text="{Binding ActiveAverageTicket, StringFormat={}Average Ticket: {0:C}}"
                                                Foreground="{StaticResource ThemeInkSoftBrush}"/>
                                     <TextBlock Margin="0,16,0,0"
                                                Text="Popular Today"

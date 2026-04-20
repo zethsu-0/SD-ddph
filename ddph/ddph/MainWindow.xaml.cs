@@ -128,6 +128,11 @@ namespace ddph
             TabContentHost.Visibility = Visibility.Collapsed;
             TabContentHost.Content = null;
             MainSearchPanel.Visibility = Visibility.Visible;
+
+            if (DataContext is MainWindowViewModel viewModel && viewModel.RefreshProductsCommand.CanExecute(null))
+            {
+                viewModel.RefreshProductsCommand.Execute(null);
+            }
         }
 
         private void ShowInventoryTab()
