@@ -14,6 +14,8 @@ namespace ddph
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
             var cultureInfo = new CultureInfo("en-PH");
             Thread.CurrentThread.CurrentCulture = cultureInfo;
             Thread.CurrentThread.CurrentUICulture = cultureInfo;

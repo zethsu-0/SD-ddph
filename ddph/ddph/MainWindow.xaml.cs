@@ -9,8 +9,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Linq;
+using System.IO;
 using ddph.ViewModels;
 using ddph.Views;
+using ddph.Receipts;
 
 namespace ddph
 {
@@ -30,6 +32,7 @@ namespace ddph
             InitializeComponent();
             var viewModel = new MainWindowViewModel();
             viewModel.PaymentFocusRequested += FocusPaymentTextBox;
+            viewModel.ReceiptGenerated += ShowReceiptPreview;
             DataContext = viewModel;
         }
 
@@ -57,6 +60,15 @@ namespace ddph
         {
             PaymentTextBox.Focus();
             PaymentTextBox.SelectAll();
+        }
+
+        private void ShowReceiptPreview(ReceiptPdfResult receipt)
+        {
+            var previewWindow = new ReceiptPreviewWindow(receipt.FilePath, receipt.PreviewImages)
+            {
+                Owner = this
+            };
+            previewWindow.ShowDialog();
         }
 
         private void PaymentTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -228,6 +240,7 @@ namespace ddph
             CustomNavButton.Background = _inactiveNavBrush;
             activeButton.Background = _activeNavBrush;
         }
+
     }
 
 }

@@ -9,7 +9,7 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public void CheckoutSale(List<CartItem> cartItems, string cashierName, decimal payment, decimal discountRate, string? discountType)
+        public string CheckoutSale(List<CartItem> cartItems, string cashierName, decimal payment, decimal discountRate, string? discountType)
         {
             var subtotalAmount = cartItems.Sum(item => item.Price * item.Qty);
             var discountAmount = Math.Round(subtotalAmount * (discountRate / 100m), 2, MidpointRounding.AwayFromZero);
@@ -36,7 +36,7 @@ namespace ddph.Data
                 ["discountType"] = discountType,
                 ["discountAmount"] = discountAmount,
                 ["total"] = totalAmount,
-                ["status"] = "completed",
+                ["status"] = "pending",
                 ["paymentStatus"] = "paid",
                 ["payment"] = payment,
                 ["change"] = changeAmount,
@@ -44,9 +44,22 @@ namespace ddph.Data
                 ["updatedAt"] = createdAt
             };
 
-            _firebaseClient.PostAsync<object>("walk-in-orders", salePayload).GetAwaiter().GetResult();
+            var created = _firebaseClient
+                .PostAsync<FirebasePushResponse>("walk-in-orders", salePayload)
+                .GetAwaiter()
+                .GetResult();
 
+            if (created == null || string.IsNullOrWhiteSpace(created.Name))
+            {
+                throw new InvalidOperationException("Firebase did not return a sale reference.");
+            }
+
+            return created.Name;
         }
 
+        private sealed class FirebasePushResponse
+        {
+            public string? Name { get; set; }
+        }
     }
 }

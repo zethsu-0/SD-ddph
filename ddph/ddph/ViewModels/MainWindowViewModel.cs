@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using ddph.Data;
 using ddph.Models;
+using ddph.Receipts;
 
 namespace ddph.ViewModels
 {
@@ -129,6 +131,7 @@ namespace ddph.ViewModels
         public ICommand RemoveCartItemCommand { get; }
         public ICommand ProductButtonCommand { get; }
         public event Action? PaymentFocusRequested;
+        public event Action<ReceiptPdfResult>? ReceiptGenerated;
 
         public void ApplyDiscount(decimal discountRate, string? customerType)
         {
@@ -383,8 +386,32 @@ namespace ddph.ViewModels
 
             try
             {
-                _salesRepository.CheckoutSale(CartItems.ToList(), "Staff", payment, _discountRate, _discountCustomerType);
-                MessageBox.Show("Checkout completed successfully.", "Checkout", MessageBoxButton.OK, MessageBoxImage.Information);
+                var cartItems = CartItems.ToList();
+                var subtotal = CartSubtotal;
+                var discountAmount = DiscountAmount;
+                var total = CartTotal;
+                var change = payment - total;
+                var createdAt = DateTime.Now;
+                var saleReference = _salesRepository.CheckoutSale(cartItems, "Staff", payment, _discountRate, _discountCustomerType);
+                var receiptDirectory = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "DDPH Receipts");
+                Directory.CreateDirectory(receiptDirectory);
+
+                var receiptPath = System.IO.Path.Combine(receiptDirectory, $"ddph-receipt-{saleReference}-{createdAt:yyyyMMdd-HHmmss}.pdf");
+                var receipt = ReceiptPdfService.Generate(
+                    receiptPath,
+                    cartItems,
+                    subtotal,
+                    discountAmount,
+                    total,
+                    payment,
+                    change,
+                    HasDiscount ? $"Discount ({DiscountSummary})" : "Discount",
+                    saleReference,
+                    createdAt);
+
+                ReceiptGenerated?.Invoke(receipt);
                 ClearCart();
                 LoadProducts();
             }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Orders"
-        Height="760"
+        Height="1356"
         Width="1320"
         MinHeight="640"
         MinWidth="1100"
@@ -612,19 +612,6 @@
                                                Foreground="{StaticResource ThemeInkBrush}"/>
                                     <TextBlock Margin="0,6,0,0"
                                                Text="{Binding ActiveAverageTicket, StringFormat={}Average Ticket: {0:C}}"
-                                               Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                                    <TextBlock Margin="0,16,0,0"
-                                               Text="Popular Today"
-                                               FontWeight="SemiBold"
-                                               Foreground="{StaticResource ThemeInkBrush}"/>
-                                    <TextBlock Margin="0,6,0,0"
-                                               Text="{Binding TopProductName}"
-                                               FontFamily="{StaticResource ThemeHeadlineFont}"
-                                               FontSize="20"
-                                               FontWeight="Bold"
-                                               Foreground="{StaticResource ThemeInkBrush}"/>
-                                    <TextBlock Margin="0,4,0,0"
-                                               Text="{Binding TopProductSales, StringFormat={}{0} sold}"
                                                Foreground="{StaticResource ThemeInkSoftBrush}"/>
                                 </StackPanel>
                             </Border>

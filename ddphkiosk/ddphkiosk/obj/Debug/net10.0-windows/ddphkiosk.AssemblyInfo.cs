@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ddphkiosk")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d01ec22191e1be69af532f641981d14ce0ae9e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("ddphkiosk")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ddphkiosk")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

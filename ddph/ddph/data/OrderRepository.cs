@@ -161,7 +161,7 @@ namespace ddph.Data
                 CustomerPhone = string.Empty,
                 CustomerEmail = string.IsNullOrWhiteSpace(record.CashierName) ? string.Empty : $"Cashier: {record.CashierName}",
                 OrderSource = "Register",
-                Status = record.Status ?? "completed",
+                Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "paid",
                 PickupDate = string.Empty,
                 PickupTime = string.Empty,

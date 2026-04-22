@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET10_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\App.xaml
-7343582840
+8921506749
 
-26-1255924305
-206-796764840
-CustomItemsWindow.xaml;MainWindow.xaml;OnlineOrders.xaml;Products.xaml;Views\AddProductWindow.xaml;Views\DiscountWindow.xaml;Views\InventoryView.xaml;
+30930457885
+2081189171982
+CustomItemsWindow.xaml;MainWindow.xaml;OnlineOrders.xaml;Products.xaml;Views\AddProductWindow.xaml;Views\DiscountWindow.xaml;Views\InventoryView.xaml;Views\ReceiptPreviewWindow.xaml;
 
 False
 
