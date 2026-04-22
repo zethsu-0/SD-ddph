@@ -46,6 +46,15 @@ namespace ddph
             ShowOrdersTab();
         }
 
+        private void QuickViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            var quickViewWindow = new QuickOrderViewWindow
+            {
+                Owner = this
+            };
+            quickViewWindow.ShowDialog();
+        }
+
         private void CustomItemsButton_Click(object sender, RoutedEventArgs e)
         {
             ShowCustomTab();

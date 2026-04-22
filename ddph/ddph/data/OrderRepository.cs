@@ -104,6 +104,143 @@ namespace ddph.Data
                 .ToList();
         }
 
+        public async Task<OnlineOrder?> GetOrderByReferenceAsync(string reference)
+        {
+            if (string.IsNullOrWhiteSpace(reference))
+            {
+                return null;
+            }
+
+            var orderId = reference.Trim();
+            var exactOrder = await GetExactOrderByReferenceAsync(orderId).ConfigureAwait(false);
+            if (exactOrder != null)
+            {
+                return exactOrder;
+            }
+
+            return await FindPartialOrderByReferenceAsync(orderId).ConfigureAwait(false);
+        }
+
+        private async Task<OnlineOrder?> GetExactOrderByReferenceAsync(string orderId)
+        {
+            var onlineOrder = await _firebaseClient
+                .GetAsync<FirebaseOrderRecord>($"orders/{orderId}")
+                .ConfigureAwait(false);
+
+            if (onlineOrder != null)
+            {
+                return MapOrder(orderId, onlineOrder);
+            }
+
+            var kioskSale = await _firebaseClient
+                .GetAsync<FirebaseKioskSaleRecord>($"kioskSales/{orderId}")
+                .ConfigureAwait(false);
+
+            if (kioskSale != null)
+            {
+                return MapKioskSale(orderId, kioskSale);
+            }
+
+            var walkInOrder = await _firebaseClient
+                .GetAsync<FirebaseWalkInOrderRecord>($"walk-in-orders/{orderId}")
+                .ConfigureAwait(false);
+
+            if (walkInOrder != null)
+            {
+                return MapWalkInOrder(orderId, walkInOrder);
+            }
+
+            var customOrder = await _firebaseClient
+                .GetAsync<FirebaseOrderRecord>($"customOrders/{orderId}")
+                .ConfigureAwait(false);
+
+            return customOrder == null ? null : MapOrder(orderId, customOrder, "Custom");
+        }
+
+        private async Task<OnlineOrder?> FindPartialOrderByReferenceAsync(string partialOrderId)
+        {
+            var normalizedPartial = NormalizeOrderId(partialOrderId);
+            if (string.IsNullOrWhiteSpace(normalizedPartial))
+            {
+                return null;
+            }
+
+            var onlineOrders = await GetMatchingOrdersAsync<FirebaseOrderRecord>(
+                    "orders",
+                    normalizedPartial,
+                    (id, record) => MapOrder(id, record))
+                .ConfigureAwait(false);
+            if (onlineOrders.Count > 0)
+            {
+                return onlineOrders[0];
+            }
+
+            var kioskSales = await GetMatchingOrdersAsync<FirebaseKioskSaleRecord>(
+                    "kioskSales",
+                    normalizedPartial,
+                    (id, record) => MapKioskSale(id, record))
+                .ConfigureAwait(false);
+            if (kioskSales.Count > 0)
+            {
+                return kioskSales[0];
+            }
+
+            var walkInOrders = await GetMatchingOrdersAsync<FirebaseWalkInOrderRecord>(
+                    "walk-in-orders",
+                    normalizedPartial,
+                    (id, record) => MapWalkInOrder(id, record))
+                .ConfigureAwait(false);
+            if (walkInOrders.Count > 0)
+            {
+                return walkInOrders[0];
+            }
+
+            var customOrders = await GetMatchingOrdersAsync<FirebaseOrderRecord>(
+                    "customOrders",
+                    normalizedPartial,
+                    (id, record) => MapOrder(id, record, "Custom"))
+                .ConfigureAwait(false);
+
+            return customOrders.FirstOrDefault();
+        }
+
+        private async Task<List<OnlineOrder>> GetMatchingOrdersAsync<TRecord>(
+            string node,
+            string normalizedPartialOrderId,
+            System.Func<string, TRecord, OnlineOrder> mapOrder)
+        {
+            var records = await _firebaseClient
+                .GetAsync<Dictionary<string, JsonElement>>(node)
+                .ConfigureAwait(false);
+
+            if (records == null)
+            {
+                return new List<OnlineOrder>();
+            }
+
+            return records
+                .Where(entry => !entry.Key.StartsWith("_") &&
+                    entry.Value.ValueKind == JsonValueKind.Object &&
+                    NormalizeOrderId(entry.Key).Contains(normalizedPartialOrderId))
+                .Select(entry => new FirebaseOrderMatch<TRecord>(
+                    entry.Key,
+                    entry.Value.Deserialize<TRecord>(new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    })))
+                .Where(entry => entry.Record != null)
+                .Select(entry => mapOrder(entry.Id, entry.Record!))
+                .OrderByDescending(order => order.Date)
+                .ToList();
+        }
+
+        private static string NormalizeOrderId(string orderId)
+        {
+            return orderId.Trim().TrimStart('-').ToUpperInvariant();
+        }
+
+        private sealed record FirebaseOrderMatch<TRecord>(string Id, TRecord? Record);
+
         public void UpdateOrderStatus(string orderId, string status, string orderNode = "orders")
         {
             UpdateOrderStatusAsync(orderId, status, orderNode).GetAwaiter().GetResult();
@@ -161,7 +298,7 @@ namespace ddph.Data
                 .GetResult();
         }
 
-        private static OnlineOrder MapOrder(string id, FirebaseOrderRecord record)
+        private static OnlineOrder MapOrder(string id, FirebaseOrderRecord record, string orderSource = "Online")
         {
             var order = new OnlineOrder
             {
@@ -169,7 +306,7 @@ namespace ddph.Data
                 CustomerName = record.CustomerName ?? string.Empty,
                 CustomerPhone = record.CustomerPhone ?? string.Empty,
                 CustomerEmail = record.CustomerEmail ?? string.Empty,
-                OrderSource = "Online",
+                OrderSource = orderSource,
                 OrderType = record.OrderType ?? "standard",
                 Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "unpaid",

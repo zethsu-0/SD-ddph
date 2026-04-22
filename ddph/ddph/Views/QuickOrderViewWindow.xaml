@@ -1,0 +1,190 @@
+<Window x:Class="ddph.Views.QuickOrderViewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Quick Order View"
+        Height="660"
+        Width="560"
+        MinHeight="560"
+        MinWidth="520"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="{StaticResource ThemeBaseBrush}">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Quick View"
+                           FontSize="28"
+                           FontFamily="{StaticResource ThemeHeadlineFont}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                <TextBlock Margin="0,4,0,0"
+                           Text="Enter receipt reference"
+                           FontSize="13"
+                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Width="44"
+                    Height="44"
+                    VerticalAlignment="Top"
+                    Background="{StaticResource ThemeSurfaceSoftBrush}"
+                    Foreground="{StaticResource ThemeAccentBrush}"
+                    Content="x"
+                    Click="CloseButton_Click"/>
+        </Grid>
+
+        <Border Grid.Row="2"
+                Padding="16"
+                Background="{StaticResource ThemeSurfaceBrush}"
+                CornerRadius="18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="112"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="ReferenceTextBox"
+                         Height="46"
+                         FontSize="16"
+                         VerticalContentAlignment="Center"
+                         TextChanged="ReferenceTextBox_TextChanged"
+                         KeyDown="ReferenceTextBox_KeyDown"/>
+                <Button x:Name="ViewButton"
+                        Grid.Column="2"
+                        Height="46"
+                        Background="{StaticResource ThemeAccentBrush}"
+                        Foreground="White"
+                        Content="View"
+                        Click="ViewButton_Click"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="4"
+                Padding="18"
+                Background="{StaticResource ThemeCardBrush}"
+                CornerRadius="18">
+            <Grid>
+                <TextBlock x:Name="EmptyTextBlock"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="Type reference"
+                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
+
+                <ScrollViewer x:Name="OrderScrollViewer"
+                              Visibility="Collapsed"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="OrderIdTextBlock"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                                <TextBlock x:Name="OrderMetaTextBlock"
+                                           Margin="0,6,0,0"
+                                           Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Padding="10,6"
+                                    Background="{StaticResource ThemeAccentSoftBrush}"
+                                    CornerRadius="14">
+                                <TextBlock x:Name="StatusTextBlock"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                            </Border>
+                        </Grid>
+
+                        <Border Margin="0,18,0,0"
+                                Padding="14"
+                                Background="{StaticResource ThemeAccentSoftBrush}"
+                                CornerRadius="14">
+                            <StackPanel>
+                                <TextBlock x:Name="CustomerTextBlock"
+                                           FontSize="20"
+                                           FontFamily="{StaticResource ThemeHeadlineFont}"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource ThemeInkBrush}"/>
+                                <TextBlock x:Name="ContactTextBlock"
+                                           Margin="0,6,0,0"
+                                           Foreground="{StaticResource ThemeInkSoftBrush}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock x:Name="NotesTextBlock"
+                                           Margin="0,6,0,0"
+                                           Foreground="{StaticResource ThemeInkSoftBrush}"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Margin="0,18,0,10"
+                                   Text="Items"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource ThemeInkBrush}"/>
+                        <ItemsControl x:Name="ItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                                            <TextBlock Margin="0,4,0,0"
+                                                       Text="{Binding Quantity, StringFormat={}Qty {0}}"
+                                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Subtotal, StringFormat={}{0:C}}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource ThemeAccentBrush}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <StackPanel Margin="0,12,0,0"
+                                    HorizontalAlignment="Right">
+                            <TextBlock x:Name="SubtotalTextBlock"
+                                       HorizontalAlignment="Right"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock x:Name="PaymentTextBlock"
+                                       Margin="0,4,0,0"
+                                       HorizontalAlignment="Right"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock x:Name="ChangeTextBlock"
+                                       Margin="0,4,0,0"
+                                       HorizontalAlignment="Right"
+                                       Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <TextBlock x:Name="TotalTextBlock"
+                                       Margin="0,10,0,0"
+                                       FontSize="24"
+                                       FontFamily="{StaticResource ThemeHeadlineFont}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ThemeInkBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
