@@ -1,15 +1,20 @@
 using System.Globalization;
 using System.Collections.Generic;
+using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using ddph.Converters;
+using ddph.Data;
 using ddph.Models;
 
 namespace ddph.Views
 {
     public partial class AddProductWindow : Window
     {
+        private readonly CloudinaryImageService _cloudinaryImageService = new();
+
         public AddProductWindow(IEnumerable<string>? categories = null)
         {
             InitializeComponent();
@@ -60,9 +65,15 @@ namespace ddph.Views
             }
 
             CreatedProduct ??= new Product();
+            var imageSource = SaveImageSource(ImageUrlTextBox.Text.Trim());
+            if (imageSource == null)
+            {
+                return;
+            }
+
             CreatedProduct.ProductName = ProductNameTextBox.Text.Trim();
             CreatedProduct.Price = price;
-            CreatedProduct.ImageUrl = ImageUrlTextBox.Text.Trim();
+            CreatedProduct.ImageUrl = imageSource;
             CreatedProduct.Category = string.IsNullOrWhiteSpace(CategoryComboBox.Text)
                 ? "Uncategorized"
                 : CategoryComboBox.Text.Trim();
@@ -116,22 +127,16 @@ namespace ddph.Views
 
         private void TryLoadImagePreview(string source)
         {
-            try
-            {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource = new System.Uri(source, System.UriKind.RelativeOrAbsolute);
-                bitmap.EndInit();
-
-                ImagePreview.Source = bitmap;
-                ImagePreview.Visibility = Visibility.Visible;
-                ImagePlaceholderText.Visibility = Visibility.Collapsed;
-            }
-            catch
+            var bitmap = ProductImageConverter.CreateImageSource(source);
+            if (bitmap == null)
             {
                 ClearImagePreview();
+                return;
             }
+
+            ImagePreview.Source = bitmap;
+            ImagePreview.Visibility = Visibility.Visible;
+            ImagePlaceholderText.Visibility = Visibility.Collapsed;
         }
 
         private void ClearImagePreview()
@@ -182,6 +187,39 @@ namespace ddph.Views
                 .ToList();
 
             CategoryComboBox.ItemsSource = updatedCategories;
+        }
+
+        private string? SaveImageSource(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source) ||
+                source.StartsWith("data:image/", System.StringComparison.OrdinalIgnoreCase) ||
+                Uri.TryCreate(source, UriKind.Absolute, out var uri) && !uri.IsFile)
+            {
+                return source;
+            }
+
+            var path = Uri.TryCreate(source, UriKind.Absolute, out uri) && uri.IsFile
+                ? uri.LocalPath
+                : source;
+
+            if (!File.Exists(path))
+            {
+                return source;
+            }
+
+            try
+            {
+                return _cloudinaryImageService.UploadProductImage(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to upload product image.\n\n{ex.Message}\n\nProduct was not saved.",
+                    "Image Upload Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return null;
+            }
         }
     }
 }

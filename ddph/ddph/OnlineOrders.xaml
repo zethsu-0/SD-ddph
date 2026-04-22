@@ -73,11 +73,6 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <TextBlock Text="Orders"
-                           FontSize="30"
-                           FontFamily="{StaticResource ThemeHeadlineFont}"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource ThemeAccentBrush}"/>
                 <TextBlock Margin="0,6,0,0"
                            Text="Review website orders and register tickets from one history board."
                            Foreground="{StaticResource ThemeInkSoftBrush}"/>
@@ -187,6 +182,7 @@
                         Padding="20,10"
                         Height="44"
                         Width="150"
+                        Margin="0,0,8,0"
                         Command="{Binding ShowRegisterOrdersCommand}"
                         BorderBrush="Transparent"
                         BorderThickness="0">
@@ -209,6 +205,43 @@
                                                 <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding IsRegisterTabSelected}" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource ThemeAccentBrush}"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Kiosk Sales"
+                        Padding="20,10"
+                        Height="44"
+                        Width="150"
+                        Command="{Binding ShowKioskSalesCommand}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource ThemeInkSoftBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Root"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="16">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding IsKioskTabSelected}" Value="True">
                                                 <Setter TargetName="Root" Property="Background" Value="{StaticResource ThemeCardBrush}"/>
                                                 <Setter Property="Foreground" Value="{StaticResource ThemeAccentBrush}"/>
                                             </DataTrigger>
@@ -349,7 +382,15 @@
                                  SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
                                  BorderThickness="0"
                                  Background="Transparent"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.CanContentScroll="True"
+                                 VirtualizingPanel.IsVirtualizing="True"
+                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.Resources>
+                                <Style TargetType="ScrollBar">
+                                    <Setter Property="Width" Value="3"/>
+                                </Style>
+                            </ListBox.Resources>
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Padding" Value="0"/>

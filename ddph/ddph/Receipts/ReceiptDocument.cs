@@ -48,15 +48,26 @@ public sealed class ReceiptDocument : IDocument
         container.Page(page =>
         {
             page.Size(PageSizes.A4);
-            page.Margin(22);
-            page.DefaultTextStyle(style => style.FontSize(25).FontFamily(Fonts.Arial));
+            page.Margin(42);
+            page.DefaultTextStyle(style => style.FontSize(13).FontFamily(Fonts.Arial).FontColor("#3F3431"));
 
             page.Content().Column(column =>
             {
-                column.Spacing(8);
-                column.Item().AlignCenter().Text("DDPH").FontSize(28).SemiBold();
-                column.Item().AlignCenter().Text($"Ref: {_reference}").FontSize(14);
-                column.Item().AlignCenter().Text(_createdAt.ToString("yyyy-MM-dd HH:mm"));
+                column.Spacing(12);
+                column.Item().AlignCenter().Text("Dream Dough PH").FontSize(26).SemiBold().FontColor("#5C4843");
+                column.Item().AlignCenter().Text("Order Receipt").FontSize(13).FontColor("#6D625F");
+                column.Item().LineHorizontal(1);
+
+                column.Item().Row(row =>
+                {
+                    row.RelativeItem().Column(details =>
+                    {
+                        details.Spacing(4);
+                        details.Item().Text($"Reference: {_reference}").FontSize(12);
+                        details.Item().Text($"Date: {_createdAt:yyyy-MM-dd HH:mm}").FontSize(12);
+                    });
+                });
+
                 column.Item().LineHorizontal(1);
 
                 column.Item().Table(table =>
@@ -64,54 +75,67 @@ public sealed class ReceiptDocument : IDocument
                     table.ColumnsDefinition(columns =>
                     {
                         columns.RelativeColumn();
-                        columns.ConstantColumn(90);
-                        columns.ConstantColumn(160);
+                        columns.ConstantColumn(46);
+                        columns.ConstantColumn(94);
+                        columns.ConstantColumn(104);
                     });
 
                     table.Header(header =>
                     {
-                        header.Cell().Text("Item").SemiBold();
-                        header.Cell().AlignRight().Text("Qty").SemiBold();
-                        header.Cell().AlignRight().Text("Amount").SemiBold();
+                        header.Cell().Element(HeaderCell).Text("Item").SemiBold();
+                        header.Cell().Element(HeaderCell).AlignCenter().Text("Qty").SemiBold();
+                        header.Cell().Element(HeaderCell).AlignRight().Text("Price").SemiBold();
+                        header.Cell().Element(HeaderCell).AlignRight().Text("Total").SemiBold();
                     });
 
                     foreach (var item in _items)
                     {
-                        table.Cell().Text(item.Item);
-                        table.Cell().AlignRight().Text(item.Qty.ToString());
-                        table.Cell().AlignRight().Text((item.Price * item.Qty).ToString("C"));
+                        table.Cell().Element(BodyCell).Text(item.Item);
+                        table.Cell().Element(BodyCell).AlignCenter().Text(item.Qty.ToString());
+                        table.Cell().Element(BodyCell).AlignRight().Text(item.Price.ToString("C"));
+                        table.Cell().Element(BodyCell).AlignRight().Text((item.Price * item.Qty).ToString("C"));
                     }
                 });
 
                 column.Item().LineHorizontal(1);
-                AddAmountRow(column, "Subtotal", _subtotal);
+                AddAmountRow(column, "Subtotal", _subtotal, 13);
 
                 if (_discount > 0)
                 {
-                    AddAmountRow(column, _discountLabel, -_discount);
+                    AddAmountRow(column, _discountLabel, -_discount, 13);
                 }
 
                 column.Item().AlignRight().Text(text =>
                 {
-                    text.Span("Total: ").SemiBold();
-                    text.Span(_total.ToString("C")).FontSize(20).SemiBold();
+                    text.Span("Total: ").FontSize(16).SemiBold();
+                    text.Span(_total.ToString("C")).FontSize(20).SemiBold().FontColor("#5C4843");
                 });
-                AddAmountRow(column, "Payment", _payment);
-                AddAmountRow(column, "Change", _change);
+                AddAmountRow(column, "Payment", _payment, 13);
+                AddAmountRow(column, "Change", _change, 13);
 
-                column.Item().PaddingTop(10).AlignCenter().Width(130).Image(_qrCodeImage);
+                column.Item().PaddingTop(18).AlignCenter().Width(120).Image(_qrCodeImage);
                 column.Item().AlignCenter().Text("Scan for receipt reference").FontSize(12);
-                column.Item().PaddingTop(16).AlignCenter().Text("Thank you!").FontSize(18).SemiBold();
+                column.Item().PaddingTop(10).AlignCenter().Text("Thank you!").FontSize(16).SemiBold();
             });
         });
     }
 
-    private static void AddAmountRow(ColumnDescriptor column, string label, decimal amount)
+    private static IContainer HeaderCell(IContainer container)
+    {
+        return container.Background("#EEEEEE").PaddingVertical(6).PaddingHorizontal(5);
+    }
+
+    private static IContainer BodyCell(IContainer container)
+    {
+        return container.BorderBottom(1).BorderColor("#EEEEEE").PaddingVertical(8).PaddingHorizontal(5);
+    }
+
+    private static void AddAmountRow(ColumnDescriptor column, string label, decimal amount, int fontSize)
     {
         column.Item().AlignRight().Text(text =>
         {
-            text.Span($"{label}: ").SemiBold();
-            text.Span(amount.ToString("C"));
+            text.Span($"{label}: ").FontSize(fontSize).SemiBold();
+            text.Span(amount.ToString("C")).FontSize(fontSize);
         });
     }
 

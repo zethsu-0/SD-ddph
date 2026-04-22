@@ -567,11 +567,23 @@
                                        FontWeight="SemiBold"
                                        Text="{Binding CartSubtotalDisplay}" />
                         </Grid>
-                        <Button Margin="0,18,0,0"
-                                Height="56"
-                                Style="{StaticResource PrimaryActionButton}"
-                                Command="{Binding SubmitOrderCommand}"
-                                Content="Complete Order" />
+                        <Grid Margin="0,18,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Height="56"
+                                    Style="{StaticResource SecondaryActionButton}"
+                                    Background="#D8D1C4"
+                                    Command="{Binding ClearCartCommand}"
+                                    Content="Clear" />
+                            <Button Grid.Column="2"
+                                    Height="56"
+                                    Style="{StaticResource PrimaryActionButton}"
+                                    Command="{Binding SubmitOrderCommand}"
+                                    Content="Complete Order" />
+                        </Grid>
                     </StackPanel>
                 </Border>
             </Grid>

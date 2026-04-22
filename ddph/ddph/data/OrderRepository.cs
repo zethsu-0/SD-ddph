@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using ddph.Models;
 
 namespace ddph.Data
@@ -12,17 +13,23 @@ namespace ddph.Data
 
         public List<OnlineOrder> GetOnlineOrders()
         {
+            return GetOnlineOrdersAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<List<OnlineOrder>> GetOnlineOrdersAsync()
+        {
             var orders = _firebaseClient
                 .GetAsync<Dictionary<string, FirebaseOrderRecord>>("orders")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
-            if (orders == null)
+            var orderRecords = await orders;
+
+            if (orderRecords == null)
             {
                 return new List<OnlineOrder>();
             }
 
-            return orders
+            return orderRecords
                 .Where(entry => entry.Value != null)
                 .Select(entry => MapOrder(entry.Key, entry.Value!))
                 .OrderByDescending(order => order.Date)
@@ -31,17 +38,23 @@ namespace ddph.Data
 
         public List<OnlineOrder> GetRegisterOrders()
         {
+            return GetRegisterOrdersAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<List<OnlineOrder>> GetRegisterOrdersAsync()
+        {
             var orders = _firebaseClient
                 .GetAsync<Dictionary<string, JsonElement>>("walk-in-orders")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
-            if (orders == null)
+            var orderRecords = await orders;
+
+            if (orderRecords == null)
             {
                 return new List<OnlineOrder>();
             }
 
-            return orders
+            return orderRecords
                 .Where(entry => !entry.Key.StartsWith("_") && entry.Value.ValueKind == JsonValueKind.Object)
                 .Select(entry => new
                 {
@@ -57,18 +70,56 @@ namespace ddph.Data
                 .ToList();
         }
 
-        public void UpdateOrderStatus(string orderId, string status, bool isRegisterOrder = false)
+        public List<OnlineOrder> GetKioskSales()
         {
-            _firebaseClient
+            return GetKioskSalesAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<List<OnlineOrder>> GetKioskSalesAsync()
+        {
+            var sales = _firebaseClient
+                .GetAsync<Dictionary<string, JsonElement>>("kioskSales")
+                .ConfigureAwait(false);
+
+            var saleRecords = await sales;
+
+            if (saleRecords == null)
+            {
+                return new List<OnlineOrder>();
+            }
+
+            return saleRecords
+                .Where(entry => !entry.Key.StartsWith("_") && entry.Value.ValueKind == JsonValueKind.Object)
+                .Select(entry => new
+                {
+                    entry.Key,
+                    Record = entry.Value.Deserialize<FirebaseKioskSaleRecord>(new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    })
+                })
+                .Where(entry => entry.Record != null)
+                .Select(entry => MapKioskSale(entry.Key, entry.Record!))
+                .OrderByDescending(order => order.Date)
+                .ToList();
+        }
+
+        public void UpdateOrderStatus(string orderId, string status, string orderNode = "orders")
+        {
+            UpdateOrderStatusAsync(orderId, status, orderNode).GetAwaiter().GetResult();
+        }
+
+        public async Task UpdateOrderStatusAsync(string orderId, string status, string orderNode = "orders")
+        {
+            await _firebaseClient
                 .PatchAsync(
-                    $"{(isRegisterOrder ? "walk-in-orders" : "orders")}/{orderId}",
+                    $"{orderNode}/{orderId}",
                     new Dictionary<string, object?>
                     {
                         ["status"] = status,
                         ["updatedAt"] = System.DateTime.UtcNow.ToString("O", System.Globalization.CultureInfo.InvariantCulture)
                     })
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
         }
 
         public void AddCustomOrder(CustomOrderSubmission submission)
@@ -195,6 +246,48 @@ namespace ddph.Data
             return order;
         }
 
+        private static OnlineOrder MapKioskSale(string id, FirebaseKioskSaleRecord record)
+        {
+            var order = new OnlineOrder
+            {
+                Id = id,
+                CustomerName = string.IsNullOrWhiteSpace(record.CustomerName) ? "Kiosk Customer" : record.CustomerName!,
+                CustomerPhone = record.CustomerPhone ?? string.Empty,
+                CustomerEmail = string.Empty,
+                OrderSource = "Kiosk",
+                OrderType = record.OrderType ?? "kiosk",
+                Status = record.Status ?? "pending",
+                PaymentStatus = record.PaymentStatus ?? "unpaid",
+                PickupDate = record.PickupDate ?? string.Empty,
+                PickupTime = record.PickupTime ?? string.Empty,
+                Notes = record.Notes ?? string.Empty,
+                Subtotal = record.Subtotal,
+                Total = record.Total,
+                Date = string.IsNullOrWhiteSpace(record.Date) ? FormatDate(record.CreatedAt) : record.Date!
+            };
+
+            if (record.Items != null)
+            {
+                foreach (var item in record.Items)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    order.Items.Add(new OnlineOrderItem
+                    {
+                        Name = item.Name ?? string.Empty,
+                        Category = item.Category ?? string.Empty,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    });
+                }
+            }
+
+            return order;
+        }
+
         private static string FormatDate(string? createdAt)
         {
             if (string.IsNullOrWhiteSpace(createdAt))
@@ -249,6 +342,23 @@ namespace ddph.Data
             public string? Notes { get; set; }
             public decimal Payment { get; set; }
             public string? PaymentStatus { get; set; }
+            public string? Status { get; set; }
+            public decimal Subtotal { get; set; }
+            public decimal Total { get; set; }
+        }
+
+        private sealed class FirebaseKioskSaleRecord
+        {
+            public string? CreatedAt { get; set; }
+            public string? CustomerName { get; set; }
+            public string? CustomerPhone { get; set; }
+            public string? Date { get; set; }
+            public List<FirebaseOrderItemRecord?>? Items { get; set; }
+            public string? Notes { get; set; }
+            public string? OrderType { get; set; }
+            public string? PaymentStatus { get; set; }
+            public string? PickupDate { get; set; }
+            public string? PickupTime { get; set; }
             public string? Status { get; set; }
             public decimal Subtotal { get; set; }
             public decimal Total { get; set; }

@@ -1,1 +1,6 @@
-.vs
+.vs/
+.agents/
+bin/
+obj/
+obj-codex/
+

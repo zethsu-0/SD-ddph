@@ -398,7 +398,7 @@ namespace ddph.ViewModels
                     "DDPH Receipts");
                 Directory.CreateDirectory(receiptDirectory);
 
-                var receiptPath = System.IO.Path.Combine(receiptDirectory, $"ddph-receipt-{saleReference}-{createdAt:yyyyMMdd-HHmmss}.pdf");
+                var receiptPath = System.IO.Path.Combine(receiptDirectory, $"ddph-receipt-{saleReference}-{createdAt:yyyyMMdd-HHmmss}.png");
                 var receipt = ReceiptPdfService.Generate(
                     receiptPath,
                     cartItems,

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -10,6 +11,7 @@ namespace ddphkiosk;
 public sealed class FirebaseKioskService
 {
     private const string BaseUrl = "https://dreamdoughph-88e46-default-rtdb.asia-southeast1.firebasedatabase.app";
+    private const string StorageBucket = "dreamdoughph-88e46.appspot.com";
     private const string PlaceholderImage = "placeholder";
 
     private static readonly HttpClient HttpClient = new()
@@ -22,7 +24,7 @@ public sealed class FirebaseKioskService
     public async Task<MenuData> GetMenuAsync()
     {
         var productsResponse = await HttpClient.GetFromJsonAsync<FirebaseProductsResponse>("/products.json", JsonOptions);
-        var products = BuildProducts(productsResponse ?? []);
+        var products = await BuildProductsAsync(productsResponse ?? []);
         var categories = BuildCategories(products);
 
         return new MenuData
@@ -46,7 +48,7 @@ public sealed class FirebaseKioskService
         return result.Name;
     }
 
-    private static List<ProductCard> BuildProducts(FirebaseProductsResponse productsResponse)
+    private static async Task<List<ProductCard>> BuildProductsAsync(FirebaseProductsResponse productsResponse)
     {
         var products = new List<ProductCard>();
 
@@ -70,7 +72,7 @@ public sealed class FirebaseKioskService
                 Description = BuildDescription(category, dto.Image),
                 Badge = BuildBadge(name),
                 Image = string.IsNullOrWhiteSpace(dto.Image) ? PlaceholderImage : dto.Image!,
-                ProductImageSource = CreateImageSource(dto.Image),
+                ProductImageSource = await CreateImageSourceAsync(dto.Image),
                 Price = dto.Price,
                 ArtBrush = CreateBrush(name)
             });
@@ -149,19 +151,203 @@ public sealed class FirebaseKioskService
         return (Brush)new BrushConverter().ConvertFromString(palette[index])!;
     }
 
-    private static BitmapImage? CreateImageSource(string? image)
+    private static async Task<BitmapImage?> CreateImageSourceAsync(string? image)
     {
         if (string.IsNullOrWhiteSpace(image) || image == PlaceholderImage)
         {
             return null;
         }
 
-        if (!Uri.TryCreate(image, UriKind.Absolute, out var uri))
+        if (TryCreateDataUriBitmap(image, out var dataBitmap))
+        {
+            return dataBitmap;
+        }
+
+        if (Uri.TryCreate(image, UriKind.Absolute, out var absoluteUri))
+        {
+            if (absoluteUri.IsFile && !File.Exists(absoluteUri.LocalPath))
+            {
+                return null;
+            }
+
+            if (string.Equals(absoluteUri.Scheme, "gs", StringComparison.OrdinalIgnoreCase))
+            {
+                if (TryCreateFirebaseStorageDownloadUri(absoluteUri, out var storageUri))
+                {
+                    return await CreateRemoteBitmapImageAsync(storageUri);
+                }
+
+                return null;
+            }
+
+            if (string.Equals(absoluteUri.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(absoluteUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                return await CreateRemoteBitmapImageAsync(absoluteUri);
+            }
+
+            if (!absoluteUri.IsFile)
+            {
+                return null;
+            }
+
+            return CreateBitmapImage(absoluteUri);
+        }
+
+        if (Path.IsPathRooted(image) && File.Exists(image))
+        {
+            return CreateBitmapImage(new Uri(image, UriKind.Absolute));
+        }
+
+        if (TryCreateFirebaseStorageDownloadUri(image, out var fallbackStorageUri))
+        {
+            return await CreateRemoteBitmapImageAsync(fallbackStorageUri);
+        }
+
         {
             return null;
         }
+    }
 
-        return new BitmapImage(uri);
+    private static bool TryCreateDataUriBitmap(string value, out BitmapImage? bitmap)
+    {
+        bitmap = null;
+
+        if (!value.StartsWith("data:image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var commaIndex = value.IndexOf(',');
+        if (commaIndex < 0)
+        {
+            return false;
+        }
+
+        var header = value[..commaIndex];
+        if (!header.Contains(";base64", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var base64 = value[(commaIndex + 1)..];
+        try
+        {
+            var bytes = Convert.FromBase64String(base64);
+            using var stream = new MemoryStream(bytes, writable: false);
+
+            var result = new BitmapImage();
+            result.BeginInit();
+            result.CacheOption = BitmapCacheOption.OnLoad;
+            result.StreamSource = stream;
+            result.EndInit();
+            result.Freeze();
+
+            bitmap = result;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryCreateFirebaseStorageDownloadUri(string objectPath, out Uri uri)
+    {
+        uri = null!;
+
+        var trimmed = objectPath.Trim();
+        trimmed = trimmed.TrimStart('/');
+        if (string.IsNullOrWhiteSpace(trimmed))
+        {
+            return false;
+        }
+
+        if (trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (trimmed.StartsWith("gs://", StringComparison.OrdinalIgnoreCase))
+        {
+            return Uri.TryCreate(trimmed, UriKind.Absolute, out var gsUri) &&
+                   TryCreateFirebaseStorageDownloadUri(gsUri, out uri);
+        }
+
+        var encodedObject = Uri.EscapeDataString(trimmed.Replace('\\', '/'));
+        var url = $"https://firebasestorage.googleapis.com/v0/b/{StorageBucket}/o/{encodedObject}?alt=media";
+        return Uri.TryCreate(url, UriKind.Absolute, out uri);
+    }
+
+    private static bool TryCreateFirebaseStorageDownloadUri(Uri gsUri, out Uri uri)
+    {
+        uri = null!;
+
+        if (!string.Equals(gsUri.Scheme, "gs", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(gsUri.Host))
+        {
+            return false;
+        }
+
+        var bucket = gsUri.Host.Trim();
+        if (!bucket.EndsWith(".appspot.com", StringComparison.OrdinalIgnoreCase))
+        {
+            bucket = StorageBucket;
+        }
+
+        var path = gsUri.AbsolutePath.Trim('/');
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return false;
+        }
+
+        var encodedObject = Uri.EscapeDataString(path);
+        var url = $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{encodedObject}?alt=media";
+        return Uri.TryCreate(url, UriKind.Absolute, out uri);
+    }
+
+    private static BitmapImage? CreateBitmapImage(Uri uri)
+    {
+        try
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = uri;
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static async Task<BitmapImage?> CreateRemoteBitmapImageAsync(Uri uri)
+    {
+        try
+        {
+            var bytes = await HttpClient.GetByteArrayAsync(uri);
+            using var stream = new MemoryStream(bytes, writable: false);
+
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.StreamSource = stream;
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
 

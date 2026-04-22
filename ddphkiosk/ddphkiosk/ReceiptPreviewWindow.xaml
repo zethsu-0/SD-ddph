@@ -1,0 +1,138 @@
+<Window x:Class="ddphkiosk.ReceiptPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Receipt Preview"
+        Width="560"
+        Height="780"
+        MinWidth="480"
+        MinHeight="640"
+        Background="Transparent"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None">
+    <Border Background="#FBF9F5"
+            BorderBrush="#1F31332F"
+            BorderThickness="1"
+            CornerRadius="18">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Margin="24,20,20,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock FontFamily="Noto Serif"
+                               FontSize="26"
+                               FontStyle="Italic"
+                               Foreground="#8D4E36"
+                               Text="Receipt Preview" />
+                    <TextBlock Margin="0,6,0,0"
+                               FontFamily="Plus Jakarta Sans"
+                               FontSize="13"
+                               Foreground="#5E605B"
+                               Text="Review order before sending" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Width="38"
+                        Height="38"
+                        Background="#E9E8E3"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Click="CloseButton_Click"
+                        Content="X"
+                        Cursor="Hand"
+                        FontFamily="Plus Jakarta Sans"
+                        FontWeight="SemiBold"
+                        Foreground="#8D4E36">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="19">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <ScrollViewer Grid.Row="1"
+                          Margin="24,0"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding PreviewPages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,18"
+                                    Background="White"
+                                    BorderBrush="#1431332F"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                <Image Source="{Binding}"
+                                       Stretch="Uniform"
+                                       UseLayoutRounding="True" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Grid Grid.Row="2"
+                  Margin="24,18,24,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Height="54"
+                        Background="#E9E8E3"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Click="CancelButton_Click"
+                        Content="Cancel"
+                        Cursor="Hand"
+                        FontFamily="Plus Jakarta Sans"
+                        FontWeight="SemiBold"
+                        Foreground="#576342">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="15">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button Grid.Column="2"
+                        Height="54"
+                        Background="#8D4E36"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Click="ConfirmButton_Click"
+                        Content="Confirm"
+                        Cursor="Hand"
+                        FontFamily="Plus Jakarta Sans"
+                        FontWeight="SemiBold"
+                        Foreground="#FFF7F5">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="15">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

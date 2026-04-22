@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ddph"
+        xmlns:converters="clr-namespace:ddph.Converters"
         xmlns:views="clr-namespace:ddph.Views"
         mc:Ignorable="d"
         Title="POS System"
@@ -16,6 +17,7 @@
         WindowStyle="None">
     <Window.Resources>
         <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FFF8EF"/>
+        <converters:ProductImageConverter x:Key="ProductImageConverter"/>
         <SolidColorBrush x:Key="ThemeAccentBrush" Color="#765449"/>
         <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FBF3E4"/>
         <SolidColorBrush x:Key="ThemeInkBrush" Color="#1E1B13"/>
@@ -362,7 +364,8 @@
 
                 <StackPanel Grid.Column="0"
                             VerticalAlignment="Center">
-                    <TextBlock Text="Menu"
+                    <TextBlock x:Name="PageTitleText"
+                               Text="Register"
                                FontSize="32"
                                FontWeight="Bold"
                                Foreground="{StaticResource ThemeAccentBrush}"/>
@@ -503,7 +506,7 @@
                                 Command="{Binding RefreshProductsCommand}"
                                 Style="{StaticResource SecondaryButtonStyle}"/>
                     </Grid>
-
+                
                     <ScrollViewer Grid.Row="3"
                                   Margin="0,4,0,0"
                                   VerticalScrollBarVisibility="Auto">
@@ -534,7 +537,7 @@
                                                     <RowDefinition Height="*"/>
                                                 </Grid.RowDefinitions>
                                                 <Border Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                                <Image Source="{Binding ImageUrl}"
+                                                <Image Source="{Binding ImageUrl, Converter={StaticResource ProductImageConverter}}"
                                                        Stretch="UniformToFill"/>
                                                 <Rectangle>
                                                     <Rectangle.Fill>
@@ -633,6 +636,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            
                             <ItemsControl ItemsSource="{Binding CartItems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>

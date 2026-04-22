@@ -31,6 +31,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         LoadPickupTimes();
         AddToCartCommand = new RelayCommand<ProductCard>(AddToCart);
         DecreaseCartItemCommand = new RelayCommand<CartItem>(DecreaseCartItem);
+        ClearCartCommand = new RelayCommand(ClearCart);
         SelectCategoryCommand = new RelayCommand<CategoryTab>(SelectCategory);
         SubmitOrderCommand = new AsyncRelayCommand(SubmitOrderAsync, HasCartItems);
         CloseAppCommand = new RelayCommand(CloseApp);
@@ -51,6 +52,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public ICommand AddToCartCommand { get; }
 
     public ICommand DecreaseCartItemCommand { get; }
+
+    public ICommand ClearCartCommand { get; }
 
     public ICommand SelectCategoryCommand { get; }
 
@@ -205,6 +208,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         RefreshSubmitState();
     }
 
+    private void ClearCart()
+    {
+        foreach (var cartItem in CartItems)
+        {
+            cartItem.PropertyChanged -= HandleCartChanged;
+        }
+
+        CartItems.Clear();
+        OnPropertyChanged(nameof(CartSubtotalDisplay));
+        RefreshSubmitState();
+    }
+
     private void SelectCategory(CategoryTab? category)
     {
         if (category is null || string.IsNullOrWhiteSpace(category.Name))
@@ -256,14 +271,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         var request = BuildOrderRequest();
-        var confirmationMessage = BuildConfirmationMessage(request);
-        var confirmationResult = MessageBox.Show(
-            confirmationMessage,
-            "Confirm Order",
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Information);
-
-        if (confirmationResult != MessageBoxResult.OK)
+        if (!ShowReceiptConfirmation(request))
         {
             StatusMessage = "Order confirmation cancelled.";
             return;
@@ -274,10 +282,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             StatusMessage = "Sending order...";
             var orderId = await _service.CreateOrderAsync(request);
             StatusMessage = $"Order sent: {orderId}";
-            CartItems.Clear();
+            ClearCart();
             ClearOrderInputs();
-            OnPropertyChanged(nameof(CartSubtotalDisplay));
-            RefreshSubmitState();
         }
         catch (Exception ex)
         {
@@ -348,24 +354,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return pickupDateTime > DateTime.Now;
     }
 
-    private string BuildConfirmationMessage(OrderCreateRequest request)
+    private bool ShowReceiptConfirmation(OrderCreateRequest request)
     {
-        var lines = request.Items
-            .Select(item => $"{item.Quantity} x {item.Name} - {item.Subtotal.ToPeso()}")
-            .ToList();
+        try
+        {
+            var previewPages = ReceiptGenerator.CreatePreviewPages(request);
+            var window = new ReceiptPreviewWindow(previewPages)
+            {
+                Owner = this
+            };
 
-        var summary = string.Join(Environment.NewLine, lines);
-        return
-            $"Customer: {request.CustomerName}{Environment.NewLine}" +
-            $"Phone: {request.CustomerPhone}{Environment.NewLine}" +
-            $"Pickup: {request.PickupDate} {request.PickupTime}{Environment.NewLine}" +
-            $"{Environment.NewLine}" +
-            $"Items:{Environment.NewLine}{summary}{Environment.NewLine}" +
-            $"{Environment.NewLine}" +
-            $"Notes: {request.Notes}{Environment.NewLine}" +
-            $"Total: {request.Total.ToPeso()}{Environment.NewLine}" +
-            $"{Environment.NewLine}" +
-            "Place this order?";
+            return window.ShowDialog() == true;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Receipt failed: {ex.Message}";
+            return false;
+        }
     }
 
     private void ClearOrderInputs()

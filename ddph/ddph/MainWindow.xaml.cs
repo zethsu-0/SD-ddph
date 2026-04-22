@@ -135,6 +135,7 @@ namespace ddph
 
         private void ShowRegisterTab()
         {
+            PageTitleText.Text = "Register";
             SetActiveNavButton(RegisterNavButton);
             RegisterContent.Visibility = Visibility.Visible;
             TabContentHost.Visibility = Visibility.Collapsed;
@@ -150,6 +151,7 @@ namespace ddph
         private void ShowInventoryTab()
         {
             _inventoryContent ??= new InventoryView();
+            PageTitleText.Text = "Inventory";
             SetActiveNavButton(InventoryNavButton);
             ShowEmbeddedTab(_inventoryContent);
         }
@@ -157,6 +159,7 @@ namespace ddph
         private void ShowOrdersTab()
         {
             _ordersContent ??= CreateEmbeddedWindowContent(new OnlineOrders());
+            PageTitleText.Text = "Orders";
             SetActiveNavButton(OrdersNavButton);
             ShowEmbeddedTab(_ordersContent);
         }
@@ -164,6 +167,7 @@ namespace ddph
         private void ShowCustomTab()
         {
             _customContent ??= CreateEmbeddedWindowContent(new CustomItemsWindow());
+            PageTitleText.Text = "Custom";
             SetActiveNavButton(CustomNavButton);
             ShowEmbeddedTab(_customContent);
         }
