@@ -9,7 +9,7 @@ namespace ddph.Data
 {
     public class FirebaseDatabaseClient
     {
-        private const string DatabaseUrl = "https://dreamdoughph-88e46-default-rtdb.asia-southeast1.firebasedatabase.app";
+        private const string DatabaseUrl = "https://dreamdoughph-v2-default-rtdb.asia-southeast1.firebasedatabase.app";
 
         private static readonly HttpClient HttpClient = new()
         {

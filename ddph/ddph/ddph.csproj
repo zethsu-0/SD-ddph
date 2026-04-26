@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>dd.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="dd.ico" />
     <Resource Include="dd.png" />
+    <Resource Include="..\\bg.jpg" Link="bg.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="credentials.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

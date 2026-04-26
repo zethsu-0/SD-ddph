@@ -82,3 +82,7 @@ C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-wind
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\ref\ddph.dll
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\QuickOrderViewWindow.baml
 C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\QuickOrderViewWindow.g.cs
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\LoginWindow.baml
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\Views\LoginWindow.g.cs
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\bin\Debug\net10.0-windows\credentials.ini
+C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\ddph_Content.g.cs

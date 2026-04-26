@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using ddph.Data;
 using ddph.Models;
 using ddph.Receipts;
@@ -15,6 +16,7 @@ namespace ddph.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+        private const decimal MaxDiscountRate = 100m;
         private readonly ProductRepository _productRepository = new();
         private readonly SalesRepository _salesRepository = new();
         private Product? _selectedProduct;
@@ -23,6 +25,7 @@ namespace ddph.ViewModels
         private string _selectedCategory = "All";
         private decimal _discountRate;
         private string? _discountCustomerType;
+        private bool _isLoading;
 
         public MainWindowViewModel()
         {
@@ -31,18 +34,18 @@ namespace ddph.ViewModels
             CartItems = new ObservableCollection<CartItem>();
             FilteredProducts = CollectionViewSource.GetDefaultView(Products);
             FilteredProducts.Filter = FilterProducts;
-            RefreshProductsCommand = new RelayCommand(_ => LoadProducts());
+            RefreshProductsCommand = new RelayCommand(async _ => await LoadProductsAsync(), _ => !IsLoading);
             ClearCartCommand = new RelayCommand(_ => ClearCart(), _ => CartItems.Any());
             ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
-            CheckoutCommand = new RelayCommand(_ => Checkout(), _ => CartItems.Any());
+            CheckoutCommand = new RelayCommand(async _ => await CheckoutAsync(), _ => CartItems.Any() && !IsLoading);
             RemoveCartItemCommand = new RelayCommand(
                 parameter => DecreaseCartItemQuantity(parameter as CartItem),
                 parameter => parameter is CartItem);
             ProductButtonCommand = new RelayCommand(
                 parameter => AddProductToCart(parameter as Product),
-                parameter => parameter is Product);
+                parameter => parameter is Product && !IsLoading);
 
-            LoadProducts();
+            _ = LoadProductsAsync();
         }
 
         public ObservableCollection<Product> Products { get; }
@@ -53,7 +56,7 @@ namespace ddph.ViewModels
         public int ProductCount => FilteredProducts.Cast<object>().Count();
         public decimal CartSubtotal => CartItems.Sum(item => item.Price * item.Qty);
         public decimal DiscountRate => _discountRate;
-        public decimal DiscountAmount => Math.Round(CartSubtotal * (_discountRate / 100m), 2, MidpointRounding.AwayFromZero);
+        public decimal DiscountAmount => Math.Round(CartSubtotal * (Math.Min(_discountRate, MaxDiscountRate) / 100m), 2, MidpointRounding.AwayFromZero);
         public decimal CartTotal => CartSubtotal - DiscountAmount;
         public bool HasDiscount => _discountRate > 0;
         public string DiscountTypeLabel => string.Equals(_discountCustomerType, "pwd", StringComparison.OrdinalIgnoreCase)
@@ -66,6 +69,22 @@ namespace ddph.ViewModels
                 ? $"{_discountRate:0.##}% off"
                 : $"{_discountRate:0.##}% off ({DiscountTypeLabel})"
             : "Add note or discount";
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            private set
+            {
+                if (_isLoading == value)
+                {
+                    return;
+                }
+
+                _isLoading = value;
+                OnPropertyChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
 
         public Product? SelectedProduct
         {
@@ -141,7 +160,7 @@ namespace ddph.ViewModels
                 return;
             }
 
-            _discountRate = discountRate;
+            _discountRate = Math.Min(discountRate, MaxDiscountRate);
             _discountCustomerType = string.IsNullOrWhiteSpace(customerType) || string.Equals(customerType, "discount", StringComparison.OrdinalIgnoreCase)
                 ? null
                 : customerType.Trim();
@@ -197,13 +216,31 @@ namespace ddph.ViewModels
             RefreshCartTotals();
         }
 
-        private void LoadProducts()
+        private async Task LoadProductsAsync()
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+                await LoadProductsCoreAsync();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task LoadProductsCoreAsync()
         {
             try
             {
                 Products.Clear();
 
-                foreach (var product in _productRepository.GetProducts())
+                foreach (var product in await _productRepository.GetProductsAsync())
                 {
                     Products.Add(product);
                 }
@@ -356,7 +393,7 @@ namespace ddph.ViewModels
             }
         }
 
-        private void Checkout()
+        private async Task CheckoutAsync()
         {
             if (!CartItems.Any())
             {
@@ -370,9 +407,16 @@ namespace ddph.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(PaymentText, NumberStyles.Number, CultureInfo.InvariantCulture, out var payment))
+            if (!decimal.TryParse(PaymentText, NumberStyles.Number, CultureInfo.CurrentCulture, out var payment))
             {
                 MessageBox.Show("Enter a valid payment amount.", "Invalid Payment", MessageBoxButton.OK, MessageBoxImage.Warning);
+                PaymentFocusRequested?.Invoke();
+                return;
+            }
+
+            if (payment <= 0)
+            {
+                MessageBox.Show("Payment must be greater than zero.", "Invalid Payment", MessageBoxButton.OK, MessageBoxImage.Warning);
                 PaymentFocusRequested?.Invoke();
                 return;
             }
@@ -386,13 +430,14 @@ namespace ddph.ViewModels
 
             try
             {
+                IsLoading = true;
                 var cartItems = CartItems.ToList();
                 var subtotal = CartSubtotal;
                 var discountAmount = DiscountAmount;
                 var total = CartTotal;
                 var change = payment - total;
                 var createdAt = DateTime.Now;
-                var saleReference = _salesRepository.CheckoutSale(cartItems, "Staff", payment, _discountRate, _discountCustomerType);
+                var saleReference = await _salesRepository.CheckoutSaleAsync(cartItems, AuthSessionStore.CurrentUsername, payment, _discountRate, _discountCustomerType);
                 var receiptDirectory = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "DDPH Receipts");
@@ -413,11 +458,15 @@ namespace ddph.ViewModels
 
                 ReceiptGenerated?.Invoke(receipt);
                 ClearCart();
-                LoadProducts();
+                await LoadProductsCoreAsync();
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Unable to complete checkout.\n\n{ex.Message}", "Checkout Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 

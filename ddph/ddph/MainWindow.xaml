@@ -13,11 +13,13 @@
         MinHeight="600"
         MinWidth="1100"
         Background="#FFF8EF"
+        Icon="/dd.png"
         WindowState="Maximized"
         WindowStyle="None">
     <Window.Resources>
         <SolidColorBrush x:Key="ThemeBaseBrush" Color="#FFF8EF"/>
         <converters:ProductImageConverter x:Key="ProductImageConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <SolidColorBrush x:Key="ThemeAccentBrush" Color="#765449"/>
         <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#FBF3E4"/>
         <SolidColorBrush x:Key="ThemeInkBrush" Color="#1E1B13"/>
@@ -301,6 +303,7 @@
                             Style="{StaticResource NavButtonStyle}"
                             Width="72"
                             Height="72"
+                            Margin="0,0,0,14"
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
@@ -318,28 +321,50 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                <Button Grid.Row="2"
-                        Style="{StaticResource CloseNavButtonStyle}"
-                        Width="72"
-                        Height="72"
-                        Margin="0,0,0,24"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Click="CloseButton_Click">
-                    <StackPanel>
-                        <TextBlock FontFamily="Segoe MDL2 Assets"
-                                   FontSize="18"
-                                   HorizontalAlignment="Center"
-                                   Text="&#xE8BB;"/>
-                        <TextBlock Margin="0,4,0,0"
-                                   HorizontalAlignment="Center"
-                                   FontSize="10"
-                                   FontWeight="SemiBold"
-                                   Text="Close"/>
-                    </StackPanel>
-                </Button>
+                <StackPanel Grid.Row="2"
+                            Margin="0,0,0,24"
+                            HorizontalAlignment="Center">
+                    <Button x:Name="SettingsNavButton"
+                            Style="{StaticResource CloseNavButtonStyle}"
+                            Width="72"
+                            Height="72"
+                            Margin="0,0,0,10"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="SettingsButton_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE713;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Settings"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource CloseNavButtonStyle}"
+                            Width="72"
+                            Height="72"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Click="CloseButton_Click">
+                        <StackPanel>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       Text="&#xE8BB;"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       HorizontalAlignment="Center"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Text="Close"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -412,17 +437,25 @@
                 </Button>
 
                 <Border Grid.Column="6"
-                        Width="48"
+                        MinWidth="48"
                         Height="48"
+                        Padding="14,0"
                         VerticalAlignment="Center"
                         Background="{StaticResource PanelSoftBrush}"
                         CornerRadius="24">
-                    <TextBlock VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               FontFamily="Segoe MDL2 Assets"
-                               FontSize="18"
-                               Foreground="{StaticResource AccentBrush}"
-                               Text="&#xE77B;"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="18"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   Text="&#xE77B;"/>
+                        <TextBlock x:Name="LoggedInUserText"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource AccentBrush}"/>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Border>
@@ -667,6 +700,7 @@
                                                              Background="Transparent"
                                                              BorderThickness="0"
                                                              PreviewTextInput="CartQtyTextBox_PreviewTextInput"
+                                                             DataObject.Pasting="CartQtyTextBox_Pasting"
                                                              LostFocus="CartQtyTextBox_LostFocus"
                                                              KeyDown="CartQtyTextBox_KeyDown"
                                                              Text="{Binding Qty}"/>
@@ -686,7 +720,7 @@
                                                     <TextBlock HorizontalAlignment="Right"
                                                                FontWeight="Bold"
                                                                Foreground="{StaticResource ThemeInkBrush}"
-                                                               Text="{Binding Price, StringFormat={}{0:C}}"/>
+                                                               Text="{Binding LineTotal, StringFormat={}{0:C}}"/>
                                                     <Button Width="32"
                                                             Height="32"
                                                             Margin="0,10,0,0"
@@ -942,6 +976,17 @@
                                 Style="{StaticResource SecondaryButtonStyle}"/>
                     </StackPanel>
                 </Grid>
+            </Border>
+
+            <Border Grid.ColumnSpan="3"
+                    Panel.ZIndex="50"
+                    Background="#CCFFF8EF"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar Width="180"
+                             Height="8"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             IsIndeterminate="True"/>
             </Border>
         </Grid>
 

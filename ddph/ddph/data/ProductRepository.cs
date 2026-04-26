@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using ddph.Models;
 
 namespace ddph.Data
@@ -10,12 +11,11 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public List<Product> GetProducts()
+        public async Task<List<Product>> GetProductsAsync()
         {
-            var products = _firebaseClient
+            var products = await _firebaseClient
                 .GetAsync<Dictionary<string, FirebaseProductRecord>>("products")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (products == null)
             {
@@ -29,7 +29,7 @@ namespace ddph.Data
                 .ToList();
         }
 
-        public Product AddProduct(Product product)
+        public async Task<Product> AddProductAsync(Product product)
         {
             var normalizedCategory = NormalizeCategory(product.Category);
             var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
@@ -44,34 +44,33 @@ namespace ddph.Data
                 ["updatedAt"] = now
             };
 
-            var created = _firebaseClient
+            var created = await _firebaseClient
                 .PostAsync<FirebasePushResponse>("products", payload)
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (created == null || string.IsNullOrWhiteSpace(created.Name))
             {
                 throw new InvalidOperationException("Firebase did not return a product key.");
             }
 
-            EnsureCategory(normalizedCategory);
+            await EnsureCategoryAsync(normalizedCategory).ConfigureAwait(false);
 
             product.Id = created.Name;
             product.Category = normalizedCategory;
+            product.CreatedAt = now;
             return product;
         }
 
-        public void UpdateProduct(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
             if (string.IsNullOrWhiteSpace(product.Id))
             {
                 throw new InvalidOperationException("The selected product is missing its Firebase key.");
             }
 
-            var existingProduct = _firebaseClient
+            var existingProduct = await _firebaseClient
                 .GetAsync<Dictionary<string, object?>>($"products/{product.Id}")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (existingProduct == null)
             {
@@ -85,26 +84,25 @@ namespace ddph.Data
             existingProduct["image"] = product.ImageUrl ?? string.Empty;
             existingProduct["updatedAt"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
 
-            _firebaseClient
+            await _firebaseClient
                 .PutAsync($"products/{product.Id}", existingProduct)
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
-            EnsureCategory(normalizedCategory);
+            await EnsureCategoryAsync(normalizedCategory).ConfigureAwait(false);
             product.Category = normalizedCategory;
         }
 
-        public void DeleteProduct(string productId)
+        public async Task DeleteProductAsync(string productId)
         {
             if (string.IsNullOrWhiteSpace(productId))
             {
                 return;
             }
 
-            _firebaseClient.DeleteAsync($"products/{productId}").GetAwaiter().GetResult();
+            await _firebaseClient.DeleteAsync($"products/{productId}").ConfigureAwait(false);
         }
 
-        private void EnsureCategory(string categoryName)
+        private async Task EnsureCategoryAsync(string categoryName)
         {
             if (string.IsNullOrWhiteSpace(categoryName) ||
                 categoryName.Equals("Uncategorized", StringComparison.OrdinalIgnoreCase))
@@ -113,10 +111,9 @@ namespace ddph.Data
             }
 
             var categoryKey = ToCategoryKey(categoryName);
-            var existingCategory = _firebaseClient
+            var existingCategory = await _firebaseClient
                 .GetAsync<Dictionary<string, object?>>($"categories/{categoryKey}")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (existingCategory != null)
             {
@@ -130,7 +127,7 @@ namespace ddph.Data
                 ["protected"] = false
             };
 
-            _firebaseClient.PutAsync($"categories/{categoryKey}", categoryPayload).GetAwaiter().GetResult();
+            await _firebaseClient.PutAsync($"categories/{categoryKey}", categoryPayload).ConfigureAwait(false);
         }
 
         private static Product MapToProduct(string key, FirebaseProductRecord record)
@@ -141,6 +138,7 @@ namespace ddph.Data
                 Description = record.Description ?? string.Empty,
                 ProductName = record.Name ?? string.Empty,
                 ImageUrl = record.Image ?? string.Empty,
+                CreatedAt = record.CreatedAt ?? string.Empty,
                 Category = NormalizeCategory(record.Category),
                 Price = record.Price
             };
@@ -171,6 +169,7 @@ namespace ddph.Data
         private sealed class FirebaseProductRecord
         {
             public string? Category { get; set; }
+            public string? CreatedAt { get; set; }
             public string? Description { get; set; }
             public string? Image { get; set; }
             public string? Name { get; set; }

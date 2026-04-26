@@ -4,6 +4,7 @@ using System.Windows;
 using System.Globalization;
 using System.Threading;
 using System.Windows.Markup;
+using ddph.Views;
 
 namespace ddph
 {
@@ -26,6 +27,20 @@ namespace ddph
                     XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
             
             base.OnStartup(e);
+
+            Window startupWindow;
+            if (AuthSessionStore.IsRemembered())
+            {
+                AuthSessionStore.GetRememberedUsername();
+                startupWindow = new MainWindow();
+            }
+            else
+            {
+                startupWindow = new LoginWindow();
+            }
+
+            MainWindow = startupWindow;
+            startupWindow.Show();
         }
     }
 }

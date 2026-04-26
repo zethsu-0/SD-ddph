@@ -1,6 +1,6 @@
-.vs/
-.agents/
-bin/
-obj/
-obj-codex/
-
+.vs
+.agents
+bin
+obj
+obj-codex
+build-codex

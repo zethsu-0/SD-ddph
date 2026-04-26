@@ -9,6 +9,7 @@ namespace ddph.Models
         private string _productName = string.Empty;
         private string _description = string.Empty;
         private string _imageUrl = string.Empty;
+        private string _createdAt = string.Empty;
         private decimal _price;
         private string _category = string.Empty;
 
@@ -48,6 +49,16 @@ namespace ddph.Models
             set
             {
                 _description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string CreatedAt
+        {
+            get => _createdAt;
+            set
+            {
+                _createdAt = value;
                 OnPropertyChanged();
             }
         }

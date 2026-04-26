@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using ddph.Converters;
@@ -13,8 +14,6 @@ namespace ddph.Views
 {
     public partial class AddProductWindow : Window
     {
-        private readonly CloudinaryImageService _cloudinaryImageService = new();
-
         public AddProductWindow(IEnumerable<string>? categories = null)
         {
             InitializeComponent();
@@ -48,7 +47,7 @@ namespace ddph.Views
 
         public Product? CreatedProduct { get; private set; }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(ProductNameTextBox.Text))
             {
@@ -65,7 +64,7 @@ namespace ddph.Views
             }
 
             CreatedProduct ??= new Product();
-            var imageSource = SaveImageSource(ImageUrlTextBox.Text.Trim());
+            var imageSource = await SaveImageSourceAsync(ImageUrlTextBox.Text.Trim());
             if (imageSource == null)
             {
                 return;
@@ -189,7 +188,7 @@ namespace ddph.Views
             CategoryComboBox.ItemsSource = updatedCategories;
         }
 
-        private string? SaveImageSource(string source)
+        private static async Task<string?> SaveImageSourceAsync(string source)
         {
             if (string.IsNullOrWhiteSpace(source) ||
                 source.StartsWith("data:image/", System.StringComparison.OrdinalIgnoreCase) ||
@@ -209,7 +208,7 @@ namespace ddph.Views
 
             try
             {
-                return _cloudinaryImageService.UploadProductImage(path);
+                return await CloudinaryImageService.UploadProductImageAsync(path);
             }
             catch (Exception ex)
             {

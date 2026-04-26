@@ -20,12 +20,7 @@ namespace ddph.Data
             PropertyNameCaseInsensitive = true
         };
 
-        public string UploadProductImage(string imagePath)
-        {
-            return UploadProductImageAsync(imagePath).GetAwaiter().GetResult();
-        }
-
-        private static async Task<string> UploadProductImageAsync(string imagePath)
+        public static async Task<string> UploadProductImageAsync(string imagePath)
         {
             await using var imageStream = File.OpenRead(imagePath);
             using var content = new MultipartFormDataContent();

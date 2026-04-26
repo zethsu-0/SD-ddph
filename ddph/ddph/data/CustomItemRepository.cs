@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using ddph.Models;
 
 namespace ddph.Data
@@ -10,12 +11,11 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public List<CustomItem> GetCustomItems()
+        public async Task<List<CustomItem>> GetCustomItemsAsync()
         {
-            var items = _firebaseClient
+            var items = await _firebaseClient
                 .GetAsync<Dictionary<string, FirebaseCustomItemRecord>>("customItems")
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (items == null)
             {
@@ -37,7 +37,7 @@ namespace ddph.Data
                 .ToList();
         }
 
-        public CustomItem AddCustomItem(CustomItem item)
+        public async Task<CustomItem> AddCustomItemAsync(CustomItem item)
         {
             var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
             var payload = new Dictionary<string, object?>
@@ -51,10 +51,9 @@ namespace ddph.Data
                 ["updatedAt"] = now
             };
 
-            var created = _firebaseClient
+            var created = await _firebaseClient
                 .PostAsync<FirebasePushResponse>("customItems", payload)
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (created == null || string.IsNullOrWhiteSpace(created.Name))
             {

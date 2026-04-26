@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -17,6 +18,7 @@ namespace ddph.ViewModels
         private string _searchText = string.Empty;
         private string _selectedCategory = "All Categories";
         private Product? _selectedProduct;
+        private bool _isLoading;
 
         public InventoryViewModel()
         {
@@ -27,15 +29,15 @@ namespace ddph.ViewModels
             FilteredProducts = CollectionViewSource.GetDefaultView(Products);
             FilteredProducts.Filter = FilterProducts;
 
-            AddProductCommand = new RelayCommand(_ => AddProduct());
+            AddProductCommand = new RelayCommand(async _ => await AddProductAsync(), _ => !IsLoading);
             EditProductCommand = new RelayCommand(
-                parameter => EditProduct(parameter as Product),
-                parameter => parameter is Product);
+                async parameter => await EditProductAsync(parameter as Product),
+                parameter => parameter is Product && !IsLoading);
             DeleteProductCommand = new RelayCommand(
-                parameter => DeleteProduct(parameter as Product),
-                parameter => parameter is Product);
+                async parameter => await DeleteProductAsync(parameter as Product),
+                parameter => parameter is Product && !IsLoading);
 
-            LoadProducts();
+            _ = LoadProductsAsync();
         }
 
         public ObservableCollection<Product> Products { get; }
@@ -88,7 +90,28 @@ namespace ddph.ViewModels
             }
         }
 
+        public Product? LatestProduct => Products
+            .OrderByDescending(GetProductTimestamp)
+            .ThenByDescending(product => product.Id, System.StringComparer.Ordinal)
+            .FirstOrDefault();
+
         public int VisibleProductCount => FilteredProducts.Cast<object>().Count();
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            private set
+            {
+                if (_isLoading == value)
+                {
+                    return;
+                }
+
+                _isLoading = value;
+                OnPropertyChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
 
         public ICommand AddProductCommand { get; }
         public ICommand EditProductCommand { get; }
@@ -112,7 +135,7 @@ namespace ddph.ViewModels
                 product.Description.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase));
         }
 
-        private void AddProduct()
+        private async Task AddProductAsync()
         {
             try
             {
@@ -126,20 +149,26 @@ namespace ddph.ViewModels
                     return;
                 }
 
-                var savedProduct = _productRepository.AddProduct(addProductWindow.CreatedProduct);
+                IsLoading = true;
+                var savedProduct = await _productRepository.AddProductAsync(addProductWindow.CreatedProduct);
                 Products.Add(savedProduct);
                 SelectedProduct = savedProduct;
                 RebuildCategoryData();
                 FilteredProducts.Refresh();
                 OnPropertyChanged(nameof(VisibleProductCount));
+                OnPropertyChanged(nameof(LatestProduct));
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Unable to add product.\n\n{ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        private void EditProduct(Product? product)
+        private async Task EditProductAsync(Product? product)
         {
             if (product == null)
             {
@@ -160,7 +189,8 @@ namespace ddph.ViewModels
                 }
 
                 var updatedProduct = editProductWindow.CreatedProduct;
-                _productRepository.UpdateProduct(updatedProduct);
+                IsLoading = true;
+                await _productRepository.UpdateProductAsync(updatedProduct);
 
                 product.ProductName = updatedProduct.ProductName;
                 product.Price = updatedProduct.Price;
@@ -170,15 +200,20 @@ namespace ddph.ViewModels
                 RebuildCategoryData();
                 FilteredProducts.Refresh();
                 OnPropertyChanged(nameof(VisibleProductCount));
+                OnPropertyChanged(nameof(LatestProduct));
                 MessageBox.Show("Product changes were saved to the database.", "Product Updated", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Unable to update product.\n\n{ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        private void DeleteProduct(Product? product)
+        private async Task DeleteProductAsync(Product? product)
         {
             if (product == null)
             {
@@ -198,7 +233,8 @@ namespace ddph.ViewModels
 
             try
             {
-                _productRepository.DeleteProduct(product.Id);
+                IsLoading = true;
+                await _productRepository.DeleteProductAsync(product.Id);
                 Products.Remove(product);
 
                 if (SelectedProduct == product)
@@ -209,20 +245,26 @@ namespace ddph.ViewModels
                 RebuildCategoryData();
                 FilteredProducts.Refresh();
                 OnPropertyChanged(nameof(VisibleProductCount));
+                OnPropertyChanged(nameof(LatestProduct));
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Unable to delete product.\n\n{ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        private void LoadProducts()
+        private async Task LoadProductsAsync()
         {
             try
             {
+                IsLoading = true;
                 Products.Clear();
 
-                foreach (var product in _productRepository.GetProducts())
+                foreach (var product in await _productRepository.GetProductsAsync())
                 {
                     Products.Add(product);
                 }
@@ -230,6 +272,7 @@ namespace ddph.ViewModels
                 RebuildCategoryData();
                 FilteredProducts.Refresh();
                 OnPropertyChanged(nameof(VisibleProductCount));
+                OnPropertyChanged(nameof(LatestProduct));
             }
             catch (System.Exception ex)
             {
@@ -239,12 +282,30 @@ namespace ddph.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private bool MatchesCategory(Product product)
         {
             return string.Equals(SelectedCategory, "All Categories", System.StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(product.Category, SelectedCategory, System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static System.DateTimeOffset GetProductTimestamp(Product product)
+        {
+            if (System.DateTimeOffset.TryParse(
+                product.CreatedAt,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.RoundtripKind,
+                out var createdAt))
+            {
+                return createdAt.ToUniversalTime();
+            }
+
+            return System.DateTimeOffset.MinValue;
         }
 
         private void RebuildCategoryData()

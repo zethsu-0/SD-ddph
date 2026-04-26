@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ddph.Data
 {
@@ -9,7 +10,7 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public string CheckoutSale(List<CartItem> cartItems, string cashierName, decimal payment, decimal discountRate, string? discountType)
+        public async Task<string> CheckoutSaleAsync(List<CartItem> cartItems, string cashierName, decimal payment, decimal discountRate, string? discountType)
         {
             var subtotalAmount = cartItems.Sum(item => item.Price * item.Qty);
             var discountAmount = Math.Round(subtotalAmount * (discountRate / 100m), 2, MidpointRounding.AwayFromZero);
@@ -44,10 +45,9 @@ namespace ddph.Data
                 ["updatedAt"] = createdAt
             };
 
-            var created = _firebaseClient
+            var created = await _firebaseClient
                 .PostAsync<FirebasePushResponse>("walk-in-orders", salePayload)
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
 
             if (created == null || string.IsNullOrWhiteSpace(created.Name))
             {

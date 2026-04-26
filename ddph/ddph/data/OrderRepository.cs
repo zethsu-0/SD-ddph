@@ -11,11 +11,6 @@ namespace ddph.Data
     {
         private readonly FirebaseDatabaseClient _firebaseClient = new();
 
-        public List<OnlineOrder> GetOnlineOrders()
-        {
-            return GetOnlineOrdersAsync().GetAwaiter().GetResult();
-        }
-
         public async Task<List<OnlineOrder>> GetOnlineOrdersAsync()
         {
             var orders = _firebaseClient
@@ -34,11 +29,6 @@ namespace ddph.Data
                 .Select(entry => MapOrder(entry.Key, entry.Value!))
                 .OrderByDescending(order => order.Date)
                 .ToList();
-        }
-
-        public List<OnlineOrder> GetRegisterOrders()
-        {
-            return GetRegisterOrdersAsync().GetAwaiter().GetResult();
         }
 
         public async Task<List<OnlineOrder>> GetRegisterOrdersAsync()
@@ -68,11 +58,6 @@ namespace ddph.Data
                 .Select(entry => MapWalkInOrder(entry.Key, entry.Record!))
                 .OrderByDescending(order => order.Date)
                 .ToList();
-        }
-
-        public List<OnlineOrder> GetKioskSales()
-        {
-            return GetKioskSalesAsync().GetAwaiter().GetResult();
         }
 
         public async Task<List<OnlineOrder>> GetKioskSalesAsync()
@@ -241,11 +226,6 @@ namespace ddph.Data
 
         private sealed record FirebaseOrderMatch<TRecord>(string Id, TRecord? Record);
 
-        public void UpdateOrderStatus(string orderId, string status, string orderNode = "orders")
-        {
-            UpdateOrderStatusAsync(orderId, status, orderNode).GetAwaiter().GetResult();
-        }
-
         public async Task UpdateOrderStatusAsync(string orderId, string status, string orderNode = "orders")
         {
             await _firebaseClient
@@ -259,7 +239,7 @@ namespace ddph.Data
                 .ConfigureAwait(false);
         }
 
-        public void AddCustomOrder(CustomOrderSubmission submission)
+        public async Task AddCustomOrderAsync(CustomOrderSubmission submission)
         {
             var itemPayload = new Dictionary<string, object?>
             {
@@ -292,10 +272,9 @@ namespace ddph.Data
                 ["date"] = System.DateTime.Now.ToString("MMM dd, yyyy, hh:mm tt", CultureInfo.InvariantCulture)
             };
 
-            _firebaseClient
+            await _firebaseClient
                 .PostAsync<object>("orders", orderPayload)
-                .GetAwaiter()
-                .GetResult();
+                .ConfigureAwait(false);
         }
 
         private static OnlineOrder MapOrder(string id, FirebaseOrderRecord record, string orderSource = "Online")

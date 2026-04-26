@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -29,6 +30,7 @@ namespace ddph.ViewModels
         private string _referenceImageUrl = string.Empty;
         private string _searchText = string.Empty;
         private string _size = string.Empty;
+        private bool _isLoading;
 
         public CustomItemsViewModel()
         {
@@ -44,10 +46,10 @@ namespace ddph.ViewModels
             FilteredCustomItems = CollectionViewSource.GetDefaultView(SampleCustomItems);
             FilteredCustomItems.Filter = FilterCustomItems;
 
-            SubmitCustomOrderCommand = new RelayCommand(_ => SubmitCustomOrder(), _ => CanSubmitCustomOrder());
-            RefreshCommand = new RelayCommand(_ => LoadSamples());
+            SubmitCustomOrderCommand = new RelayCommand(async _ => await SubmitCustomOrderAsync(), _ => CanSubmitCustomOrder());
+            RefreshCommand = new RelayCommand(async _ => await LoadSamplesAsync(), _ => !IsLoading);
 
-            LoadSamples();
+            _ = LoadSamplesAsync();
         }
 
         public ObservableCollection<CustomItem> SampleCustomItems { get; }
@@ -275,6 +277,22 @@ namespace ddph.ViewModels
 
         public string PreviewImageUrl => ReferenceImageUrl;
 
+        public bool IsLoading
+        {
+            get => _isLoading;
+            private set
+            {
+                if (_isLoading == value)
+                {
+                    return;
+                }
+
+                _isLoading = value;
+                OnPropertyChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
         public ICommand SubmitCustomOrderCommand { get; }
         public ICommand RefreshCommand { get; }
 
@@ -302,13 +320,15 @@ namespace ddph.ViewModels
                 !string.IsNullOrWhiteSpace(Size) &&
                 !string.IsNullOrWhiteSpace(DesignDescription) &&
                 !string.IsNullOrWhiteSpace(PickupDate) &&
-                !string.IsNullOrWhiteSpace(PickupTime);
+                !string.IsNullOrWhiteSpace(PickupTime) &&
+                !IsLoading;
         }
 
-        private void SubmitCustomOrder()
+        private async Task SubmitCustomOrderAsync()
         {
             try
             {
+                IsLoading = true;
                 var submission = new OrderRepository.CustomOrderSubmission
                 {
                     AdditionalNotes = AdditionalNotes.Trim(),
@@ -326,7 +346,7 @@ namespace ddph.ViewModels
                     Size = Size.Trim()
                 };
 
-                _orderRepository.AddCustomOrder(submission);
+                await _orderRepository.AddCustomOrderAsync(submission);
                 MessageBox.Show(
                     "Custom order submitted to Firebase.",
                     "Custom Order",
@@ -342,15 +362,20 @@ namespace ddph.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        private void LoadSamples()
+        private async Task LoadSamplesAsync()
         {
             try
             {
+                IsLoading = true;
                 SampleCustomItems.Clear();
 
-                foreach (var item in _customItemRepository.GetCustomItems())
+                foreach (var item in await _customItemRepository.GetCustomItemsAsync())
                 {
                     SampleCustomItems.Add(item);
                 }
@@ -364,6 +389,10 @@ namespace ddph.ViewModels
                     "Custom Order Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 

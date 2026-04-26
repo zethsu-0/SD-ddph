@@ -131,6 +131,29 @@
                             </StackPanel>
                         </Border>
 
+                        <Border Margin="0,14,0,0"
+                                Padding="14"
+                                Background="{StaticResource ThemeSurfaceBrush}"
+                                CornerRadius="14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="132"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="StatusComboBox"
+                                          Height="40"
+                                          VerticalContentAlignment="Center"/>
+                                <Button x:Name="SaveStatusButton"
+                                        Grid.Column="2"
+                                        Height="40"
+                                        Background="{StaticResource ThemeAccentBrush}"
+                                        Foreground="White"
+                                        Content="Save Status"
+                                        Click="SaveStatusButton_Click"/>
+                            </Grid>
+                        </Border>
+
                         <TextBlock Margin="0,18,0,10"
                                    Text="Items"
                                    FontSize="17"

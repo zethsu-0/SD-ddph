@@ -10,10 +10,21 @@ namespace ddph.Views
     public partial class QuickOrderViewWindow : Window
     {
         private readonly OrderRepository _orderRepository = new();
+        private readonly string[] _statusOptions =
+        [
+            "pending",
+            "confirmed",
+            "adjustment",
+            "preparing",
+            "completed",
+            "cancelled"
+        ];
+        private OnlineOrder? _currentOrder;
 
         public QuickOrderViewWindow()
         {
             InitializeComponent();
+            StatusComboBox.ItemsSource = _statusOptions;
             Loaded += (_, _) =>
             {
                 ReferenceTextBox.Focus();
@@ -81,12 +92,16 @@ namespace ddph.Views
 
         private void ShowOrder(OnlineOrder order)
         {
+            _currentOrder = order;
             EmptyTextBlock.Visibility = Visibility.Collapsed;
             OrderScrollViewer.Visibility = Visibility.Visible;
 
             OrderIdTextBlock.Text = order.Id;
             OrderMetaTextBlock.Text = $"{order.SourceLabel} | {order.Date}";
             StatusTextBlock.Text = order.Status;
+            StatusComboBox.SelectedItem = _statusOptions.Contains(order.Status)
+                ? order.Status
+                : _statusOptions[0];
             CustomerTextBlock.Text = order.DisplayName;
             ContactTextBlock.Text = BuildContactText(order);
             NotesTextBlock.Text = string.IsNullOrWhiteSpace(order.Notes) ? "No notes" : $"Notes: {order.Notes}";
@@ -108,6 +123,7 @@ namespace ddph.Views
 
         private void ShowMessage(string message)
         {
+            _currentOrder = null;
             OrderScrollViewer.Visibility = Visibility.Collapsed;
             EmptyTextBlock.Visibility = Visibility.Visible;
             EmptyTextBlock.Text = message;
@@ -117,10 +133,51 @@ namespace ddph.Views
         {
             ViewButton.IsEnabled = !isLoading;
             ReferenceTextBox.IsEnabled = !isLoading;
+            SaveStatusButton.IsEnabled = !isLoading && _currentOrder != null;
             if (isLoading)
             {
                 ShowMessage("Loading order");
             }
+        }
+
+        private async void SaveStatusButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentOrder == null || StatusComboBox.SelectedItem is not string status)
+            {
+                return;
+            }
+
+            ViewButton.IsEnabled = false;
+            ReferenceTextBox.IsEnabled = false;
+            SaveStatusButton.IsEnabled = false;
+
+            try
+            {
+                await _orderRepository.UpdateOrderStatusAsync(_currentOrder.Id, status, GetOrderNode(_currentOrder));
+                _currentOrder.Status = status;
+                StatusTextBlock.Text = status;
+                OrderScrollViewer.Visibility = Visibility.Visible;
+                EmptyTextBlock.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"Unable to save status. {ex.Message}");
+            }
+            finally
+            {
+                SetLoading(false);
+            }
+        }
+
+        private static string GetOrderNode(OnlineOrder order)
+        {
+            return order.SourceLabel switch
+            {
+                "Register" => "walk-in-orders",
+                "Kiosk" => "kioskSales",
+                "Custom" => "customOrders",
+                _ => "orders"
+            };
         }
 
         private static string NormalizeReference(string reference)

@@ -12,7 +12,8 @@
         Background="{StaticResource ThemeBaseBrush}"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None">
-        <Window.Resources>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="SubmitButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource ThemeToastBrush}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -307,5 +308,16 @@
                 </Grid>
             </Border>
         </ScrollViewer>
+
+        <Border Grid.RowSpan="3"
+                Panel.ZIndex="50"
+                Background="#CCFFF8EF"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar Width="180"
+                         Height="8"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         IsIndeterminate="True"/>
+        </Border>
     </Grid>
 </Window>
