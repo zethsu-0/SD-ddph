@@ -135,23 +135,51 @@
                                 Padding="14"
                                 Background="{StaticResource ThemeSurfaceBrush}"
                                 CornerRadius="14">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="12"/>
-                                    <ColumnDefinition Width="132"/>
-                                </Grid.ColumnDefinitions>
-                                <ComboBox x:Name="StatusComboBox"
-                                          Height="40"
-                                          VerticalContentAlignment="Center"/>
-                                <Button x:Name="SaveStatusButton"
-                                        Grid.Column="2"
-                                        Height="40"
-                                        Background="{StaticResource ThemeAccentBrush}"
-                                        Foreground="White"
-                                        Content="Save Status"
-                                        Click="SaveStatusButton_Click"/>
-                            </Grid>
+                            <UniformGrid x:Name="StatusButtonsPanel"
+                                         Columns="2"
+                                         Rows="3">
+                                <Button Height="40"
+                                        Margin="0,0,8,8"
+                                        Background="{StaticResource ThemeAccentSoftBrush}"
+                                        Foreground="{StaticResource ThemeAccentBrush}"
+                                        Content="Pending"
+                                        Tag="pending"
+                                        Click="StatusButton_Click"/>
+                                <Button Height="40"
+                                        Margin="0,0,0,8"
+                                        Background="{StaticResource ThemeGreenSoftBrush}"
+                                        Foreground="{StaticResource ThemeGreenBrush}"
+                                        Content="Confirm"
+                                        Tag="confirmed"
+                                        Click="StatusButton_Click"/>
+                                <Button Height="40"
+                                        Margin="0,0,8,8"
+                                        Background="{StaticResource ThemeAccentSoftBrush}"
+                                        Foreground="{StaticResource ThemeAccentBrush}"
+                                        Content="Adjust"
+                                        Tag="adjustment"
+                                        Click="StatusButton_Click"/>
+                                <Button Height="40"
+                                        Margin="0,0,0,8"
+                                        Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                        Foreground="{StaticResource ThemeAccentBrush}"
+                                        Content="Preparing"
+                                        Tag="preparing"
+                                        Click="StatusButton_Click"/>
+                                <Button Height="40"
+                                        Margin="0,0,8,0"
+                                        Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                        Foreground="{StaticResource ThemeAccentBrush}"
+                                        Content="Complete"
+                                        Tag="completed"
+                                        Click="StatusButton_Click"/>
+                                <Button Height="40"
+                                        Background="{StaticResource ThemeRoseSoftBrush}"
+                                        Foreground="{StaticResource ThemeRoseBrush}"
+                                        Content="Cancel"
+                                        Tag="cancelled"
+                                        Click="StatusButton_Click"/>
+                            </UniformGrid>
                         </Border>
 
                         <TextBlock Margin="0,18,0,10"

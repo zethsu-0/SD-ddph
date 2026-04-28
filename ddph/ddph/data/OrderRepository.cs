@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using ddph.Models;
 
@@ -126,6 +127,12 @@ namespace ddph.Data
                 return MapKioskSale(orderId, kioskSale);
             }
 
+            var kioskSaleByOrderNumber = await GetKioskSaleByOrderNumberAsync(orderId).ConfigureAwait(false);
+            if (kioskSaleByOrderNumber != null)
+            {
+                return kioskSaleByOrderNumber;
+            }
+
             var walkInOrder = await _firebaseClient
                 .GetAsync<FirebaseWalkInOrderRecord>($"walk-in-orders/{orderId}")
                 .ConfigureAwait(false);
@@ -163,7 +170,8 @@ namespace ddph.Data
             var kioskSales = await GetMatchingOrdersAsync<FirebaseKioskSaleRecord>(
                     "kioskSales",
                     normalizedPartial,
-                    (id, record) => MapKioskSale(id, record))
+                    (id, record) => MapKioskSale(id, record),
+                    (id, record) => MatchesKioskReference(id, record, normalizedPartial))
                 .ConfigureAwait(false);
             if (kioskSales.Count > 0)
             {
@@ -192,7 +200,8 @@ namespace ddph.Data
         private async Task<List<OnlineOrder>> GetMatchingOrdersAsync<TRecord>(
             string node,
             string normalizedPartialOrderId,
-            System.Func<string, TRecord, OnlineOrder> mapOrder)
+            System.Func<string, TRecord, OnlineOrder> mapOrder,
+            System.Func<string, TRecord, bool>? matchesReference = null)
         {
             var records = await _firebaseClient
                 .GetAsync<Dictionary<string, JsonElement>>(node)
@@ -204,19 +213,59 @@ namespace ddph.Data
             }
 
             return records
-                .Where(entry => !entry.Key.StartsWith("_") &&
-                    entry.Value.ValueKind == JsonValueKind.Object &&
-                    NormalizeOrderId(entry.Key).Contains(normalizedPartialOrderId))
+                .Where(entry => !entry.Key.StartsWith("_") && entry.Value.ValueKind == JsonValueKind.Object)
                 .Select(entry => new FirebaseOrderMatch<TRecord>(
                     entry.Key,
                     entry.Value.Deserialize<TRecord>(new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     })))
-                .Where(entry => entry.Record != null)
+                .Where(entry => entry.Record != null &&
+                    (matchesReference?.Invoke(entry.Id, entry.Record!) ??
+                        NormalizeOrderId(entry.Id).Contains(normalizedPartialOrderId)))
                 .Select(entry => mapOrder(entry.Id, entry.Record!))
                 .OrderByDescending(order => order.Date)
                 .ToList();
+        }
+
+        private async Task<OnlineOrder?> GetKioskSaleByOrderNumberAsync(string orderNumber)
+        {
+            var normalizedOrderNumber = NormalizeOrderId(orderNumber);
+            if (string.IsNullOrWhiteSpace(normalizedOrderNumber))
+            {
+                return null;
+            }
+
+            var matches = await GetMatchingOrdersAsync<FirebaseKioskSaleRecord>(
+                    "kioskSales",
+                    normalizedOrderNumber,
+                    (id, record) => MapKioskSale(id, record),
+                    (id, record) => MatchesKioskOrderNumber(record, normalizedOrderNumber, exactMatch: true))
+                .ConfigureAwait(false);
+
+            return matches.FirstOrDefault();
+        }
+
+        private static bool MatchesKioskReference(string id, FirebaseKioskSaleRecord record, string normalizedReference)
+        {
+            return NormalizeOrderId(id).Contains(normalizedReference) ||
+                MatchesKioskOrderNumber(record, normalizedReference, exactMatch: false);
+        }
+
+        private static bool MatchesKioskOrderNumber(
+            FirebaseKioskSaleRecord record,
+            string normalizedOrderNumber,
+            bool exactMatch)
+        {
+            if (!record.OrderNumber.HasValue)
+            {
+                return false;
+            }
+
+            var recordOrderNumber = NormalizeOrderId(record.OrderNumber.Value.ToString(CultureInfo.InvariantCulture));
+            return exactMatch
+                ? string.Equals(recordOrderNumber, normalizedOrderNumber, System.StringComparison.Ordinal)
+                : recordOrderNumber.Contains(normalizedOrderNumber);
         }
 
         private static string NormalizeOrderId(string orderId)
@@ -236,6 +285,38 @@ namespace ddph.Data
                         ["status"] = status,
                         ["updatedAt"] = System.DateTime.UtcNow.ToString("O", System.Globalization.CultureInfo.InvariantCulture)
                     })
+                .ConfigureAwait(false);
+        }
+
+        public async Task ConfirmKioskSaleAsWalkInAsync(string orderId)
+        {
+            if (string.IsNullOrWhiteSpace(orderId))
+            {
+                return;
+            }
+
+            var kioskSale = await _firebaseClient
+                .GetAsync<JsonObject>($"kioskSales/{orderId}")
+                .ConfigureAwait(false);
+
+            if (kioskSale == null)
+            {
+                throw new InvalidOperationException("Kiosk sale no longer exists.");
+            }
+
+            var updatedAt = System.DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+            kioskSale["status"] = "confirmed";
+            kioskSale["saleType"] = "walk-in";
+            kioskSale["orderSource"] = "walk-in";
+            kioskSale["updatedAt"] = updatedAt;
+            kioskSale["confirmedAt"] = updatedAt;
+
+            await _firebaseClient
+                .PutAsync($"walk-in-orders/{orderId}", kioskSale)
+                .ConfigureAwait(false);
+
+            await _firebaseClient
+                .DeleteAsync($"kioskSales/{orderId}")
                 .ConfigureAwait(false);
         }
 
@@ -309,6 +390,7 @@ namespace ddph.Data
                     order.Items.Add(new OnlineOrderItem
                     {
                         Name = item.Name ?? string.Empty,
+                        ProductId = item.ProductId ?? string.Empty,
                         Category = item.Category ?? string.Empty,
                         Quantity = item.Quantity,
                         Price = item.Price
@@ -352,6 +434,7 @@ namespace ddph.Data
                     order.Items.Add(new OnlineOrderItem
                     {
                         Name = item.Name ?? string.Empty,
+                        ProductId = item.ProductId ?? string.Empty,
                         Category = item.Category ?? string.Empty,
                         Quantity = item.Quantity,
                         Price = item.Price
@@ -372,6 +455,7 @@ namespace ddph.Data
                 CustomerEmail = string.Empty,
                 OrderSource = "Kiosk",
                 OrderType = record.OrderType ?? "kiosk",
+                OrderNumber = record.OrderNumber?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
                 Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "unpaid",
                 PickupDate = record.PickupDate ?? string.Empty,
@@ -394,6 +478,7 @@ namespace ddph.Data
                     order.Items.Add(new OnlineOrderItem
                     {
                         Name = item.Name ?? string.Empty,
+                        ProductId = item.ProductId ?? string.Empty,
                         Category = item.Category ?? string.Empty,
                         Quantity = item.Quantity,
                         Price = item.Price
@@ -445,6 +530,7 @@ namespace ddph.Data
             public string? Category { get; set; }
             public string? Name { get; set; }
             public decimal Price { get; set; }
+            public string? ProductId { get; set; }
             public int Quantity { get; set; }
         }
 
@@ -471,6 +557,7 @@ namespace ddph.Data
             public string? Date { get; set; }
             public List<FirebaseOrderItemRecord?>? Items { get; set; }
             public string? Notes { get; set; }
+            public int? OrderNumber { get; set; }
             public string? OrderType { get; set; }
             public string? PaymentStatus { get; set; }
             public string? PickupDate { get; set; }

@@ -4,27 +4,20 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ddph.Data;
 using ddph.Models;
+using ddph.ViewModels;
 
 namespace ddph.Views
 {
     public partial class QuickOrderViewWindow : Window
     {
         private readonly OrderRepository _orderRepository = new();
-        private readonly string[] _statusOptions =
-        [
-            "pending",
-            "confirmed",
-            "adjustment",
-            "preparing",
-            "completed",
-            "cancelled"
-        ];
+        private readonly MainWindowViewModel? _mainViewModel;
         private OnlineOrder? _currentOrder;
 
-        public QuickOrderViewWindow()
+        public QuickOrderViewWindow(MainWindowViewModel? mainViewModel = null)
         {
+            _mainViewModel = mainViewModel;
             InitializeComponent();
-            StatusComboBox.ItemsSource = _statusOptions;
             Loaded += (_, _) =>
             {
                 ReferenceTextBox.Focus();
@@ -96,12 +89,9 @@ namespace ddph.Views
             EmptyTextBlock.Visibility = Visibility.Collapsed;
             OrderScrollViewer.Visibility = Visibility.Visible;
 
-            OrderIdTextBlock.Text = order.Id;
+            OrderIdTextBlock.Text = order.ReferenceLabel;
             OrderMetaTextBlock.Text = $"{order.SourceLabel} | {order.Date}";
             StatusTextBlock.Text = order.Status;
-            StatusComboBox.SelectedItem = _statusOptions.Contains(order.Status)
-                ? order.Status
-                : _statusOptions[0];
             CustomerTextBlock.Text = order.DisplayName;
             ContactTextBlock.Text = BuildContactText(order);
             NotesTextBlock.Text = string.IsNullOrWhiteSpace(order.Notes) ? "No notes" : $"Notes: {order.Notes}";
@@ -133,29 +123,45 @@ namespace ddph.Views
         {
             ViewButton.IsEnabled = !isLoading;
             ReferenceTextBox.IsEnabled = !isLoading;
-            SaveStatusButton.IsEnabled = !isLoading && _currentOrder != null;
+            SetStatusButtonsEnabled(!isLoading && _currentOrder != null);
             if (isLoading)
             {
                 ShowMessage("Loading order");
             }
         }
 
-        private async void SaveStatusButton_Click(object sender, RoutedEventArgs e)
+        private async void StatusButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentOrder == null || StatusComboBox.SelectedItem is not string status)
+            if (_currentOrder == null || sender is not Button button || button.Tag is not string status)
             {
                 return;
             }
 
             ViewButton.IsEnabled = false;
             ReferenceTextBox.IsEnabled = false;
-            SaveStatusButton.IsEnabled = false;
+            SetStatusButtonsEnabled(false);
 
             try
             {
-                await _orderRepository.UpdateOrderStatusAsync(_currentOrder.Id, status, GetOrderNode(_currentOrder));
+                if (string.Equals(status, "confirmed", StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(_currentOrder.SourceLabel, "Kiosk", StringComparison.OrdinalIgnoreCase))
+                {
+                    await _orderRepository.ConfirmKioskSaleAsWalkInAsync(_currentOrder.Id);
+                    _currentOrder.OrderSource = "Register";
+                }
+                else
+                {
+                    await _orderRepository.UpdateOrderStatusAsync(_currentOrder.Id, status, GetOrderNode(_currentOrder));
+                }
+
                 _currentOrder.Status = status;
                 StatusTextBlock.Text = status;
+                if (string.Equals(status, "confirmed", StringComparison.OrdinalIgnoreCase))
+                {
+                    _mainViewModel?.AddOrderToCart(_currentOrder);
+                }
+
+                OrderMetaTextBlock.Text = $"{_currentOrder.SourceLabel} | {_currentOrder.Date}";
                 OrderScrollViewer.Visibility = Visibility.Visible;
                 EmptyTextBlock.Visibility = Visibility.Collapsed;
             }
@@ -166,6 +172,17 @@ namespace ddph.Views
             finally
             {
                 SetLoading(false);
+            }
+        }
+
+        private void SetStatusButtonsEnabled(bool isEnabled)
+        {
+            foreach (var child in StatusButtonsPanel.Children)
+            {
+                if (child is Button button)
+                {
+                    button.IsEnabled = isEnabled;
+                }
             }
         }
 

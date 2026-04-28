@@ -157,11 +157,38 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             SelectCategory(Categories.FirstOrDefault());
             StatusMessage = Products.Count == 0 ? "No products found." : "Menu ready.";
+            await LoadProductImagesAsync();
         }
         catch (Exception ex)
         {
             StatusMessage = $"Load failed: {ex.Message}";
         }
+    }
+
+    private async Task LoadProductImagesAsync()
+    {
+        var imageTasks = _allProducts
+            .Where(product => !string.IsNullOrWhiteSpace(product.Image))
+            .Select(async product => (Product: product, ImageSource: await _service.GetProductImageAsync(product)))
+            .ToList();
+
+        if (imageTasks.Count == 0)
+        {
+            return;
+        }
+
+        StatusMessage = "Menu ready. Loading images...";
+
+        while (imageTasks.Count > 0)
+        {
+            var finishedTask = await Task.WhenAny(imageTasks);
+            imageTasks.Remove(finishedTask);
+
+            var result = await finishedTask;
+            result.Product.ProductImageSource = result.ImageSource;
+        }
+
+        StatusMessage = "Menu ready.";
     }
 
     private void AddToCart(ProductCard? product)
@@ -498,8 +525,10 @@ public sealed class CategoryTab : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 }
 
-public sealed class ProductCard
+public sealed class ProductCard : INotifyPropertyChanged
 {
+    private BitmapImage? _productImageSource;
+
     public required string Id { get; init; }
 
     public required string Name { get; init; }
@@ -516,13 +545,28 @@ public sealed class ProductCard
 
     public required string Image { get; init; }
 
-    public BitmapImage? ProductImageSource { get; init; }
+    public BitmapImage? ProductImageSource
+    {
+        get => _productImageSource;
+        set
+        {
+            if (ReferenceEquals(_productImageSource, value))
+            {
+                return;
+            }
+
+            _productImageSource = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProductImageSource)));
+        }
+    }
 
     public required decimal Price { get; init; }
 
     public required Brush ArtBrush { get; init; }
 
     public string PriceDisplay => Price.ToPeso();
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }
 
 public sealed class CartItem : INotifyPropertyChanged

@@ -14,6 +14,7 @@ namespace ddph.Models
         private string _paymentStatus = string.Empty;
         private string _orderSource = string.Empty;
         private string _orderType = string.Empty;
+        private string _orderNumber = string.Empty;
         private string _pickupDate = string.Empty;
         private string _pickupTime = string.Empty;
         private string _notes = string.Empty;
@@ -76,6 +77,8 @@ namespace ddph.Models
             {
                 _status = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(StatusBackground));
+                OnPropertyChanged(nameof(StatusForeground));
             }
         }
 
@@ -107,6 +110,17 @@ namespace ddph.Models
             {
                 _orderType = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string OrderNumber
+        {
+            get => _orderNumber;
+            set
+            {
+                _orderNumber = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ReferenceLabel));
             }
         }
 
@@ -194,6 +208,25 @@ namespace ddph.Models
 
         public string DisplayName => string.IsNullOrWhiteSpace(CustomerName) ? "Walk-in Customer" : CustomerName;
         public string SourceLabel => string.IsNullOrWhiteSpace(OrderSource) ? "Online" : OrderSource;
+        public string ReferenceLabel => string.IsNullOrWhiteSpace(OrderNumber) ? Id : OrderNumber;
+        public string StatusBackground => Status.ToLowerInvariant() switch
+        {
+            "confirmed" => "#EAF6ED",
+            "preparing" => "#FFF2D7",
+            "completed" => "#E9F8F5",
+            "cancelled" => "#FCE7E7",
+            "adjustment" => "#F4EAFE",
+            _ => "#EFE7D9"
+        };
+        public string StatusForeground => Status.ToLowerInvariant() switch
+        {
+            "confirmed" => "#1F6B35",
+            "preparing" => "#8A5A00",
+            "completed" => "#0F766E",
+            "cancelled" => "#B42318",
+            "adjustment" => "#6B3FA0",
+            _ => "#765449"
+        };
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

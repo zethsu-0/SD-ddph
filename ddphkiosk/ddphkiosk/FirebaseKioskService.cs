@@ -13,6 +13,7 @@ public sealed class FirebaseKioskService
     private const string BaseUrl = "https://dreamdoughph-88e46-default-rtdb.asia-southeast1.firebasedatabase.app";
     private const string StorageBucket = "dreamdoughph-88e46.appspot.com";
     private const string PlaceholderImage = "placeholder";
+    private static readonly SemaphoreSlim ImageLoadGate = new(6);
 
     private static readonly HttpClient HttpClient = new()
     {
@@ -24,7 +25,7 @@ public sealed class FirebaseKioskService
     public async Task<MenuData> GetMenuAsync()
     {
         var productsResponse = await HttpClient.GetFromJsonAsync<FirebaseProductsResponse>("/products.json", JsonOptions);
-        var products = await BuildProductsAsync(productsResponse ?? []);
+        var products = BuildProducts(productsResponse ?? []);
         var categories = BuildCategories(products);
 
         return new MenuData
@@ -48,7 +49,25 @@ public sealed class FirebaseKioskService
         return result.Name;
     }
 
-    private static async Task<List<ProductCard>> BuildProductsAsync(FirebaseProductsResponse productsResponse)
+    public async Task<BitmapImage?> GetProductImageAsync(ProductCard product)
+    {
+        if (string.IsNullOrWhiteSpace(product.Image) || product.Image == PlaceholderImage)
+        {
+            return null;
+        }
+
+        await ImageLoadGate.WaitAsync();
+        try
+        {
+            return await CreateImageSourceAsync(product.Image);
+        }
+        finally
+        {
+            ImageLoadGate.Release();
+        }
+    }
+
+    private static List<ProductCard> BuildProducts(FirebaseProductsResponse productsResponse)
     {
         var products = new List<ProductCard>();
 
@@ -72,7 +91,6 @@ public sealed class FirebaseKioskService
                 Description = BuildDescription(category, dto.Image),
                 Badge = BuildBadge(name),
                 Image = string.IsNullOrWhiteSpace(dto.Image) ? PlaceholderImage : dto.Image!,
-                ProductImageSource = await CreateImageSourceAsync(dto.Image),
                 Price = dto.Price,
                 ArtBrush = CreateBrush(name)
             });
@@ -277,7 +295,13 @@ public sealed class FirebaseKioskService
 
         var encodedObject = Uri.EscapeDataString(trimmed.Replace('\\', '/'));
         var url = $"https://firebasestorage.googleapis.com/v0/b/{StorageBucket}/o/{encodedObject}?alt=media";
-        return Uri.TryCreate(url, UriKind.Absolute, out uri);
+        if (Uri.TryCreate(url, UriKind.Absolute, out var downloadUri))
+        {
+            uri = downloadUri;
+            return true;
+        }
+
+        return false;
     }
 
     private static bool TryCreateFirebaseStorageDownloadUri(Uri gsUri, out Uri uri)
@@ -308,7 +332,13 @@ public sealed class FirebaseKioskService
 
         var encodedObject = Uri.EscapeDataString(path);
         var url = $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{encodedObject}?alt=media";
-        return Uri.TryCreate(url, UriKind.Absolute, out uri);
+        if (Uri.TryCreate(url, UriKind.Absolute, out var downloadUri))
+        {
+            uri = downloadUri;
+            return true;
+        }
+
+        return false;
     }
 
     private static BitmapImage? CreateBitmapImage(Uri uri)

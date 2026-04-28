@@ -15,9 +15,33 @@
         WindowStyle="None">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <SolidColorBrush x:Key="OrderBorderBrush" Color="#26D4C3BE"/>
+        <Style x:Key="OrderHeaderButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeInkSoftBrush}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="OrderPanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OrderBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="22"/>
+        </Style>
+        <Style x:Key="OrderMetricStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OrderBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+        </Style>
     </Window.Resources>
 
-    <Grid Margin="24">
+    <Grid Margin="24"
+          MinWidth="1040">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
@@ -82,6 +106,8 @@
                     Height="44"
                     VerticalAlignment="Center"
                     Background="{StaticResource ThemeSurfaceBrush}"
+                    BorderBrush="{StaticResource OrderBorderBrush}"
+                    BorderThickness="1"
                     CornerRadius="22">
                 <TextBox VerticalContentAlignment="Center"
                          Padding="14,0"
@@ -99,6 +125,8 @@
 
         <Border Grid.Row="2"
                 Background="{StaticResource ThemeSurfaceBrush}"
+                BorderBrush="{StaticResource OrderBorderBrush}"
+                BorderThickness="1"
                 CornerRadius="22"
                 Padding="8">
             <StackPanel Orientation="Horizontal">
@@ -279,8 +307,7 @@
                         <ColumnDefinition Width="160"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Background="{StaticResource ThemeSurfaceBrush}"
-                            CornerRadius="26"
+                    <Border Style="{StaticResource OrderPanelStyle}"
                             Padding="24">
                         <StackPanel>
                             <TextBlock Text="{Binding ActiveTabLabel}"
@@ -295,8 +322,7 @@
                     </Border>
 
                     <Border Grid.Column="2"
-                            Background="{StaticResource ThemeCardBrush}"
-                            CornerRadius="26"
+                            Style="{StaticResource OrderMetricStyle}"
                             Padding="20">
                         <StackPanel>
                             <TextBlock Text="{Binding PrimaryMetricLabel}"
@@ -313,8 +339,7 @@
                     </Border>
 
                     <Border Grid.Column="4"
-                            Background="{StaticResource ThemeCardBrush}"
-                            CornerRadius="26"
+                            Style="{StaticResource OrderMetricStyle}"
                             Padding="20">
                         <StackPanel>
                             <TextBlock Text="Revenue"
@@ -331,8 +356,7 @@
                     </Border>
 
                     <Border Grid.Column="6"
-                            Background="{StaticResource ThemeCardBrush}"
-                            CornerRadius="26"
+                            Style="{StaticResource OrderMetricStyle}"
                             Padding="20">
                         <StackPanel>
                             <TextBlock Text="{Binding SecondaryMetricLabel}"
@@ -350,8 +374,7 @@
                 </Grid>
 
                 <Border Grid.Row="2"
-                        Background="{StaticResource ThemeSurfaceBrush}"
-                        CornerRadius="28"
+                        Style="{StaticResource OrderPanelStyle}"
                         Padding="18">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -362,19 +385,37 @@
 
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="145"/>
+                                <ColumnDefinition Width="130"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="118"/>
                                 <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="112"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Order ID" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="1" Text="Customer" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="2" Text="Status" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="3" Text="Source" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="4" Text="Date" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
-                            <TextBlock Grid.Column="5" Text="Total" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ThemeInkSoftBrush}"/>
+                            <Button Content="Order ID"
+                                    Command="{Binding SortOrdersCommand}"
+                                    CommandParameter="ReferenceLabel"
+                                    Style="{StaticResource OrderHeaderButtonStyle}" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Content="Customer"
+                                    Command="{Binding SortOrdersCommand}"
+                                    CommandParameter="DisplayName"
+                                    Style="{StaticResource OrderHeaderButtonStyle}" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Content="Status"
+                                    Command="{Binding SortOrdersCommand}"
+                                    CommandParameter="Status"
+                                    Style="{StaticResource OrderHeaderButtonStyle}" HorizontalContentAlignment="Center" Grid.ColumnSpan="2" Margin="240,0,34,1"/>
+                            <Button Grid.Column="3"
+                                    Content="Date"
+                                    Command="{Binding SortOrdersCommand}"
+                                    CommandParameter="Date"
+                                    Style="{StaticResource OrderHeaderButtonStyle}" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Column="4"
+                                    Content="Total"
+                                    Command="{Binding SortOrdersCommand}"
+                                    CommandParameter="Total"
+                                    HorizontalContentAlignment="Right"
+                                    Style="{StaticResource OrderHeaderButtonStyle}"/>
                         </Grid>
 
                         <ListBox Grid.Row="2"
@@ -400,27 +441,30 @@
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="18"
+                                    <Border Padding="16"
                                             Background="{StaticResource ThemeCardBrush}"
-                                            CornerRadius="22">
+                                            BorderBrush="{StaticResource OrderBorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="16">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="145"/>
+                                                <ColumnDefinition Width="130"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="120"/>
-                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="118"/>
                                                 <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="112"/>
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock VerticalAlignment="Center"
-                                                       Text="{Binding Id}"
+                                                       Text="{Binding ReferenceLabel}"
                                                        FontWeight="Bold"
+                                                       TextTrimming="CharacterEllipsis"
                                                        Foreground="{StaticResource ThemeAccentBrush}"/>
 
                                             <StackPanel Grid.Column="1">
                                                 <TextBlock Text="{Binding DisplayName}"
                                                            FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis"
                                                            Foreground="{StaticResource ThemeInkBrush}"/>
                                                 <TextBlock Margin="0,4,0,0"
                                                            Text="{Binding CustomerPhone}"
@@ -430,29 +474,19 @@
                                             <Border Grid.Column="2"
                                                     Padding="10,5"
                                                     HorizontalAlignment="Left"
-                                                    Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                                    Background="{Binding StatusBackground}"
                                                     CornerRadius="14">
                                                 <TextBlock Text="{Binding Status}"
                                                            FontWeight="SemiBold"
-                                                           Foreground="{StaticResource ThemeAccentBrush}"/>
+                                                           Foreground="{Binding StatusForeground}"/>
                                             </Border>
 
-                                            <Border Grid.Column="3"
-                                                    Padding="10,5"
-                                                    HorizontalAlignment="Left"
-                                                    Background="{StaticResource ThemeAccentSoftBrush}"
-                                                    CornerRadius="14">
-                                                <TextBlock Text="{Binding SourceLabel}"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="{StaticResource ThemeAccentBrush}"/>
-                                            </Border>
-
-                                            <TextBlock Grid.Column="4"
+                                            <TextBlock Grid.Column="3"
                                                        VerticalAlignment="Center"
                                                        Text="{Binding Date}"
                                                        Foreground="{StaticResource ThemeInkSoftBrush}"/>
 
-                                            <TextBlock Grid.Column="5"
+                                            <TextBlock Grid.Column="4"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Right"
                                                        Text="{Binding Total, StringFormat={}{0:C}}"
@@ -470,8 +504,7 @@
             <ScrollViewer Grid.Column="2"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <Border Background="{StaticResource ThemeSurfaceBrush}"
-                            CornerRadius="28"
+                    <Border Style="{StaticResource OrderPanelStyle}"
                             Padding="24">
                         <StackPanel>
                             <TextBlock Text="Order Details"
@@ -483,6 +516,8 @@
                             <Border Margin="0,18,0,0"
                                     Padding="18"
                                     Background="{StaticResource ThemeCardBrush}"
+                                    BorderBrush="{StaticResource OrderBorderBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="22">
                                 <StackPanel>
                                     <TextBlock Text="{Binding SelectedOrder.DisplayName, TargetNullValue=No order selected}"
@@ -509,6 +544,8 @@
                             <Border Margin="0,16,0,0"
                                     Padding="18"
                                     Background="{StaticResource ThemeCardBrush}"
+                                    BorderBrush="{StaticResource OrderBorderBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="22">
                                 <StackPanel>
                                     <TextBlock Text="Order Summary"
@@ -573,6 +610,8 @@
                             <Border Margin="0,16,0,0"
                                     Padding="18"
                                     Background="{StaticResource ThemeCardBrush}"
+                                    BorderBrush="{StaticResource OrderBorderBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="22">
                                 <StackPanel>
                                     <TextBlock Text="Status"
@@ -581,11 +620,11 @@
                                                Foreground="{StaticResource ThemeInkBrush}"/>
                                     <Border Margin="0,12,0,0"
                                             Padding="12"
-                                            Background="{StaticResource ThemeAccentSoftBrush}"
+                                            Background="{Binding SelectedOrder.StatusBackground}"
                                             CornerRadius="16">
                                         <TextBlock Text="{Binding SelectedOrder.Status}"
                                                    FontWeight="Bold"
-                                                   Foreground="{StaticResource ThemeAccentBrush}"/>
+                                                   Foreground="{Binding SelectedOrder.StatusForeground}"/>
                                     </Border>
 
                                     <StackPanel Margin="0,16,0,0"
@@ -594,25 +633,33 @@
                                                    FontSize="16"
                                                    FontWeight="SemiBold"
                                                    Foreground="{StaticResource ThemeInkBrush}"/>
-                                        <ComboBox Margin="0,10,0,0"
-                                                  Height="40"
-                                                  ItemsSource="{Binding StatusOptions}"
-                                                  SelectedItem="{Binding SelectedStatus, UpdateSourceTrigger=PropertyChanged}"/>
                                         <UniformGrid Margin="0,14,0,0"
                                                      Columns="2"
-                                                     Rows="2">
+                                                     Rows="3">
                                             <Button Margin="0,0,10,10"
+                                                    Height="42"
+                                                    Command="{Binding PendingOrderCommand}"
+                                                    Background="{StaticResource ThemeAccentSoftBrush}"
+                                                    Foreground="{StaticResource ThemeAccentBrush}"
+                                                    Content="Pending"/>
+                                            <Button Margin="0,0,0,10"
                                                     Height="42"
                                                     Command="{Binding ConfirmOrderCommand}"
                                                     Background="{StaticResource ThemeGreenSoftBrush}"
                                                     Foreground="{StaticResource ThemeGreenBrush}"
                                                     Content="Confirm"/>
-                                            <Button Margin="0,0,0,10"
+                                            <Button Margin="0,0,10,10"
                                                     Height="42"
                                                     Command="{Binding NeedsAdjustmentCommand}"
                                                     Background="{StaticResource ThemeAccentSoftBrush}"
                                                     Foreground="{StaticResource ThemeAccentBrush}"
                                                     Content="Adjust"/>
+                                            <Button Margin="0,0,0,10"
+                                                    Height="42"
+                                                    Command="{Binding PreparingOrderCommand}"
+                                                    Background="{StaticResource ThemeSurfaceSoftBrush}"
+                                                    Foreground="{StaticResource ThemeAccentBrush}"
+                                                    Content="Preparing"/>
                                             <Button Margin="0,0,10,0"
                                                     Height="42"
                                                     Command="{Binding MarkCompleteCommand}"
@@ -625,14 +672,6 @@
                                                     Foreground="{StaticResource ThemeRoseBrush}"
                                                     Content="Cancel"/>
                                         </UniformGrid>
-                                        <Button Margin="0,12,0,0"
-                                                Height="42"
-                                                Width="128"
-                                                HorizontalAlignment="Left"
-                                                Command="{Binding SaveStatusCommand}"
-                                                Background="{StaticResource ThemeToastBrush}"
-                                                Foreground="White"
-                                                Content="Save Status"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -640,6 +679,8 @@
                             <Border Margin="0,16,0,0"
                                     Padding="18"
                                     Background="{StaticResource ThemeCardBrush}"
+                                    BorderBrush="{StaticResource OrderBorderBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="22">
                                 <StackPanel>
                                     <TextBlock Text="Daily Overview"

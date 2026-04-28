@@ -16,8 +16,9 @@ namespace ddph.ViewModels
         private readonly OrderRepository _orderRepository = new();
         private string _searchText = string.Empty;
         private OnlineOrder? _selectedOrder;
-        private string _selectedStatus = "pending";
         private string _selectedTab = "Online";
+        private string _sortProperty = nameof(OnlineOrder.Date);
+        private ListSortDirection _sortDirection = ListSortDirection.Descending;
         private bool _isLoading;
         private int _activeOrderCount;
         private decimal _activeRevenue;
@@ -33,16 +34,6 @@ namespace ddph.ViewModels
             RegisterOrders = new ObservableCollection<OnlineOrder>();
             KioskSales = new ObservableCollection<OnlineOrder>();
 
-            StatusOptions = new ObservableCollection<string>
-            {
-                "pending",
-                "confirmed",
-                "adjustment",
-                "preparing",
-                "completed",
-                "cancelled"
-            };
-
             OnlineOrdersView = CollectionViewSource.GetDefaultView(OnlineOrders);
             CustomOrdersView = CollectionViewSource.GetDefaultView(CustomOrders);
             RegisterOrdersView = CollectionViewSource.GetDefaultView(RegisterOrders);
@@ -57,12 +48,15 @@ namespace ddph.ViewModels
             ShowCustomOrdersCommand = new RelayCommand(async _ => await SelectTabAsync("Custom"), _ => !IsLoading);
             ShowRegisterOrdersCommand = new RelayCommand(async _ => await SelectTabAsync("Register"), _ => !IsLoading);
             ShowKioskSalesCommand = new RelayCommand(async _ => await SelectTabAsync("Kiosk"), _ => !IsLoading);
+            PendingOrderCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("pending"), _ => CanEditOnlineOrder);
             ConfirmOrderCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("confirmed"), _ => CanEditOnlineOrder);
             NeedsAdjustmentCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("adjustment"), _ => CanEditOnlineOrder);
+            PreparingOrderCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("preparing"), _ => CanEditOnlineOrder);
             MarkCompleteCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("completed"), _ => CanEditOnlineOrder);
             CancelOrderCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("cancelled"), _ => CanEditOnlineOrder);
-            SaveStatusCommand = new RelayCommand(async _ => await SaveSelectedStatusAsync(), _ => CanEditOnlineOrder);
+            SortOrdersCommand = new RelayCommand(parameter => SortOrders(parameter as string));
 
+            ApplySort();
             _ = LoadActiveTabAsync();
         }
 
@@ -70,7 +64,6 @@ namespace ddph.ViewModels
         public ObservableCollection<OnlineOrder> CustomOrders { get; }
         public ObservableCollection<OnlineOrder> RegisterOrders { get; }
         public ObservableCollection<OnlineOrder> KioskSales { get; }
-        public ObservableCollection<string> StatusOptions { get; }
         public ICollectionView OnlineOrdersView { get; }
         public ICollectionView CustomOrdersView { get; }
         public ICollectionView RegisterOrdersView { get; }
@@ -138,27 +131,11 @@ namespace ddph.ViewModels
             set
             {
                 _selectedOrder = value;
-                SelectedStatus = value?.Status ?? StatusOptions.First();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelectedOrder));
                 OnPropertyChanged(nameof(CanEditOnlineOrder));
                 OnPropertyChanged(nameof(SelectedOrderItemCount));
                 CommandManager.InvalidateRequerySuggested();
-            }
-        }
-
-        public string SelectedStatus
-        {
-            get => _selectedStatus;
-            set
-            {
-                if (_selectedStatus == value)
-                {
-                    return;
-                }
-
-                _selectedStatus = value;
-                OnPropertyChanged();
             }
         }
 
@@ -195,11 +172,13 @@ namespace ddph.ViewModels
         public ICommand ShowCustomOrdersCommand { get; }
         public ICommand ShowRegisterOrdersCommand { get; }
         public ICommand ShowKioskSalesCommand { get; }
+        public ICommand PendingOrderCommand { get; }
         public ICommand ConfirmOrderCommand { get; }
         public ICommand NeedsAdjustmentCommand { get; }
+        public ICommand PreparingOrderCommand { get; }
         public ICommand MarkCompleteCommand { get; }
         public ICommand CancelOrderCommand { get; }
-        public ICommand SaveStatusCommand { get; }
+        public ICommand SortOrdersCommand { get; }
 
         private bool FilterOrders(object item)
         {
@@ -214,6 +193,7 @@ namespace ddph.ViewModels
             }
 
             return order.Id.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+                order.ReferenceLabel.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 order.DisplayName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 order.CustomerPhone.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 order.CustomerEmail.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
@@ -245,6 +225,7 @@ namespace ddph.ViewModels
                 }
 
                 ActiveOrdersView.Refresh();
+                ApplySort();
                 SyncSelection();
                 UpdateSummaryProperties();
             }
@@ -308,13 +289,46 @@ namespace ddph.ViewModels
             SelectedOrder = activeOrders.FirstOrDefault();
         }
 
-        private async Task ApplyQuickStatusAsync(string status)
+        private void SortOrders(string? propertyName)
         {
-            SelectedStatus = status;
-            await SaveSelectedStatusAsync();
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                return;
+            }
+
+            if (string.Equals(_sortProperty, propertyName, System.StringComparison.Ordinal))
+            {
+                _sortDirection = _sortDirection == ListSortDirection.Ascending
+                    ? ListSortDirection.Descending
+                    : ListSortDirection.Ascending;
+            }
+            else
+            {
+                _sortProperty = propertyName;
+                _sortDirection = propertyName == nameof(OnlineOrder.Total) || propertyName == nameof(OnlineOrder.Date)
+                    ? ListSortDirection.Descending
+                    : ListSortDirection.Ascending;
+            }
+
+            ApplySort();
+            SyncSelection();
         }
 
-        private async Task SaveSelectedStatusAsync()
+        private void ApplySort()
+        {
+            foreach (var view in new[] { OnlineOrdersView, CustomOrdersView, RegisterOrdersView, KioskSalesView })
+            {
+                view.SortDescriptions.Clear();
+                view.SortDescriptions.Add(new SortDescription(_sortProperty, _sortDirection));
+            }
+        }
+
+        private async Task ApplyQuickStatusAsync(string status)
+        {
+            await SaveSelectedStatusAsync(status);
+        }
+
+        private async Task SaveSelectedStatusAsync(string selectedStatus)
         {
             if (!CanEditOnlineOrder || SelectedOrder == null)
             {
@@ -325,7 +339,6 @@ namespace ddph.ViewModels
             {
                 IsLoading = true;
                 var selectedOrder = SelectedOrder;
-                var selectedStatus = SelectedStatus;
                 await _orderRepository.UpdateOrderStatusAsync(selectedOrder.Id, selectedStatus, ActiveOrderNode);
                 selectedOrder.Status = selectedStatus;
                 OnPropertyChanged(nameof(SelectedOrder));

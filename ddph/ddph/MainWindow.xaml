@@ -345,25 +345,6 @@
                                        Text="Settings"/>
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource CloseNavButtonStyle}"
-                            Width="72"
-                            Height="72"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Click="CloseButton_Click">
-                        <StackPanel>
-                            <TextBlock FontFamily="Segoe MDL2 Assets"
-                                       FontSize="18"
-                                       HorizontalAlignment="Center"
-                                       Text="&#xE8BB;"/>
-                            <TextBlock Margin="0,4,0,0"
-                                       HorizontalAlignment="Center"
-                                       FontSize="10"
-                                       FontWeight="SemiBold"
-                                       Text="Close"/>
-                        </StackPanel>
-                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -541,7 +522,7 @@
                                 Command="{Binding RefreshProductsCommand}"
                                 Style="{StaticResource SecondaryButtonStyle}"/>
                     </Grid>
-                
+
                     <ScrollViewer Grid.Row="3"
                                   Margin="0,4,0,0"
                                   VerticalScrollBarVisibility="Auto">
@@ -671,7 +652,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            
+
                             <ItemsControl ItemsSource="{Binding CartItems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -977,17 +958,6 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <Border Grid.ColumnSpan="3"
-                    Panel.ZIndex="50"
-                    Background="#CCFFF8EF"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ProgressBar Width="180"
-                             Height="8"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             IsIndeterminate="True"/>
-            </Border>
         </Grid>
 
         <ContentControl x:Name="TabContentHost"
@@ -1039,6 +1009,16 @@
                         Command="{Binding ClearFiltersCommand}"
                         Style="{StaticResource SecondaryButtonStyle}"/>
             </Grid>
+        </Border>
+        <Border Grid.ColumnSpan="3"
+                    Panel.ZIndex="50"
+                    Background="#CCFFF8EF"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-78,0,238,24" Grid.Row="2">
+            <ProgressBar Width="180"
+                             Height="8"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             IsIndeterminate="True"/>
         </Border>
     </Grid>
 </Window>

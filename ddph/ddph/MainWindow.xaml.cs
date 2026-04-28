@@ -8,9 +8,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 using System.Linq;
 using System.IO;
+using System.Globalization;
 using ddph.Data;
+using ddph.Models;
 using ddph.ViewModels;
 using ddph.Views;
 using ddph.Receipts;
@@ -51,7 +54,7 @@ namespace ddph
 
         private void QuickViewButton_Click(object sender, RoutedEventArgs e)
         {
-            var quickViewWindow = new QuickOrderViewWindow
+            var quickViewWindow = new QuickOrderViewWindow(DataContext as MainWindowViewModel)
             {
                 Owner = this
             };
@@ -255,7 +258,18 @@ namespace ddph
         private UIElement CreateSettingsContent()
         {
             var employeeRepository = new EmployeeRepository();
+            var orderRepository = new OrderRepository();
             var employeeList = new StackPanel();
+            var salesRecordsList = new StackPanel();
+            var salesPeriodButtons = new List<Button>();
+            var salesSourceButtons = new List<Button>();
+            var salesPeriod = SalesRecordPeriod.Daily;
+            var salesSource = SalesRecordSource.All;
+            var salesRecordsStatusTextBlock = new TextBlock
+            {
+                Margin = new Thickness(0, 10, 0, 0),
+                Foreground = (Brush)FindResource("ThemeInkSoftBrush")
+            };
             var employeeListStatusTextBlock = new TextBlock
             {
                 Margin = new Thickness(0, 10, 0, 0),
@@ -439,6 +453,67 @@ namespace ddph
                 }
             }
 
+            async Task LoadSalesRecordsAsync()
+            {
+                try
+                {
+                    salesRecordsList.Children.Clear();
+                    salesRecordsStatusTextBlock.Text = "Loading records...";
+
+                    var registerTask = orderRepository.GetRegisterOrdersAsync();
+                    var onlineTask = orderRepository.GetOnlineOrdersAsync();
+
+                    await Task.WhenAll(registerTask, onlineTask);
+
+                    var orders = registerTask.Result
+                        .Concat(onlineTask.Result)
+                        .Where(order => order.Total > 0 && MatchesSalesSource(order, salesSource));
+
+                    var rows = orders
+                        .GroupBy(order => new
+                        {
+                            Period = GetSalesRecordPeriod(order.Date, salesPeriod),
+                            Source = GetSalesSourceLabel(order)
+                        })
+                        .OrderByDescending(group => group.Key.Period.SortDate)
+                        .ThenBy(group => group.Key.Source)
+                        .Select(group => new
+                        {
+                            group.Key.Period.DisplayDate,
+                            group.Key.Source,
+                            Count = group.Count(),
+                            Revenue = group.Sum(order => order.Total)
+                        })
+                        .Take(31)
+                        .ToList();
+
+                    foreach (var row in rows)
+                    {
+                        salesRecordsList.Children.Add(CreateSalesRecordRow(row.DisplayDate, row.Source, row.Count, row.Revenue));
+                    }
+
+                    salesRecordsStatusTextBlock.Text = rows.Count == 0 ? "No sales yet." : string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    salesRecordsStatusTextBlock.Text = ex.Message;
+                }
+            }
+
+            async Task SetSalesPeriodAsync(SalesRecordPeriod period)
+            {
+                salesPeriod = period;
+                UpdateSalesPeriodButtons(salesPeriodButtons, salesPeriod);
+                await LoadSalesRecordsAsync();
+            }
+
+            async Task SetSalesSourceAsync(SalesRecordSource source)
+            {
+                salesSource = source;
+                UpdateSalesSourceButtons(salesSourceButtons, salesSource);
+                await LoadSalesRecordsAsync();
+            }
+
             var logoutButton = new Button
             {
                 Width = 180,
@@ -449,6 +524,20 @@ namespace ddph
                 Content = "Logout"
             };
             logoutButton.Click += LogoutButton_Click;
+
+            var closeAppButton = new Button
+            {
+                Width = 180,
+                Height = 48,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Thickness(0, 24, -28, -28),
+                Background = (Brush)FindResource("ThemeAccentSoftBrush"),
+                Foreground = (Brush)FindResource("ThemeAccentBrush"),
+                Content = "Close App"
+            };
+            closeAppButton.Style = CreateCloseAppButtonStyle();
+            closeAppButton.Click += CloseButton_Click;
 
             var accountCard = new Border
             {
@@ -526,6 +615,110 @@ namespace ddph
             };
             Grid.SetColumn(employeeCard, 2);
 
+            var refreshSalesButton = CreateSmallSettingsButton("Refresh");
+            refreshSalesButton.Width = 92;
+            refreshSalesButton.Click += async (_, _) => await LoadSalesRecordsAsync();
+            var salesFilterPanel = new UniformGrid
+            {
+                Columns = 4,
+                Rows = 1,
+                Margin = new Thickness(0, 0, 0, 16)
+            };
+
+            AddSalesPeriodButton("Daily", SalesRecordPeriod.Daily);
+            AddSalesPeriodButton("Weekly", SalesRecordPeriod.Weekly);
+            AddSalesPeriodButton("Monthly", SalesRecordPeriod.Monthly);
+            AddSalesPeriodButton("Annual", SalesRecordPeriod.Annual);
+
+            void AddSalesPeriodButton(string label, SalesRecordPeriod period)
+            {
+                var button = CreateSmallSettingsButton(label);
+                button.Width = double.NaN;
+                button.Margin = new Thickness(0, 0, 8, 0);
+                button.Tag = period;
+                button.Click += async (_, _) => await SetSalesPeriodAsync(period);
+                salesPeriodButtons.Add(button);
+                salesFilterPanel.Children.Add(button);
+            }
+
+            UpdateSalesPeriodButtons(salesPeriodButtons, salesPeriod);
+            var salesSourcePanel = new UniformGrid
+            {
+                Columns = 3,
+                Rows = 1,
+                Margin = new Thickness(0, 0, 0, 16)
+            };
+
+            AddSalesSourceButton("All", SalesRecordSource.All);
+            AddSalesSourceButton("Walk-in", SalesRecordSource.WalkIn);
+            AddSalesSourceButton("Online", SalesRecordSource.Online);
+
+            void AddSalesSourceButton(string label, SalesRecordSource source)
+            {
+                var button = CreateSmallSettingsButton(label);
+                button.Width = double.NaN;
+                button.Margin = new Thickness(0, 0, 8, 0);
+                button.Tag = source;
+                button.Click += async (_, _) => await SetSalesSourceAsync(source);
+                salesSourceButtons.Add(button);
+                salesSourcePanel.Children.Add(button);
+            }
+
+            UpdateSalesSourceButtons(salesSourceButtons, salesSource);
+
+            var salesCard = new Border
+            {
+                Width = 520,
+                Padding = new Thickness(28),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Background = (Brush)FindResource("ThemeSurfaceBrush"),
+                CornerRadius = new CornerRadius(24),
+                Child = new StackPanel
+                {
+                    Children =
+                    {
+                        new Grid
+                        {
+                            ColumnDefinitions =
+                            {
+                                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                                new ColumnDefinition { Width = GridLength.Auto }
+                            },
+                            Children =
+                            {
+                                new TextBlock
+                                {
+                                    Text = "Sales Records",
+                                    FontSize = 24,
+                                    FontWeight = FontWeights.Bold,
+                                    Foreground = (Brush)FindResource("ThemeInkBrush")
+                                },
+                                refreshSalesButton
+                            }
+                        },
+                        new TextBlock
+                        {
+                            Margin = new Thickness(0, 8, 0, 18),
+                            Text = "Sales and revenue",
+                            Foreground = (Brush)FindResource("ThemeInkSoftBrush")
+                        },
+                        salesFilterPanel,
+                        salesSourcePanel,
+                        CreateSalesRecordHeader(),
+                        new ScrollViewer
+                        {
+                            MaxHeight = 360,
+                            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                            Content = salesRecordsList
+                        },
+                        salesRecordsStatusTextBlock
+                    }
+                }
+            };
+            Grid.SetColumn(refreshSalesButton, 1);
+            Grid.SetColumn(salesCard, 4);
+
             employeeNameTextBox.Visibility = AuthSessionStore.IsAdmin ? Visibility.Visible : Visibility.Collapsed;
             employeeIdTextBox.Visibility = AuthSessionStore.IsAdmin ? Visibility.Visible : Visibility.Collapsed;
             employeePinBox.Visibility = AuthSessionStore.IsAdmin ? Visibility.Visible : Visibility.Collapsed;
@@ -543,14 +736,206 @@ namespace ddph
             {
                 Margin = new Thickness(32)
             };
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(closeAppButton, 2);
+            Grid.SetColumn(closeAppButton, 5);
             grid.Children.Add(accountCard);
             grid.Children.Add(employeeCard);
+            grid.Children.Add(salesCard);
+            grid.Children.Add(closeAppButton);
             _ = LoadEmployeesAsync();
+            _ = LoadSalesRecordsAsync();
             return grid;
         }
+
+        private UIElement CreateSalesRecordHeader()
+        {
+            return new Grid
+            {
+                Margin = new Thickness(0, 0, 0, 8),
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(90) },
+                    new ColumnDefinition { Width = new GridLength(70) },
+                    new ColumnDefinition { Width = new GridLength(120) }
+                },
+                Children =
+                {
+                    CreateSalesHeaderText("Date", 0),
+                    CreateSalesHeaderText("Type", 1),
+                    CreateSalesHeaderText("Orders", 2),
+                    CreateSalesHeaderText("Revenue", 3)
+                }
+            };
+        }
+
+        private UIElement CreateSalesRecordRow(string date, string source, int orderCount, decimal revenue)
+        {
+            var grid = new Grid
+            {
+                Margin = new Thickness(0, 0, 0, 8),
+                Background = Brushes.White,
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(90) },
+                    new ColumnDefinition { Width = new GridLength(70) },
+                    new ColumnDefinition { Width = new GridLength(120) }
+                }
+            };
+
+            grid.Children.Add(CreateSalesRowText(date, 0, HorizontalAlignment.Left));
+            grid.Children.Add(CreateSalesRowText(source, 1, HorizontalAlignment.Left));
+            grid.Children.Add(CreateSalesRowText(orderCount.ToString(CultureInfo.CurrentCulture), 2, HorizontalAlignment.Right));
+            grid.Children.Add(CreateSalesRowText(revenue.ToString("C", CultureInfo.CurrentCulture), 3, HorizontalAlignment.Right));
+
+            return new Border
+            {
+                Padding = new Thickness(12),
+                Background = Brushes.White,
+                CornerRadius = new CornerRadius(12),
+                Child = grid
+            };
+        }
+
+        private TextBlock CreateSalesHeaderText(string text, int column)
+        {
+            var textBlock = new TextBlock
+            {
+                Text = text,
+                FontSize = 11,
+                FontWeight = FontWeights.Bold,
+                Foreground = (Brush)FindResource("ThemeInkSoftBrush")
+            };
+            Grid.SetColumn(textBlock, column);
+            return textBlock;
+        }
+
+        private TextBlock CreateSalesRowText(string text, int column, HorizontalAlignment alignment)
+        {
+            var textBlock = new TextBlock
+            {
+                Text = text,
+                HorizontalAlignment = alignment,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = (Brush)FindResource("ThemeInkBrush")
+            };
+            Grid.SetColumn(textBlock, column);
+            return textBlock;
+        }
+
+        private void UpdateSalesPeriodButtons(IEnumerable<Button> buttons, SalesRecordPeriod activePeriod)
+        {
+            foreach (var button in buttons)
+            {
+                var isActive = button.Tag is SalesRecordPeriod period && period == activePeriod;
+                button.Background = isActive
+                    ? (Brush)FindResource("ToastBrush")
+                    : (Brush)FindResource("ThemeAccentSoftBrush");
+                button.Foreground = isActive
+                    ? Brushes.White
+                    : (Brush)FindResource("ThemeInkBrush");
+            }
+        }
+
+        private void UpdateSalesSourceButtons(IEnumerable<Button> buttons, SalesRecordSource activeSource)
+        {
+            foreach (var button in buttons)
+            {
+                var isActive = button.Tag is SalesRecordSource source && source == activeSource;
+                button.Background = isActive
+                    ? (Brush)FindResource("ToastBrush")
+                    : (Brush)FindResource("ThemeAccentSoftBrush");
+                button.Foreground = isActive
+                    ? Brushes.White
+                    : (Brush)FindResource("ThemeInkBrush");
+            }
+        }
+
+        private static bool MatchesSalesSource(OnlineOrder order, SalesRecordSource source)
+        {
+            return source switch
+            {
+                SalesRecordSource.WalkIn => string.Equals(order.SourceLabel, "Register", StringComparison.OrdinalIgnoreCase),
+                SalesRecordSource.Online => string.Equals(order.SourceLabel, "Online", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(order.SourceLabel, "Custom", StringComparison.OrdinalIgnoreCase),
+                _ => true
+            };
+        }
+
+        private static string GetSalesSourceLabel(OnlineOrder order)
+        {
+            return order.SourceLabel switch
+            {
+                "Register" => "Walk-in",
+                "Custom" => "Online",
+                _ => order.SourceLabel
+            };
+        }
+
+        private static SalesRecordDate GetSalesRecordPeriod(string value, SalesRecordPeriod period)
+        {
+            if (DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var parsed) ||
+                DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out parsed))
+            {
+                var date = parsed.Date;
+                return period switch
+                {
+                    SalesRecordPeriod.Weekly => GetWeeklySalesRecordDate(date),
+                    SalesRecordPeriod.Monthly => new SalesRecordDate(
+                        new DateTime(date.Year, date.Month, 1),
+                        date.ToString("MMMM yyyy", CultureInfo.CurrentCulture)),
+                    SalesRecordPeriod.Annual => new SalesRecordDate(
+                        new DateTime(date.Year, 1, 1),
+                        date.ToString("yyyy", CultureInfo.CurrentCulture)),
+                    _ => new SalesRecordDate(date, date.ToString("MMM dd, yyyy", CultureInfo.CurrentCulture))
+                };
+            }
+
+            return new SalesRecordDate(DateTime.MinValue, string.IsNullOrWhiteSpace(value) ? "Unknown" : value);
+        }
+
+        private static SalesRecordDate GetWeeklySalesRecordDate(DateTime date)
+        {
+            var calendar = CultureInfo.CurrentCulture.Calendar;
+            var weekNumber = calendar.GetWeekOfYear(
+                date,
+                CalendarWeekRule.FirstFourDayWeek,
+                DayOfWeek.Monday);
+            var startOffset = ((int)date.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            var startDate = date.AddDays(-startOffset);
+            var endDate = startDate.AddDays(6);
+
+            return new SalesRecordDate(
+                startDate,
+                $"Week {weekNumber}: {startDate:MMM dd} - {endDate:MMM dd}");
+        }
+
+        private enum SalesRecordPeriod
+        {
+            Daily,
+            Weekly,
+            Monthly,
+            Annual
+        }
+
+        private enum SalesRecordSource
+        {
+            All,
+            WalkIn,
+            Online
+        }
+
+        private sealed record SalesRecordDate(DateTime SortDate, string DisplayDate);
 
         private TextBox CreateSettingsTextBox()
         {
@@ -588,6 +973,37 @@ namespace ddph
                 Foreground = (Brush)FindResource("ThemeInkBrush"),
                 Content = text
             };
+        }
+
+        private Style CreateCloseAppButtonStyle()
+        {
+            var style = new Style(typeof(Button));
+            style.Setters.Add(new Setter(Control.BackgroundProperty, (Brush)FindResource("ThemeAccentSoftBrush")));
+            style.Setters.Add(new Setter(Control.ForegroundProperty, (Brush)FindResource("ThemeAccentBrush")));
+            style.Setters.Add(new Setter(Control.BorderBrushProperty, Brushes.Transparent));
+            style.Setters.Add(new Setter(Control.FontWeightProperty, FontWeights.SemiBold));
+
+            var template = new ControlTemplate(typeof(Button));
+            var borderFactory = new FrameworkElementFactory(typeof(Border));
+            borderFactory.Name = "Root";
+            borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(12));
+            borderFactory.SetBinding(Border.BackgroundProperty, new Binding("Background") { RelativeSource = RelativeSource.TemplatedParent });
+            borderFactory.SetBinding(Border.BorderBrushProperty, new Binding("BorderBrush") { RelativeSource = RelativeSource.TemplatedParent });
+            borderFactory.SetBinding(Border.BorderThicknessProperty, new Binding("BorderThickness") { RelativeSource = RelativeSource.TemplatedParent });
+
+            var contentFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentFactory.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentFactory.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            borderFactory.AppendChild(contentFactory);
+            template.VisualTree = borderFactory;
+
+            var hoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
+            hoverTrigger.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Red));
+            hoverTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            template.Triggers.Add(hoverTrigger);
+
+            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+            return style;
         }
 
         private void CommitCartQuantityEdit(TextBox? textBox)

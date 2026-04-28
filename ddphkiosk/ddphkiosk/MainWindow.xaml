@@ -285,29 +285,6 @@
                         </ItemsControl>
                     </Border>
                 </StackPanel>
-
-                <Button Grid.Column="1"
-                        Width="92"
-                        Height="44"
-                        Command="{Binding CloseAppCommand}"
-                        Background="#E6E2D9"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Cursor="Hand" Margin="46,-19,-46,41">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}"
-                                    CornerRadius="18">
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                    <TextBlock Style="{StaticResource SansText}"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource SecondaryBrush}"
-                               Text="Exit" />
-                </Button>
             </Grid>
         </Border>
 
@@ -316,47 +293,6 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="48,12,48,40">
-                <Border Height="230"
-                        CornerRadius="18"
-                        ClipToBounds="True">
-                    <Grid>
-                        <Border>
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#6B533F" Offset="0" />
-                                    <GradientStop Color="#AA8361" Offset="0.52" />
-                                    <GradientStop Color="#DAB68B" Offset="1" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <Rectangle Fill="#26000000" />
-                        <Ellipse Width="320"
-                                 Height="320"
-                                 HorizontalAlignment="Right"
-                                 Margin="0,-40,-60,0"
-                                 Fill="#22FFF3E5" />
-                        <Ellipse Width="220"
-                                 Height="220"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Bottom"
-                                 Margin="-60,0,0,-80"
-                                 Fill="#16FFFFFF" />
-                        <StackPanel VerticalAlignment="Bottom"
-                                    Margin="40,0,0,36">
-                            <TextBlock Style="{StaticResource SerifText}"
-                                       FontSize="54"
-                                       Foreground="#FBF9F5"
-                                       Text="The Morning Batch" />
-                            <TextBlock Style="{StaticResource SansText}"
-                                       Width="480"
-                                       Margin="0,14,0,0"
-                                       FontSize="18"
-                                       Foreground="#F4EFE6"
-                                       TextWrapping="Wrap"
-                                       Text="Warm, hand-crafted treasures from our hearth to your hands. Every crumb tells a story of patience and fine ingredients." />
-                        </StackPanel>
-                    </Grid>
-                </Border>
 
                 <ItemsControl Margin="0,24,0,0"
                               ItemTemplate="{StaticResource ProductCardTemplate}"

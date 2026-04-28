@@ -217,6 +217,21 @@ namespace ddph.ViewModels
             RefreshCartTotals();
         }
 
+        public void AddOrderToCart(OnlineOrder? order)
+        {
+            if (order == null)
+            {
+                return;
+            }
+
+            foreach (var item in order.Items)
+            {
+                AddOrderItemToCart(item);
+            }
+
+            RefreshCartTotals();
+        }
+
         private async Task LoadProductsAsync()
         {
             if (IsLoading)
@@ -296,6 +311,38 @@ namespace ddph.ViewModels
 
             OnPropertyChanged(nameof(CartTotal));
             RefreshCartTotals();
+        }
+
+        private void AddOrderItemToCart(OnlineOrderItem item)
+        {
+            var productId = string.IsNullOrWhiteSpace(item.ProductId)
+                ? $"order-item:{item.Name}:{item.Category}:{item.Price}"
+                : item.ProductId;
+            var quantity = Math.Max(1, item.Quantity);
+            var existingCartItem = CartItems.FirstOrDefault(cartItem => cartItem.ProductId == productId);
+
+            if (existingCartItem != null)
+            {
+                var existingIndex = CartItems.IndexOf(existingCartItem);
+                CartItems[existingIndex] = new CartItem
+                {
+                    ProductId = existingCartItem.ProductId,
+                    Item = existingCartItem.Item,
+                    Category = existingCartItem.Category,
+                    Qty = existingCartItem.Qty + quantity,
+                    Price = existingCartItem.Price
+                };
+                return;
+            }
+
+            CartItems.Add(new CartItem
+            {
+                ProductId = productId,
+                Item = item.Name,
+                Category = item.Category,
+                Qty = quantity,
+                Price = item.Price
+            });
         }
 
         private void ClearCart()

@@ -6,6 +6,7 @@ namespace ddph.Models
     public class OnlineOrderItem : INotifyPropertyChanged
     {
         private string _name = string.Empty;
+        private string _productId = string.Empty;
         private string _category = string.Empty;
         private int _quantity;
         private decimal _price;
@@ -16,6 +17,16 @@ namespace ddph.Models
             set
             {
                 _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ProductId
+        {
+            get => _productId;
+            set
+            {
+                _productId = value;
                 OnPropertyChanged();
             }
         }
