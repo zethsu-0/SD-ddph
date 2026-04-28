@@ -317,6 +317,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Subtotal = subtotal,
             Total = subtotal,
             Status = "pending",
+            OrderNumber = Random.Shared.Next(1, 101),
             OrderType = "kiosk",
             PaymentStatus = "unpaid",
             CreatedAt = now.ToString("O", CultureInfo.InvariantCulture),
@@ -726,6 +727,9 @@ public sealed class OrderCreateRequest
 
     [JsonPropertyName("status")]
     public string Status { get; set; } = "pending";
+
+    [JsonPropertyName("orderNumber")]
+    public int OrderNumber { get; set; }
 
     [JsonPropertyName("orderType")]
     public string OrderType { get; set; } = "kiosk";

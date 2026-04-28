@@ -8,6 +8,7 @@ namespace ddph
     {
         public string ProductId { get; set; } = string.Empty;
         public string Item { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public int Qty { get; set; }
         public decimal Price { get; set; }
         public decimal LineTotal => Price * Qty;

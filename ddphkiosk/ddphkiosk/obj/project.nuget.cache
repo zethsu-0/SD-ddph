@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Lm7L0P5ozyk=",
+  "dgSpecHash": "RiMmiKKe3so=",
   "success": true,
-  "projectFilePath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
+  "projectFilePath": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\herod\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
-    "C:\\Users\\herod\\.nuget\\packages\\questpdf\\2026.2.4\\questpdf.2026.2.4.nupkg.sha512"
+    "C:\\Users\\Eunice\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
+    "C:\\Users\\Eunice\\.nuget\\packages\\questpdf\\2026.2.4\\questpdf.2026.2.4.nupkg.sha512"
   ],
   "logs": []
 }

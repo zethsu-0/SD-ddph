@@ -43,6 +43,8 @@ public static class ReceiptGenerator
                     column.Spacing(9);
                     column.Item().AlignCenter().Text("Dream Dough PH").FontSize(22).Bold().FontColor(Colors.Brown.Darken2);
                     column.Item().AlignCenter().Text("Order Receipt").FontSize(11).FontColor(Colors.Grey.Darken2);
+                    column.Item().AlignCenter().Text($"Order #{request.OrderNumber.ToString("D3", CultureInfo.InvariantCulture)}")
+                        .FontSize(18).Bold().FontColor(Colors.Brown.Darken2);
                     column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                     column.Item().Row(row =>
@@ -143,6 +145,7 @@ public static class ReceiptGenerator
         var items = string.Join(", ", request.Items.Select(item => $"{item.Quantity}x {item.Name}"));
         var builder = new StringBuilder();
         builder.AppendLine("Dream Dough PH");
+        builder.AppendLine($"Order #: {request.OrderNumber.ToString("D3", CultureInfo.InvariantCulture)}");
         builder.AppendLine($"Customer: {request.CustomerName}");
         builder.AppendLine($"Phone: {request.CustomerPhone}");
         builder.AppendLine($"Pickup: {request.PickupDate} {request.PickupTime}");

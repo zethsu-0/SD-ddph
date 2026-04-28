@@ -192,6 +192,7 @@ namespace ddph.ViewModels
             {
                 ProductId = existingCartItem.ProductId,
                 Item = existingCartItem.Item,
+                Category = existingCartItem.Category,
                 Qty = quantity,
                 Price = existingCartItem.Price
             };
@@ -276,6 +277,7 @@ namespace ddph.ViewModels
                 {
                     ProductId = existingCartItem.ProductId,
                     Item = existingCartItem.Item,
+                    Category = existingCartItem.Category,
                     Qty = existingCartItem.Qty + 1,
                     Price = existingCartItem.Price
                 };
@@ -286,6 +288,7 @@ namespace ddph.ViewModels
                 {
                     ProductId = product.Id,
                     Item = product.ProductName,
+                    Category = product.Category,
                     Qty = 1,
                     Price = product.Price
                 });
@@ -323,6 +326,7 @@ namespace ddph.ViewModels
                 {
                     ProductId = existingCartItem.ProductId,
                     Item = existingCartItem.Item,
+                    Category = existingCartItem.Category,
                     Qty = existingCartItem.Qty - 1,
                     Price = existingCartItem.Price
                 };

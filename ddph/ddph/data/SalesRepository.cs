@@ -22,6 +22,7 @@ namespace ddph.Data
             {
                 ["productId"] = item.ProductId,
                 ["name"] = item.Item,
+                ["category"] = string.IsNullOrWhiteSpace(item.Category) ? "Uncategorized" : item.Category.Trim(),
                 ["quantity"] = item.Qty,
                 ["price"] = item.Price,
                 ["subtotal"] = item.Price * item.Qty
