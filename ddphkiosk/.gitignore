@@ -1,6 +1,6 @@
 .vs/
 bin/
-obj/
+obj
 obj-codex/
 **/bin/
 **/obj/
