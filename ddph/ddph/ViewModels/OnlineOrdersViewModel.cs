@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using ddph.Data;
 using ddph.Models;
 
@@ -26,6 +27,7 @@ namespace ddph.ViewModels
         private int _secondaryMetricValue;
         private string _topProductName = "No orders yet";
         private int _topProductSales;
+        private readonly DispatcherTimer _autoRefreshTimer;
 
         public OnlineOrdersViewModel()
         {
@@ -55,6 +57,12 @@ namespace ddph.ViewModels
             MarkCompleteCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("completed"), _ => CanEditOnlineOrder);
             CancelOrderCommand = new RelayCommand(async _ => await ApplyQuickStatusAsync("cancelled"), _ => CanEditOnlineOrder);
             SortOrdersCommand = new RelayCommand(parameter => SortOrders(parameter as string));
+
+            _autoRefreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(3)
+            };
+            _autoRefreshTimer.Tick += async (_, _) => await LoadActiveTabAsync();
 
             ApplySort();
             _ = LoadActiveTabAsync();
@@ -180,6 +188,25 @@ namespace ddph.ViewModels
         public ICommand CancelOrderCommand { get; }
         public ICommand SortOrdersCommand { get; }
 
+        public async Task RefreshWhenOpenedAsync()
+        {
+            StartAutoRefresh();
+            await LoadActiveTabAsync();
+        }
+
+        public void StartAutoRefresh()
+        {
+            if (!_autoRefreshTimer.IsEnabled)
+            {
+                _autoRefreshTimer.Start();
+            }
+        }
+
+        public void StopAutoRefresh()
+        {
+            _autoRefreshTimer.Stop();
+        }
+
         private bool FilterOrders(object item)
         {
             if (item is not OnlineOrder order)
@@ -280,10 +307,18 @@ namespace ddph.ViewModels
         private void SyncSelection()
         {
             var activeOrders = ActiveOrdersView.Cast<OnlineOrder>().ToList();
+            var selectedOrderId = SelectedOrder?.Id;
 
-            if (SelectedOrder != null && activeOrders.Contains(SelectedOrder))
+            if (!string.IsNullOrWhiteSpace(selectedOrderId))
             {
-                return;
+                var refreshedSelection = activeOrders.FirstOrDefault(
+                    order => string.Equals(order.Id, selectedOrderId, System.StringComparison.Ordinal));
+
+                if (refreshedSelection != null)
+                {
+                    SelectedOrder = refreshedSelection;
+                    return;
+                }
             }
 
             SelectedOrder = activeOrders.FirstOrDefault();

@@ -391,9 +391,9 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="112"/>
                             </Grid.ColumnDefinitions>
-                            <Button Content="Order ID"
+                            <Button Content="Order Number"
                                     Command="{Binding SortOrdersCommand}"
-                                    CommandParameter="ReferenceLabel"
+                                    CommandParameter="OrderNumber"
                                     Style="{StaticResource OrderHeaderButtonStyle}" HorizontalContentAlignment="Center"/>
                             <Button Grid.Column="1"
                                     Content="Customer"
@@ -456,7 +456,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock VerticalAlignment="Center"
-                                                       Text="{Binding ReferenceLabel}"
+                                                       Text="{Binding OrderNumber}"
                                                        FontWeight="Bold"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{StaticResource ThemeAccentBrush}"/>

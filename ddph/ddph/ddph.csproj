@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>dd.ico</ApplicationIcon>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj-codex\**;bin-codex\**;*_wpftmp.csproj</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

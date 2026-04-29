@@ -13,6 +13,8 @@ public static class ReceiptPdfService
         decimal subtotal,
         decimal discount,
         decimal total,
+        decimal vatableSales,
+        decimal vatAmount,
         decimal payment,
         decimal change,
         string discountLabel,
@@ -21,11 +23,11 @@ public static class ReceiptPdfService
     {
         QuestPDF.Settings.License = LicenseType.Community;
 
-        var document = new ReceiptDocument(items, subtotal, discount, total, payment, change, discountLabel, reference, createdAt);
+        var document = new ReceiptDocument(items, subtotal, discount, total, vatableSales, vatAmount, payment, change, discountLabel, reference, createdAt);
         var previewImages = document
             .GenerateImages(new ImageGenerationSettings
             {
-                RasterDpi = 144
+                RasterDpi = 160
             })
             .ToList();
 

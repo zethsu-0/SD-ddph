@@ -436,6 +436,9 @@
                                    Foreground="{StaticResource MutedBrush}"
                                    Text="FULL NAME" />
                         <TextBox Style="{StaticResource InputBoxStyle}"
+                                 MaxLength="50"
+                                 PreviewTextInput="NameTextBox_PreviewTextInput"
+                                 DataObject.Pasting="NameTextBox_Pasting"
                                  Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Style="{StaticResource SansText}"
@@ -445,6 +448,10 @@
                                    Foreground="{StaticResource MutedBrush}"
                                    Text="PHONE" />
                         <TextBox Style="{StaticResource InputBoxStyle}"
+                                 MaxLength="11"
+                                 InputScope="TelephoneNumber"
+                                 PreviewTextInput="PhoneTextBox_PreviewTextInput"
+                                 DataObject.Pasting="PhoneTextBox_Pasting"
                                  Text="{Binding CustomerPhone, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Style="{StaticResource SansText}"

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
@@ -66,9 +67,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         get => _customerName;
         set
         {
-            if (SetProperty(ref _customerName, value))
+            var normalizedValue = NormalizeCustomerName(value);
+            if (SetProperty(ref _customerName, normalizedValue))
             {
                 RefreshSubmitState();
+            }
+            else if (!string.Equals(value, normalizedValue, StringComparison.Ordinal))
+            {
+                OnPropertyChanged();
             }
         }
     }
@@ -78,9 +84,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         get => _customerPhone;
         set
         {
-            if (SetProperty(ref _customerPhone, value))
+            var normalizedValue = NormalizeCustomerPhone(value);
+            if (SetProperty(ref _customerPhone, normalizedValue))
             {
                 RefreshSubmitState();
+            }
+            else if (!string.Equals(value, normalizedValue, StringComparison.Ordinal))
+            {
+                OnPropertyChanged();
             }
         }
     }
@@ -277,9 +288,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (!HasRequiredCustomerDetails())
         {
-            StatusMessage = "Fill name, phone, pickup date, and pickup time.";
+            StatusMessage = "Fill name, 11-digit phone, pickup date, and pickup time.";
             MessageBox.Show(
-                "Fill name, phone, pickup date, and pickup time first.",
+                "Fill name, 11-digit phone, pickup date, and pickup time first.",
                 "Missing Details",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
@@ -304,11 +315,37 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
+        string savedReceiptPath;
         try
         {
-            StatusMessage = "Sending order...";
+            StatusMessage = "Saving receipt...";
+            savedReceiptPath = await ReceiptGenerator.SaveReceiptLocallyAsync(request);
+            StatusMessage = "Printing receipt...";
+            await Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+            var printed = await Dispatcher.InvokeAsync(() => ReceiptGenerator.PrintReceiptImage(savedReceiptPath));
+            if (!printed)
+            {
+                StatusMessage = "Receipt print cancelled.";
+                return;
+            }
+
+            StatusMessage = "Receipt printed successfully. Sending order...";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Receipt save/print failed: {ex.Message}";
+            MessageBox.Show(
+                $"Receipt save/print failed: {ex.Message}",
+                "Receipt Failed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        try
+        {
             var orderId = await _service.CreateOrderAsync(request);
-            StatusMessage = $"Order sent: {orderId}";
+            StatusMessage = $"Receipt saved & printed. Order sent: {orderId}. File: {savedReceiptPath}";
             ClearCart();
             ClearOrderInputs();
         }
@@ -360,10 +397,122 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private bool HasRequiredCustomerDetails()
     {
-        return !string.IsNullOrWhiteSpace(CustomerName) &&
-               !string.IsNullOrWhiteSpace(CustomerPhone) &&
+        return CustomerName.Any(char.IsLetter) &&
+               CustomerPhone.Length == 11 &&
                PickupDate.HasValue &&
                !string.IsNullOrWhiteSpace(PickupTime);
+    }
+
+    private static string NormalizeCustomerName(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        var builder = new StringBuilder(capacity: Math.Min(value.Length, 50));
+        foreach (var character in value)
+        {
+            if (builder.Length >= 50)
+            {
+                break;
+            }
+
+            if (IsNameCharacter(character))
+            {
+                builder.Append(character);
+            }
+        }
+
+        return builder.ToString();
+    }
+
+    private static string NormalizeCustomerPhone(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        var builder = new StringBuilder(capacity: Math.Min(value.Length, 11));
+        foreach (var character in value)
+        {
+            if (builder.Length >= 11)
+            {
+                break;
+            }
+
+            if (char.IsDigit(character))
+            {
+                builder.Append(character);
+            }
+        }
+
+        return builder.ToString();
+    }
+
+    private static bool IsNameCharacter(char character)
+    {
+        return char.IsLetter(character) || character == ' ';
+    }
+
+    private void NameTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        e.Handled = !e.Text.All(IsNameCharacter);
+    }
+
+    private void PhoneTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        e.Handled = !e.Text.All(char.IsDigit);
+    }
+
+    private void NameTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+    {
+        HandleLimitedPaste(sender, e, NormalizeCustomerName, 50);
+    }
+
+    private void PhoneTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+    {
+        HandleLimitedPaste(sender, e, NormalizeCustomerPhone, 11);
+    }
+
+    private static void HandleLimitedPaste(
+        object sender,
+        DataObjectPastingEventArgs e,
+        Func<string, string> normalize,
+        int maxLength)
+    {
+        if (sender is not TextBox textBox ||
+            !e.DataObject.GetDataPresent(DataFormats.Text) ||
+            e.DataObject.GetData(DataFormats.Text) is not string pastedText)
+        {
+            e.CancelCommand();
+            return;
+        }
+
+        e.CancelCommand();
+        InsertTextWithinLimit(textBox, normalize(pastedText), maxLength);
+    }
+
+    private static void InsertTextWithinLimit(TextBox textBox, string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return;
+        }
+
+        var availableLength = maxLength - (textBox.Text.Length - textBox.SelectionLength);
+        if (availableLength <= 0)
+        {
+            return;
+        }
+
+        var insertText = text.Length > availableLength ? text[..availableLength] : text;
+        var selectionStart = textBox.SelectionStart;
+
+        textBox.SelectedText = insertText;
+        textBox.SelectionStart = selectionStart + insertText.Length;
+        textBox.SelectionLength = 0;
     }
 
     private bool TryGetPickupDateTime(out DateTime pickupDateTime)
@@ -789,6 +938,12 @@ public sealed class OrderCreateRequest
 
     [JsonPropertyName("date")]
     public string Date { get; set; } = string.Empty;
+
+    [JsonPropertyName("receiptImageUri")]
+    public string ReceiptImageUri { get; set; } = string.Empty;
+
+    [JsonPropertyName("receiptPublicId")]
+    public string ReceiptPublicId { get; set; } = string.Empty;
 }
 
 public sealed class OrderItemDto

@@ -27,6 +27,7 @@ namespace ddph
     {
         private UIElement? _inventoryContent;
         private UIElement? _ordersContent;
+        private OnlineOrdersViewModel? _ordersViewModel;
         private UIElement? _customContent;
         private UIElement? _settingsContent;
         private readonly Brush _activeNavBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
@@ -47,9 +48,9 @@ namespace ddph
             ShowInventoryTab();
         }
 
-        private void OrdersButton_Click(object sender, RoutedEventArgs e)
+        private async void OrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowOrdersTab();
+            await ShowOrdersTabAsync();
         }
 
         private void QuickViewButton_Click(object sender, RoutedEventArgs e)
@@ -88,7 +89,24 @@ namespace ddph
             {
                 Owner = this
             };
-            previewWindow.ShowDialog();
+
+            if (previewWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                ReceiptPrintService.Print(receipt.PreviewImages, System.IO.Path.GetFileNameWithoutExtension(receipt.FilePath));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to print receipt.\n\n{ex.Message}",
+                    "Print Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void PaymentTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -100,7 +118,36 @@ namespace ddph
 
             var nextText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
             nextText = nextText.Insert(textBox.CaretIndex, e.Text);
-            e.Handled = nextText == "0" || !decimal.TryParse(nextText, out _);
+            e.Handled = !IsValidPaymentText(nextText);
+        }
+
+        private void PaymentTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (sender is not TextBox textBox ||
+                !e.DataObject.GetDataPresent(DataFormats.Text) ||
+                e.DataObject.GetData(DataFormats.Text) is not string pastedText)
+            {
+                e.CancelCommand();
+                return;
+            }
+
+            var nextText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            nextText = nextText.Insert(textBox.CaretIndex, pastedText);
+
+            if (!IsValidPaymentText(nextText))
+            {
+                e.CancelCommand();
+            }
+        }
+
+        private static bool IsValidPaymentText(string text)
+        {
+            if (text == "0" || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out _))
+            {
+                return false;
+            }
+
+            return text.Count(char.IsDigit) <= MainWindowViewModel.MaxPaymentDigits;
         }
 
         private void CartQtyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -175,6 +222,7 @@ namespace ddph
 
         private void ShowRegisterTab()
         {
+            _ordersViewModel?.StopAutoRefresh();
             PageTitleText.Text = "Register";
             SetActiveNavButton(RegisterNavButton);
             RegisterContent.Visibility = Visibility.Visible;
@@ -196,12 +244,23 @@ namespace ddph
             ShowEmbeddedTab(_inventoryContent);
         }
 
-        private void ShowOrdersTab()
+        private async Task ShowOrdersTabAsync()
         {
-            _ordersContent ??= CreateEmbeddedWindowContent(new OnlineOrders());
+            if (_ordersContent == null)
+            {
+                var ordersWindow = new OnlineOrders();
+                _ordersContent = CreateEmbeddedWindowContent(ordersWindow);
+                _ordersViewModel = ordersWindow.DataContext as OnlineOrdersViewModel;
+            }
+
             PageTitleText.Text = "Orders";
             SetActiveNavButton(OrdersNavButton);
             ShowEmbeddedTab(_ordersContent);
+
+            if (_ordersViewModel != null)
+            {
+                await _ordersViewModel.RefreshWhenOpenedAsync();
+            }
         }
 
         private void ShowCustomTab()
@@ -225,6 +284,11 @@ namespace ddph
             if (content == null)
             {
                 return;
+            }
+
+            if (content != _ordersContent)
+            {
+                _ordersViewModel?.StopAutoRefresh();
             }
 
             RegisterContent.Visibility = Visibility.Collapsed;
