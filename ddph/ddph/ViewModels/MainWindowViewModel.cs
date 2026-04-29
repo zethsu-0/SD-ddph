@@ -28,6 +28,9 @@ namespace ddph.ViewModels
         private decimal _discountRate;
         private string? _discountCustomerType;
         private bool _isLoading;
+        private string? _pendingKioskSaleId;
+        private string? _pendingCustomerName;
+        private string? _pendingCustomerPhone;
 
         public MainWindowViewModel()
         {
@@ -228,6 +231,17 @@ namespace ddph.ViewModels
                 return;
             }
 
+            ClearCart();
+            _pendingKioskSaleId = string.Equals(order.SourceLabel, "Kiosk", StringComparison.OrdinalIgnoreCase)
+                ? order.Id
+                : null;
+            _pendingCustomerName = _pendingKioskSaleId == null
+                ? null
+                : order.DisplayName;
+            _pendingCustomerPhone = _pendingKioskSaleId == null
+                ? null
+                : order.CustomerPhone;
+
             foreach (var item in order.Items)
             {
                 AddOrderItemToCart(item);
@@ -352,6 +366,9 @@ namespace ddph.ViewModels
         private void ClearCart()
         {
             CartItems.Clear();
+            _pendingKioskSaleId = null;
+            _pendingCustomerName = null;
+            _pendingCustomerPhone = null;
             PaymentText = string.Empty;
             ClearDiscount();
             RefreshCartTotals();
@@ -501,7 +518,7 @@ namespace ddph.ViewModels
                 var vatAmount = VatAmount;
                 var change = payment - total;
                 var createdAt = DateTime.Now;
-                var saleReference = await _salesRepository.CheckoutSaleAsync(cartItems, AuthSessionStore.CurrentUsername, payment, _discountRate, _discountCustomerType);
+                var saleReference = await _salesRepository.CheckoutSaleAsync(cartItems, AuthSessionStore.CurrentUsername, payment, _discountRate, _discountCustomerType, _pendingKioskSaleId, _pendingCustomerName, _pendingCustomerPhone);
                 var receiptDirectory = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "DDPH Receipts");

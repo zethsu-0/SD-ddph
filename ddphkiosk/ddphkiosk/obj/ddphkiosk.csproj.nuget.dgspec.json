@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj": {}
+    "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj": {
+    "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
+        "projectUniqueName": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
         "projectName": "ddphkiosk",
-        "projectPath": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
-        "packagesPath": "C:\\Users\\Eunice\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\obj\\",
+        "projectPath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\ddphkiosk.csproj",
+        "packagesPath": "C:\\Users\\herod\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Eunice\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\herod\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

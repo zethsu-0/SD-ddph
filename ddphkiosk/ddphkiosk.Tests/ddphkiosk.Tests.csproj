@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ddphkiosk\FirebaseEtag.cs" Link="FirebaseEtag.cs" />
+    <Compile Include="..\ddphkiosk\KioskDailyOrderNumber.cs" Link="KioskDailyOrderNumber.cs" />
+  </ItemGroup>
+
+</Project>

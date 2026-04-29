@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using ddph.Models;
 
@@ -10,7 +9,17 @@ namespace ddph.Data
 {
     public class OrderRepository
     {
-        private readonly FirebaseDatabaseClient _firebaseClient = new();
+        private readonly IFirebaseDatabaseClient _firebaseClient;
+
+        public OrderRepository()
+            : this(new FirebaseDatabaseClient())
+        {
+        }
+
+        public OrderRepository(IFirebaseDatabaseClient firebaseClient)
+        {
+            _firebaseClient = firebaseClient;
+        }
 
         public async Task<List<OnlineOrder>> GetOnlineOrdersAsync()
         {
@@ -236,14 +245,31 @@ namespace ddph.Data
                 return null;
             }
 
-            var matches = await GetMatchingOrdersAsync<FirebaseKioskSaleRecord>(
-                    "kioskSales",
-                    normalizedOrderNumber,
-                    (id, record) => MapKioskSale(id, record),
-                    (id, record) => MatchesKioskOrderNumber(record, normalizedOrderNumber, exactMatch: true))
+            var records = await _firebaseClient
+                .GetAsync<Dictionary<string, JsonElement>>("kioskSales")
                 .ConfigureAwait(false);
 
-            return matches.FirstOrDefault();
+            if (records == null)
+            {
+                return null;
+            }
+
+            var matches = records
+                .Where(entry => !entry.Key.StartsWith("_") && entry.Value.ValueKind == JsonValueKind.Object)
+                .Select(entry => new FirebaseOrderMatch<FirebaseKioskSaleRecord>(
+                    entry.Key,
+                    entry.Value.Deserialize<FirebaseKioskSaleRecord>(new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    })))
+                .Where(entry => entry.Record != null &&
+                    MatchesKioskOrderNumber(entry.Record, normalizedOrderNumber, exactMatch: true))
+                .ToList();
+            var todayKey = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var selectedMatch = matches.FirstOrDefault(entry =>
+                string.Equals(entry.Record?.OrderDateKey, todayKey, StringComparison.Ordinal)) ?? matches.FirstOrDefault();
+
+            return selectedMatch?.Record == null ? null : MapKioskSale(selectedMatch.Id, selectedMatch.Record);
         }
 
         private static bool MatchesKioskReference(string id, FirebaseKioskSaleRecord record, string normalizedReference)
@@ -270,7 +296,10 @@ namespace ddph.Data
 
         private static string NormalizeOrderId(string orderId)
         {
-            return orderId.Trim().TrimStart('-').ToUpperInvariant();
+            var normalized = orderId.Trim().TrimStart('-').ToUpperInvariant();
+            return long.TryParse(normalized, NumberStyles.None, CultureInfo.InvariantCulture, out var number)
+                ? number.ToString(CultureInfo.InvariantCulture)
+                : normalized;
         }
 
         private sealed record FirebaseOrderMatch<TRecord>(string Id, TRecord? Record);
@@ -285,38 +314,6 @@ namespace ddph.Data
                         ["status"] = status,
                         ["updatedAt"] = System.DateTime.UtcNow.ToString("O", System.Globalization.CultureInfo.InvariantCulture)
                     })
-                .ConfigureAwait(false);
-        }
-
-        public async Task ConfirmKioskSaleAsWalkInAsync(string orderId)
-        {
-            if (string.IsNullOrWhiteSpace(orderId))
-            {
-                return;
-            }
-
-            var kioskSale = await _firebaseClient
-                .GetAsync<JsonObject>($"kioskSales/{orderId}")
-                .ConfigureAwait(false);
-
-            if (kioskSale == null)
-            {
-                throw new InvalidOperationException("Kiosk sale no longer exists.");
-            }
-
-            var updatedAt = System.DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
-            kioskSale["status"] = "confirmed";
-            kioskSale["saleType"] = "walk-in";
-            kioskSale["orderSource"] = "walk-in";
-            kioskSale["updatedAt"] = updatedAt;
-            kioskSale["confirmedAt"] = updatedAt;
-
-            await _firebaseClient
-                .PutAsync($"walk-in-orders/{orderId}", kioskSale)
-                .ConfigureAwait(false);
-
-            await _firebaseClient
-                .DeleteAsync($"kioskSales/{orderId}")
                 .ConfigureAwait(false);
         }
 
@@ -577,6 +574,7 @@ namespace ddph.Data
             public List<FirebaseOrderItemRecord?>? Items { get; set; }
             public string? Notes { get; set; }
             public int? OrderNumber { get; set; }
+            public string? OrderDateKey { get; set; }
             public string? OrderType { get; set; }
             public string? PaymentStatus { get; set; }
             public string? PickupDate { get; set; }

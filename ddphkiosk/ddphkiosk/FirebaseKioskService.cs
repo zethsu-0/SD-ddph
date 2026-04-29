@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -13,6 +15,7 @@ public sealed class FirebaseKioskService
     private const string BaseUrl = "https://dreamdoughph-88e46-default-rtdb.asia-southeast1.firebasedatabase.app";
     private const string StorageBucket = "dreamdoughph-88e46.appspot.com";
     private const string PlaceholderImage = "placeholder";
+    private const int MaxCounterRetries = 8;
     private static readonly SemaphoreSlim ImageLoadGate = new(6);
 
     private static readonly HttpClient HttpClient = new()
@@ -47,6 +50,53 @@ public sealed class FirebaseKioskService
         }
 
         return result.Name;
+    }
+
+    public async Task<KioskDailyOrderNumber> GetNextDailyOrderNumberAsync(DateTime localDate)
+    {
+        var dateKey = KioskDailyOrderNumber.GetDateKey(localDate);
+        var counterPath = $"/kioskDailyCounters/{dateKey}.json";
+
+        for (var attempt = 0; attempt < MaxCounterRetries; attempt++)
+        {
+            using var getRequest = new HttpRequestMessage(HttpMethod.Get, counterPath);
+            getRequest.Headers.TryAddWithoutValidation("X-Firebase-ETag", "true");
+
+            using var getResponse = await HttpClient.SendAsync(getRequest);
+            getResponse.EnsureSuccessStatusCode();
+
+            var etag = FirebaseEtag.GetHeaderValue(getResponse);
+            if (string.IsNullOrWhiteSpace(etag))
+            {
+                throw new InvalidOperationException("Firebase did not return the kiosk counter version.");
+            }
+
+            var json = await getResponse.Content.ReadAsStringAsync();
+            var currentCounter = string.IsNullOrWhiteSpace(json) || json == "null"
+                ? null
+                : JsonSerializer.Deserialize<int?>(json, JsonOptions);
+            var nextNumber = KioskDailyOrderNumber.FromCurrentCounter(localDate, currentCounter);
+
+            using var putRequest = new HttpRequestMessage(HttpMethod.Put, counterPath)
+            {
+                Content = new StringContent(
+                    JsonSerializer.Serialize(nextNumber.Number, JsonOptions),
+                    Encoding.UTF8,
+                    "application/json")
+            };
+            putRequest.Headers.TryAddWithoutValidation("If-Match", etag);
+
+            using var putResponse = await HttpClient.SendAsync(putRequest);
+            if (putResponse.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                continue;
+            }
+
+            putResponse.EnsureSuccessStatusCode();
+            return nextNumber;
+        }
+
+        throw new InvalidOperationException("Unable to reserve a kiosk order number. Please try again.");
     }
 
     public async Task<BitmapImage?> GetProductImageAsync(ProductCard product)

@@ -7,7 +7,16 @@ using System.Threading.Tasks;
 
 namespace ddph.Data
 {
-    public class FirebaseDatabaseClient
+    public interface IFirebaseDatabaseClient
+    {
+        Task<T?> GetAsync<T>(string path);
+        Task<T?> PostAsync<T>(string path, object payload);
+        Task PutAsync(string path, object payload);
+        Task PatchAsync(string path, object payload);
+        Task DeleteAsync(string path);
+    }
+
+    public class FirebaseDatabaseClient : IFirebaseDatabaseClient
     {
         private const string DatabaseUrl = "https://dreamdoughph-88e46-default-rtdb.asia-southeast1.firebasedatabase.app";
 

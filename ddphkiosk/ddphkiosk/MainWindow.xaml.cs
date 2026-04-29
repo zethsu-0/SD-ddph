@@ -308,7 +308,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
-        var request = BuildOrderRequest();
+        KioskDailyOrderNumber dailyOrderNumber;
+        try
+        {
+            StatusMessage = "Reserving order number...";
+            dailyOrderNumber = await _service.GetNextDailyOrderNumberAsync(DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Order number failed: {ex.Message}";
+            MessageBox.Show(
+                $"Unable to reserve an order number.\n\n{ex.Message}",
+                "Order Number Failed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        var request = BuildOrderRequest(dailyOrderNumber);
         if (!ShowReceiptConfirmation(request))
         {
             StatusMessage = "Order confirmation cancelled.";
@@ -355,7 +372,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private OrderCreateRequest BuildOrderRequest()
+    private OrderCreateRequest BuildOrderRequest(KioskDailyOrderNumber dailyOrderNumber)
     {
         var items = CartItems.Select(item => new OrderItemDto
         {
@@ -381,7 +398,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Subtotal = subtotal,
             Total = subtotal,
             Status = "pending",
-            OrderNumber = Random.Shared.Next(1, 101),
+            OrderDateKey = dailyOrderNumber.DateKey,
+            OrderNumber = dailyOrderNumber.Number,
             OrderType = "kiosk",
             PaymentStatus = "unpaid",
             CreatedAt = now.ToString("O", CultureInfo.InvariantCulture),
@@ -923,6 +941,9 @@ public sealed class OrderCreateRequest
 
     [JsonPropertyName("orderNumber")]
     public int OrderNumber { get; set; }
+
+    [JsonPropertyName("orderDateKey")]
+    public string OrderDateKey { get; set; } = string.Empty;
 
     [JsonPropertyName("orderType")]
     public string OrderType { get; set; } = "kiosk";

@@ -1,6 +1,8 @@
 .vs
-.agents
 bin
 obj
 obj-codex
 build-codex 
+ddph/bin
+ddph/obj
+ddph/bin-codex

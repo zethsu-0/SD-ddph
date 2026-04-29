@@ -143,13 +143,8 @@ namespace ddph.Views
 
             try
             {
-                if (string.Equals(status, "confirmed", StringComparison.OrdinalIgnoreCase) &&
-                    string.Equals(_currentOrder.SourceLabel, "Kiosk", StringComparison.OrdinalIgnoreCase))
-                {
-                    await _orderRepository.ConfirmKioskSaleAsWalkInAsync(_currentOrder.Id);
-                    _currentOrder.OrderSource = "Register";
-                }
-                else
+                if (!string.Equals(status, "confirmed", StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(_currentOrder.SourceLabel, "Kiosk", StringComparison.OrdinalIgnoreCase))
                 {
                     await _orderRepository.UpdateOrderStatusAsync(_currentOrder.Id, status, GetOrderNode(_currentOrder));
                 }
@@ -159,6 +154,8 @@ namespace ddph.Views
                 if (string.Equals(status, "confirmed", StringComparison.OrdinalIgnoreCase))
                 {
                     _mainViewModel?.AddOrderToCart(_currentOrder);
+                    Close();
+                    return;
                 }
 
                 OrderMetaTextBlock.Text = $"{_currentOrder.SourceLabel} | {_currentOrder.Date}";
