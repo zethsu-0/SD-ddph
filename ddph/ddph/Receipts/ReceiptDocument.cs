@@ -7,10 +7,15 @@ namespace ddph.Receipts;
 
 public sealed class ReceiptDocument : IDocument
 {
+    private const float ReceiptPageWidth = 420f;
+    private const float MinimumReceiptPageHeight = 595f;
+
     private readonly IReadOnlyList<CartItem> _items;
     private readonly decimal _subtotal;
     private readonly decimal _discount;
     private readonly decimal _total;
+    private readonly decimal _vatableSales;
+    private readonly decimal _vatAmount;
     private readonly decimal _payment;
     private readonly decimal _change;
     private readonly string _discountLabel;
@@ -23,6 +28,8 @@ public sealed class ReceiptDocument : IDocument
         decimal subtotal,
         decimal discount,
         decimal total,
+        decimal vatableSales,
+        decimal vatAmount,
         decimal payment,
         decimal change,
         string discountLabel,
@@ -33,6 +40,8 @@ public sealed class ReceiptDocument : IDocument
         _subtotal = subtotal;
         _discount = discount;
         _total = total;
+        _vatableSales = vatableSales;
+        _vatAmount = vatAmount;
         _payment = payment;
         _change = change;
         _discountLabel = discountLabel;
@@ -47,37 +56,37 @@ public sealed class ReceiptDocument : IDocument
     {
         container.Page(page =>
         {
-            page.Size(PageSizes.A4);
-            page.Margin(42);
-            page.DefaultTextStyle(style => style.FontSize(13).FontFamily(Fonts.Arial).FontColor("#3F3431"));
+            page.Size(CalculateReceiptPageSize());
+            page.Margin(28);
+            page.DefaultTextStyle(style => style.FontSize(10).FontFamily(Fonts.Arial).FontColor(Colors.Grey.Darken4));
 
             page.Content().Column(column =>
             {
-                column.Spacing(12);
-                column.Item().AlignCenter().Text("Dream Dough PH").FontSize(26).SemiBold().FontColor("#5C4843");
-                column.Item().AlignCenter().Text("Order Receipt").FontSize(13).FontColor("#6D625F");
-                column.Item().LineHorizontal(1);
+                column.Spacing(9);
+                column.Item().AlignCenter().Text("Dream Dough PH").FontSize(22).Bold().FontColor(Colors.Brown.Darken2);
+                column.Item().AlignCenter().Text("Order Receipt").FontSize(11).FontColor(Colors.Grey.Darken2);
+                column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                 column.Item().Row(row =>
                 {
                     row.RelativeItem().Column(details =>
                     {
                         details.Spacing(4);
-                        details.Item().Text($"Reference: {_reference}").FontSize(12);
-                        details.Item().Text($"Date: {_createdAt:yyyy-MM-dd HH:mm}").FontSize(12);
+                        details.Item().Text($"Reference: {_reference}");
+                        details.Item().Text($"Date: {_createdAt:yyyy-MM-dd HH:mm}");
                     });
                 });
 
-                column.Item().LineHorizontal(1);
+                column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                 column.Item().Table(table =>
                 {
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.RelativeColumn();
-                        columns.ConstantColumn(46);
-                        columns.ConstantColumn(94);
-                        columns.ConstantColumn(104);
+                        columns.RelativeColumn(2);
+                        columns.ConstantColumn(34);
+                        columns.ConstantColumn(58);
+                        columns.ConstantColumn(66);
                     });
 
                     table.Header(header =>
@@ -92,42 +101,48 @@ public sealed class ReceiptDocument : IDocument
                     {
                         table.Cell().Element(BodyCell).Text(item.Item);
                         table.Cell().Element(BodyCell).AlignCenter().Text(item.Qty.ToString());
-                        table.Cell().Element(BodyCell).AlignRight().Text(item.Price.ToString("C"));
-                        table.Cell().Element(BodyCell).AlignRight().Text((item.Price * item.Qty).ToString("C"));
+                        table.Cell().Element(BodyCell).AlignRight().Text(ToPeso(item.Price));
+                        table.Cell().Element(BodyCell).AlignRight().Text(ToPeso(item.Price * item.Qty));
                     }
                 });
 
-                column.Item().LineHorizontal(1);
-                AddAmountRow(column, "Subtotal", _subtotal, 13);
+                column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                AddAmountRow(column, "Subtotal", _subtotal, 10);
 
                 if (_discount > 0)
                 {
-                    AddAmountRow(column, _discountLabel, -_discount, 13);
+                    AddAmountRow(column, _discountLabel, -_discount, 10);
                 }
 
                 column.Item().AlignRight().Text(text =>
                 {
-                    text.Span("Total: ").FontSize(16).SemiBold();
-                    text.Span(_total.ToString("C")).FontSize(20).SemiBold().FontColor("#5C4843");
+                    text.Span("Total: ").FontSize(15).Bold();
+                    text.Span(ToPeso(_total)).FontSize(15).Bold().FontColor(Colors.Brown.Darken2);
                 });
-                AddAmountRow(column, "Payment", _payment, 13);
-                AddAmountRow(column, "Change", _change, 13);
 
-                column.Item().PaddingTop(18).AlignCenter().Width(120).Image(_qrCodeImage);
-                column.Item().AlignCenter().Text("Scan for receipt reference").FontSize(12);
-                column.Item().PaddingTop(10).AlignCenter().Text("Thank you!").FontSize(16).SemiBold();
+                column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                AddAmountRow(column, "VATable Sales", _vatableSales, 10);
+                AddAmountRow(column, "12% VAT", _vatAmount, 10);
+                column.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+
+                AddAmountRow(column, "Payment", _payment, 10);
+                AddAmountRow(column, "Change", _change, 10);
+
+                column.Item().PaddingTop(4).AlignCenter().Width(150).Image(_qrCodeImage).FitWidth();
+                column.Item().AlignCenter().Text("Scan for receipt reference").FontSize(9).FontColor(Colors.Grey.Darken1);
+                column.Item().PaddingTop(4).AlignCenter().Text("Thank you!").FontSize(12).SemiBold();
             });
         });
     }
 
     private static IContainer HeaderCell(IContainer container)
     {
-        return container.Background("#EEEEEE").PaddingVertical(6).PaddingHorizontal(5);
+        return container.Background(Colors.Grey.Lighten3).PaddingVertical(5).PaddingHorizontal(4);
     }
 
     private static IContainer BodyCell(IContainer container)
     {
-        return container.BorderBottom(1).BorderColor("#EEEEEE").PaddingVertical(8).PaddingHorizontal(5);
+        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(5).PaddingHorizontal(4);
     }
 
     private static void AddAmountRow(ColumnDescriptor column, string label, decimal amount, int fontSize)
@@ -135,8 +150,41 @@ public sealed class ReceiptDocument : IDocument
         column.Item().AlignRight().Text(text =>
         {
             text.Span($"{label}: ").FontSize(fontSize).SemiBold();
-            text.Span(amount.ToString("C")).FontSize(fontSize);
+            text.Span(ToPeso(amount)).FontSize(fontSize);
         });
+    }
+
+    private PageSize CalculateReceiptPageSize()
+    {
+        var pageHeight = 595f;
+        pageHeight += _items.Sum(EstimateItemRowHeight);
+
+        if (_discount > 0)
+        {
+            pageHeight += 15f;
+        }
+
+        return new PageSize(ReceiptPageWidth, Math.Max(MinimumReceiptPageHeight, pageHeight));
+    }
+
+    private static float EstimateItemRowHeight(CartItem item)
+    {
+        return 22f + EstimateWrappedLineCount(item.Item, 22) * 11f;
+    }
+
+    private static int EstimateWrappedLineCount(string text, int charactersPerLine)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return 1;
+        }
+
+        return Math.Max(1, (int)Math.Ceiling(text.Length / (double)charactersPerLine));
+    }
+
+    private static string ToPeso(decimal value)
+    {
+        return $"PHP {value:N2}";
     }
 
     private byte[] CreateQrCodeImage()

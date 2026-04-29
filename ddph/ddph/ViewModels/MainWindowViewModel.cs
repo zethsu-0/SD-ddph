@@ -16,6 +16,8 @@ namespace ddph.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+        public const int MaxPaymentDigits = 6;
+        private const decimal MaxPaymentAmount = 999999m;
         private const decimal MaxDiscountRate = 100m;
         private readonly ProductRepository _productRepository = new();
         private readonly SalesRepository _salesRepository = new();
@@ -58,6 +60,8 @@ namespace ddph.ViewModels
         public decimal DiscountRate => _discountRate;
         public decimal DiscountAmount => Math.Round(CartSubtotal * (Math.Min(_discountRate, MaxDiscountRate) / 100m), 2, MidpointRounding.AwayFromZero);
         public decimal CartTotal => CartSubtotal - DiscountAmount;
+        public decimal VatableSales => Math.Round(CartTotal * 0.88m, 2, MidpointRounding.AwayFromZero);
+        public decimal VatAmount => Math.Round(CartTotal * 0.12m, 2, MidpointRounding.AwayFromZero);
         public bool HasDiscount => _discountRate > 0;
         public string DiscountTypeLabel => string.Equals(_discountCustomerType, "pwd", StringComparison.OrdinalIgnoreCase)
             ? "PWD"
@@ -472,6 +476,13 @@ namespace ddph.ViewModels
                 return;
             }
 
+            if (payment > MaxPaymentAmount)
+            {
+                MessageBox.Show($"Payment must be {MaxPaymentDigits} digits or less.", "Invalid Payment", MessageBoxButton.OK, MessageBoxImage.Warning);
+                PaymentFocusRequested?.Invoke();
+                return;
+            }
+
             if (payment < CartTotal)
             {
                 MessageBox.Show("Payment is less than the total amount.", "Insufficient Payment", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -486,6 +497,8 @@ namespace ddph.ViewModels
                 var subtotal = CartSubtotal;
                 var discountAmount = DiscountAmount;
                 var total = CartTotal;
+                var vatableSales = VatableSales;
+                var vatAmount = VatAmount;
                 var change = payment - total;
                 var createdAt = DateTime.Now;
                 var saleReference = await _salesRepository.CheckoutSaleAsync(cartItems, AuthSessionStore.CurrentUsername, payment, _discountRate, _discountCustomerType);
@@ -501,6 +514,8 @@ namespace ddph.ViewModels
                     subtotal,
                     discountAmount,
                     total,
+                    vatableSales,
+                    vatAmount,
                     payment,
                     change,
                     HasDiscount ? $"Discount ({DiscountSummary})" : "Discount",
@@ -534,6 +549,8 @@ namespace ddph.ViewModels
             OnPropertyChanged(nameof(DiscountRate));
             OnPropertyChanged(nameof(DiscountAmount));
             OnPropertyChanged(nameof(CartTotal));
+            OnPropertyChanged(nameof(VatableSales));
+            OnPropertyChanged(nameof(VatAmount));
             OnPropertyChanged(nameof(HasDiscount));
             OnPropertyChanged(nameof(DiscountTypeLabel));
             OnPropertyChanged(nameof(DiscountSummary));

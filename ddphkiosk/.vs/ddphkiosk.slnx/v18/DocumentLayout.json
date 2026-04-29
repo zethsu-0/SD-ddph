@@ -1,13 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\",
+  "WorkspaceRootPath": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddphkiosk\\ddphkiosk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\eunice\\downloads\\sd-ddph\\ddphkiosk\\ddphkiosk\\receiptgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|solutionrelative:ddphkiosk\\receiptgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\eunice\\downloads\\sd-ddph\\ddphkiosk\\ddphkiosk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|solutionrelative:ddphkiosk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\herod\\onedrive\\documents\\playground\\sd\\ddphkiosk\\ddphkiosk\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|c:\\users\\eunice\\downloads\\sd-ddph\\ddphkiosk\\ddphkiosk\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7DF1C5BE-3229-C531-A418-4ABE7D54B072}|ddphkiosk\\ddphkiosk.csproj|solutionrelative:ddphkiosk\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -18,15 +22,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 271,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "ReceiptGenerator.cs",
+              "DocumentMoniker": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ReceiptGenerator.cs",
+              "RelativeDocumentMoniker": "ddphkiosk\\ReceiptGenerator.cs",
+              "ToolTip": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\ReceiptGenerator.cs",
+              "RelativeToolTip": "ddphkiosk\\ReceiptGenerator.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAlwBIAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-29T05:19:36.11Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "ddphkiosk\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\MainWindow.xaml.cs",
               "RelativeToolTip": "ddphkiosk\\MainWindow.xaml.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAADgvw4AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -34,15 +51,14 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
               "RelativeDocumentMoniker": "ddphkiosk\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\herod\\OneDrive\\Documents\\Playground\\SD\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\Eunice\\Downloads\\SD-ddph\\ddphkiosk\\ddphkiosk\\MainWindow.xaml",
               "RelativeToolTip": "ddphkiosk\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-19T12:26:43.399Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-19T12:26:43.399Z"
             }
           ]
         }

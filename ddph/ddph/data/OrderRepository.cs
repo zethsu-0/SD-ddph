@@ -368,6 +368,7 @@ namespace ddph.Data
                 CustomerEmail = record.CustomerEmail ?? string.Empty,
                 OrderSource = orderSource,
                 OrderType = record.OrderType ?? "standard",
+                OrderNumber = FormatOrderNumber(record.OrderNumber),
                 Status = record.Status ?? "pending",
                 PaymentStatus = record.PaymentStatus ?? "unpaid",
                 PickupDate = record.PickupDate ?? string.Empty,
@@ -508,6 +509,23 @@ namespace ddph.Data
             return createdAt;
         }
 
+        private static string FormatOrderNumber(JsonElement? orderNumber)
+        {
+            if (!orderNumber.HasValue)
+            {
+                return string.Empty;
+            }
+
+            var value = orderNumber.Value;
+            return value.ValueKind switch
+            {
+                JsonValueKind.Number when value.TryGetInt64(out var number) => number.ToString(CultureInfo.InvariantCulture),
+                JsonValueKind.Number => value.GetRawText(),
+                JsonValueKind.String => value.GetString() ?? string.Empty,
+                _ => string.Empty
+            };
+        }
+
         private sealed class FirebaseOrderRecord
         {
             public string? CustomerEmail { get; set; }
@@ -516,6 +534,7 @@ namespace ddph.Data
             public string? Date { get; set; }
             public List<FirebaseOrderItemRecord?>? Items { get; set; }
             public string? Notes { get; set; }
+            public JsonElement? OrderNumber { get; set; }
             public string? OrderType { get; set; }
             public string? PaymentStatus { get; set; }
             public string? PickupDate { get; set; }

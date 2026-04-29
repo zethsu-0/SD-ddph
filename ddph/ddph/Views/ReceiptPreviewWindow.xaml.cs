@@ -27,7 +27,12 @@ namespace ddph.Views
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            DialogResult = false;
+        }
+
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
         }
     }
 }

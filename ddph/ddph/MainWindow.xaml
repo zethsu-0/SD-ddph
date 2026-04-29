@@ -809,6 +809,7 @@
                                              Background="Transparent"
                                              VerticalContentAlignment="Center"
                                              PreviewTextInput="PaymentTextBox_PreviewTextInput"
+                                             DataObject.Pasting="PaymentTextBox_Pasting"
                                              Text="{Binding PaymentText, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Border>
                                 <Button Height="64"
@@ -937,6 +938,8 @@
                                  Height="40"
                                  VerticalContentAlignment="Center"
                                  Padding="12,0"
+                                 PreviewTextInput="PaymentTextBox_PreviewTextInput"
+                                 DataObject.Pasting="PaymentTextBox_Pasting"
                                  Text="{Binding PaymentText, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
@@ -1010,10 +1013,10 @@
                         Style="{StaticResource SecondaryButtonStyle}"/>
             </Grid>
         </Border>
-        <Border Grid.ColumnSpan="3"
+        <Border
                     Panel.ZIndex="50"
                     Background="#CCFFF8EF"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-78,0,238,24" Grid.Row="2">
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="5,0,10,24" Grid.Row="2" Grid.Column="1">
             <ProgressBar Width="180"
                              Height="8"
                              HorizontalAlignment="Center"

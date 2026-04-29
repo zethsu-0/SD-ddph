@@ -5,50 +5,105 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Windows.Markup;
-using System.Windows.Xps;
 
 namespace ddph.Receipts;
 
 public static class ReceiptPrintService
 {
-    public static void Print(IReadOnlyList<byte[]> previewImages, string documentName)
+    public static bool Print(IReadOnlyList<byte[]> previewImages, string documentName)
     {
         if (previewImages.Count == 0)
         {
-            return;
+            return false;
         }
 
-        var printQueue = LocalPrintServer.GetDefaultPrintQueue();
-        var fixedDocument = new FixedDocument();
-
-        foreach (var previewImage in previewImages)
+        var printDialog = new PrintDialog();
+        if (printDialog.ShowDialog() != true)
         {
-            var imageSource = CreateImageSource(previewImage);
-            var printableAreaWidth = printQueue.DefaultPrintTicket.PageMediaSize?.Width ?? imageSource.Width;
-            var printableAreaHeight = printQueue.DefaultPrintTicket.PageMediaSize?.Height ?? imageSource.Height;
+            return false;
+        }
+
+        ValidatePrintQueue(printDialog.PrintQueue);
+
+        var pageSize = GetPrintablePageSize(printDialog, printDialog.PrintQueue);
+        var fixedDocument = CreatePrintableDocument(
+            previewImages.Select(CreateImageSource).ToList(),
+            pageSize);
+
+        printDialog.PrintDocument(
+            fixedDocument.DocumentPaginator,
+            $"Dream Dough PH Receipt {documentName}");
+
+        return true;
+    }
+
+    private static void ValidatePrintQueue(PrintQueue printQueue)
+    {
+        printQueue.Refresh();
+
+        if (printQueue.IsOffline)
+        {
+            throw new InvalidOperationException($"Selected printer '{printQueue.FullName}' is offline.");
+        }
+
+        if (printQueue.IsPaused)
+        {
+            throw new InvalidOperationException($"Selected printer '{printQueue.FullName}' is paused.");
+        }
+
+        if (printQueue.IsInError || printQueue.NeedUserIntervention)
+        {
+            throw new InvalidOperationException($"Selected printer '{printQueue.FullName}' needs attention.");
+        }
+    }
+
+    private static FixedDocument CreatePrintableDocument(IReadOnlyList<BitmapImage> pages, Size pageSize)
+    {
+        var fixedDocument = new FixedDocument();
+        fixedDocument.DocumentPaginator.PageSize = pageSize;
+
+        foreach (var pageImage in pages)
+        {
+            var fixedPage = new FixedPage
+            {
+                Width = pageSize.Width,
+                Height = pageSize.Height
+            };
 
             var image = new Image
             {
-                Source = imageSource,
+                Source = pageImage,
                 Stretch = System.Windows.Media.Stretch.Uniform,
-                Width = printableAreaWidth,
-                Height = printableAreaHeight
+                Width = pageSize.Width,
+                Height = pageSize.Height
             };
 
-            var page = new FixedPage
-            {
-                Width = printableAreaWidth,
-                Height = printableAreaHeight
-            };
-            page.Children.Add(image);
+            FixedPage.SetLeft(image, 0);
+            FixedPage.SetTop(image, 0);
+            fixedPage.Children.Add(image);
 
             var pageContent = new PageContent();
-            ((IAddChild)pageContent).AddChild(page);
+            ((IAddChild)pageContent).AddChild(fixedPage);
             fixedDocument.Pages.Add(pageContent);
         }
 
-        var writer = PrintQueue.CreateXpsDocumentWriter(printQueue);
-        writer.Write(fixedDocument.DocumentPaginator, printQueue.DefaultPrintTicket);
+        return fixedDocument;
+    }
+
+    private static Size GetPrintablePageSize(PrintDialog printDialog, PrintQueue printQueue)
+    {
+        if (printDialog.PrintableAreaWidth > 0 && printDialog.PrintableAreaHeight > 0)
+        {
+            return new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);
+        }
+
+        var mediaSize = printQueue.DefaultPrintTicket.PageMediaSize;
+        if (mediaSize?.Width > 0 && mediaSize?.Height > 0)
+        {
+            return new Size(mediaSize.Width.Value, mediaSize.Height.Value);
+        }
+
+        return new Size(816, 1056);
     }
 
     private static BitmapImage CreateImageSource(byte[] imageBytes)

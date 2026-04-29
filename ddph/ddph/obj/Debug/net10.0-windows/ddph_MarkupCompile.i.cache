@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\obj\Debug\net10.0-windows\
+C:\Users\Eunice\Downloads\SD-ddph\ddph\ddph\obj\Debug\net10.0-windows\
 ddph
 none
 false
 TRACE;DEBUG;NET;NET10_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-C:\Users\herod\OneDrive\Documents\Playground\SD\ddph\ddph\App.xaml
+C:\Users\Eunice\Downloads\SD-ddph\ddph\ddph\App.xaml
 10850073286
 1-31998321
 39-585124630
-208-493748193
+208365194909
 CustomItemsWindow.xaml;MainWindow.xaml;OnlineOrders.xaml;Products.xaml;Views\AddProductWindow.xaml;Views\DiscountWindow.xaml;Views\InventoryView.xaml;Views\LoginWindow.xaml;Views\QuickOrderViewWindow.xaml;Views\ReceiptPreviewWindow.xaml;
 
-True
+False
 

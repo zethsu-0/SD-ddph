@@ -96,7 +96,7 @@
                     Foreground="White"
                     FontWeight="SemiBold"
                     Content="Confirm"
-                    Click="CloseButton_Click"/>
+                    Click="ConfirmButton_Click"/>
         </Grid>
     </Grid>
 </Window>
