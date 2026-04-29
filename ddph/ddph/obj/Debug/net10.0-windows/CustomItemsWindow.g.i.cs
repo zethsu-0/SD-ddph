@@ -76,7 +76,7 @@ namespace ddph {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/ddph;V1.0.0.0;component/customitemswindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ddph;component/customitemswindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\CustomItemsWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

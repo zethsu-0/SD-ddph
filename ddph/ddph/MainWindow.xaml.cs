@@ -323,7 +323,9 @@ namespace ddph
         {
             var employeeRepository = new EmployeeRepository();
             var orderRepository = new OrderRepository();
+            var categoryRepository = new CategoryRepository();
             var employeeList = new StackPanel();
+            var categoryList = new StackPanel();
             var salesRecordsList = new StackPanel();
             var salesPeriodButtons = new List<Button>();
             var salesSourceButtons = new List<Button>();
@@ -339,9 +341,16 @@ namespace ddph
                 Margin = new Thickness(0, 10, 0, 0),
                 Foreground = (Brush)FindResource("ThemeInkSoftBrush")
             };
+            var categoryListStatusTextBlock = new TextBlock
+            {
+                Margin = new Thickness(0, 10, 0, 0),
+                Foreground = (Brush)FindResource("ThemeInkSoftBrush")
+            };
             string? editingEmployeeUsername = null;
+            string? editingCategoryName = null;
             var employeeNameTextBox = CreateSettingsTextBox();
             var employeeIdTextBox = CreateSettingsTextBox();
+            var categoryNameTextBox = CreateSettingsTextBox();
             var employeePinBox = new PasswordBox
             {
                 Height = 42,
@@ -353,6 +362,11 @@ namespace ddph
                 BorderThickness = new Thickness(0)
             };
             var employeeStatusTextBlock = new TextBlock
+            {
+                Margin = new Thickness(0, 12, 0, 0),
+                Foreground = (Brush)FindResource("ThemeInkSoftBrush")
+            };
+            var categoryStatusTextBlock = new TextBlock
             {
                 Margin = new Thickness(0, 12, 0, 0),
                 Foreground = (Brush)FindResource("ThemeInkSoftBrush")
@@ -412,6 +426,51 @@ namespace ddph
                 finally
                 {
                     saveEmployeeButton.IsEnabled = true;
+                }
+            };
+            var saveCategoryButton = new Button
+            {
+                Width = 180,
+                Height = 48,
+                Margin = new Thickness(0, 18, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Background = (Brush)FindResource("ToastBrush"),
+                Foreground = Brushes.White,
+                Content = "Add Category"
+            };
+            saveCategoryButton.Click += async (_, _) =>
+            {
+                if (string.IsNullOrWhiteSpace(categoryNameTextBox.Text))
+                {
+                    categoryStatusTextBlock.Text = "Enter category name.";
+                    return;
+                }
+
+                try
+                {
+                    saveCategoryButton.IsEnabled = false;
+                    if (editingCategoryName == null)
+                    {
+                        await categoryRepository.AddCategoryAsync(categoryNameTextBox.Text);
+                        categoryStatusTextBlock.Text = "Category saved.";
+                    }
+                    else
+                    {
+                        await categoryRepository.RenameCategoryAsync(editingCategoryName, categoryNameTextBox.Text);
+                        categoryStatusTextBlock.Text = "Category updated.";
+                    }
+
+                    ResetCategoryForm();
+                    await LoadCategoriesAsync();
+                    RefreshCategoryConsumers();
+                }
+                catch (Exception ex)
+                {
+                    categoryStatusTextBlock.Text = ex.Message;
+                }
+                finally
+                {
+                    saveCategoryButton.IsEnabled = true;
                 }
             };
 
@@ -517,6 +576,115 @@ namespace ddph
                 }
             }
 
+            void ResetCategoryForm()
+            {
+                editingCategoryName = null;
+                categoryNameTextBox.Clear();
+                saveCategoryButton.Content = "Add Category";
+            }
+
+            void RefreshCategoryConsumers()
+            {
+                _inventoryContent = null;
+                if (DataContext is MainWindowViewModel viewModel &&
+                    viewModel.RefreshProductsCommand.CanExecute(null))
+                {
+                    viewModel.RefreshProductsCommand.Execute(null);
+                }
+            }
+
+            async Task LoadCategoriesAsync()
+            {
+                try
+                {
+                    categoryList.Children.Clear();
+                    foreach (var category in await categoryRepository.GetCategoriesAsync())
+                    {
+                        var isUncategorized = category.Equals("Uncategorized", StringComparison.OrdinalIgnoreCase);
+                        var editButton = CreateSmallSettingsButton("Edit");
+                        editButton.IsEnabled = !isUncategorized;
+                        editButton.Click += (_, _) =>
+                        {
+                            editingCategoryName = category;
+                            categoryNameTextBox.Text = category;
+                            saveCategoryButton.Content = "Save Category";
+                            categoryStatusTextBlock.Text = "Editing category.";
+                        };
+
+                        var removeButton = CreateSmallSettingsButton("Remove");
+                        removeButton.IsEnabled = !isUncategorized;
+                        removeButton.Click += async (_, _) =>
+                        {
+                            var result = MessageBox.Show(
+                                $"Remove {category}?",
+                                "Remove Category",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning);
+
+                            if (result != MessageBoxResult.Yes)
+                            {
+                                return;
+                            }
+
+                            try
+                            {
+                                await categoryRepository.DeleteCategoryAsync(category);
+                                categoryStatusTextBlock.Text = "Category removed.";
+                                if (editingCategoryName == category)
+                                {
+                                    ResetCategoryForm();
+                                }
+
+                                await LoadCategoriesAsync();
+                                RefreshCategoryConsumers();
+                            }
+                            catch (Exception ex)
+                            {
+                                categoryStatusTextBlock.Text = ex.Message;
+                            }
+                        };
+
+                        var actionsPanel = new StackPanel
+                        {
+                            Margin = new Thickness(0, 10, 0, 0),
+                            Orientation = Orientation.Horizontal,
+                            Children =
+                            {
+                                editButton,
+                                removeButton
+                            }
+                        };
+
+                        categoryList.Children.Add(new Border
+                        {
+                            Margin = new Thickness(0, 0, 0, 8),
+                            Padding = new Thickness(12),
+                            Background = Brushes.White,
+                            CornerRadius = new CornerRadius(12),
+                            Child = new StackPanel
+                            {
+                                Children =
+                                {
+                                    new TextBlock
+                                    {
+                                        Text = category,
+                                        FontWeight = FontWeights.SemiBold,
+                                        Foreground = (Brush)FindResource("ThemeInkBrush")
+                                    },
+                                    actionsPanel
+                                }
+                            }
+                        });
+                    }
+
+                    categoryListStatusTextBlock.Text = categoryList.Children.Count == 0 ? "No categories yet." : string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    categoryListStatusTextBlock.Text = ex.Message;
+                }
+            }
+
             async Task LoadSalesRecordsAsync()
             {
                 try
@@ -582,7 +750,7 @@ namespace ddph
             {
                 Width = 180,
                 Height = 48,
-                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 24, 12, -28),
                 Background = (Brush)FindResource("ToastBrush"),
                 Foreground = Brushes.White,
                 Content = "Logout"
@@ -593,9 +761,7 @@ namespace ddph
             {
                 Width = 180,
                 Height = 48,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                Margin = new Thickness(0, 24, -28, -28),
+                Margin = new Thickness(0, 24, 20, -28),
                 Background = (Brush)FindResource("ThemeAccentSoftBrush"),
                 Foreground = (Brush)FindResource("ThemeAccentBrush"),
                 Content = "Close App"
@@ -603,7 +769,7 @@ namespace ddph
             closeAppButton.Style = CreateCloseAppButtonStyle();
             closeAppButton.Click += CloseButton_Click;
 
-            var accountCard = new Border
+            var categoryCard = new Border
             {
                 Padding = new Thickness(28),
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -616,7 +782,7 @@ namespace ddph
                     {
                         new TextBlock
                         {
-                            Text = "Account",
+                            Text = "Categories",
                             FontSize = 24,
                             FontWeight = FontWeights.Bold,
                             Foreground = (Brush)FindResource("ThemeInkBrush")
@@ -624,10 +790,28 @@ namespace ddph
                         new TextBlock
                         {
                             Margin = new Thickness(0, 8, 0, 18),
-                            Text = $"Signed in as {AuthSessionStore.CurrentUsername}",
+                            Text = "Product groups",
                             Foreground = (Brush)FindResource("ThemeInkSoftBrush")
                         },
-                        logoutButton
+                        CreateSettingsLabel("Name"),
+                        categoryNameTextBox,
+                        saveCategoryButton,
+                        categoryStatusTextBlock,
+                        new TextBlock
+                        {
+                            Margin = new Thickness(0, 22, 0, 12),
+                            Text = "Category List",
+                            FontSize = 18,
+                            FontWeight = FontWeights.Bold,
+                            Foreground = (Brush)FindResource("ThemeInkBrush")
+                        },
+                        new ScrollViewer
+                        {
+                            MaxHeight = 260,
+                            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                            Content = categoryList
+                        },
+                        categoryListStatusTextBlock
                     }
                 }
             };
@@ -796,6 +980,18 @@ namespace ddph
                 }
             }
 
+            var settingsActionsPanel = new StackPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Orientation = Orientation.Horizontal,
+                Children =
+                {
+                    logoutButton,
+                    closeAppButton
+                }
+            };
+
             var grid = new Grid
             {
                 Margin = new Thickness(32)
@@ -809,15 +1005,22 @@ namespace ddph
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            Grid.SetRow(closeAppButton, 2);
-            Grid.SetColumn(closeAppButton, 5);
-            grid.Children.Add(accountCard);
+            Grid.SetRow(settingsActionsPanel, 2);
+            Grid.SetColumn(settingsActionsPanel, 0);
+            Grid.SetColumnSpan(settingsActionsPanel, 6);
+            grid.Children.Add(categoryCard);
             grid.Children.Add(employeeCard);
             grid.Children.Add(salesCard);
-            grid.Children.Add(closeAppButton);
+            grid.Children.Add(settingsActionsPanel);
+            _ = LoadCategoriesAsync();
             _ = LoadEmployeesAsync();
             _ = LoadSalesRecordsAsync();
-            return grid;
+            return new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = grid
+            };
         }
 
         private UIElement CreateSalesRecordHeader()
@@ -1105,6 +1308,7 @@ namespace ddph
             OrdersNavButton.Background = _inactiveNavBrush;
             InventoryNavButton.Background = _inactiveNavBrush;
             CustomNavButton.Background = _inactiveNavBrush;
+            SettingsNavButton.Background = _inactiveNavBrush;
             activeButton.Background = _activeNavBrush;
         }
 

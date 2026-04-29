@@ -47,6 +47,54 @@ AssertEqual(string.Empty, firebase.PostPath, "kiosk checkout should not create e
 AssertEqual("Maria Santos", firebase.PutPayloadValue("customerName"), "kiosk checkout should save customer name");
 AssertEqual("09171234567", firebase.PutPayloadValue("customerPhone"), "kiosk checkout should save customer phone");
 
+var categoryFirebase = new FakeFirebaseDatabaseClient();
+categoryFirebase.Categories["donuts"] = new Dictionary<string, object?>
+{
+    ["name"] = "Donuts",
+    ["order"] = 999,
+    ["protected"] = false
+};
+categoryFirebase.Products["product-1"] = new Dictionary<string, object?>
+{
+    ["name"] = "Glazed",
+    ["category"] = "Donuts",
+    ["price"] = 10m
+};
+categoryFirebase.Products["product-2"] = new Dictionary<string, object?>
+{
+    ["name"] = "Cheesecake",
+    ["category"] = "Cakes",
+    ["price"] = 120m
+};
+
+var categoryRepository = new CategoryRepository(categoryFirebase);
+await categoryRepository.AddCategoryAsync("Pastries");
+AssertEqual("Pastries", categoryFirebase.CategoryName("pastries"), "add category should save category name");
+
+await categoryRepository.RenameCategoryAsync("Donuts", "Doughnuts");
+AssertEqual(false, categoryFirebase.Categories.ContainsKey("donuts"), "rename category should remove old key");
+AssertEqual("Doughnuts", categoryFirebase.CategoryName("doughnuts"), "rename category should save new name");
+AssertEqual("Doughnuts", categoryFirebase.Products["product-1"]["category"], "rename category should update matching products");
+AssertEqual("Cakes", categoryFirebase.Products["product-2"]["category"], "rename category should not update other products");
+
+await AssertThrowsAsync<InvalidOperationException>(
+    () => categoryRepository.DeleteCategoryAsync("Doughnuts"),
+    "Category is used by products.",
+    "used category delete should be blocked");
+
+await categoryRepository.DeleteCategoryAsync("Pastries");
+AssertEqual(false, categoryFirebase.Categories.ContainsKey("pastries"), "unused category delete should remove category");
+
+var inventoryViewModel = new InventoryViewModel(loadProducts: false);
+inventoryViewModel.Products.Add(new Product { ProductName = "B", Category = "Cupcakes", Price = 20m });
+inventoryViewModel.Products.Add(new Product { ProductName = "A", Category = "Cakes", Price = 30m });
+inventoryViewModel.SortProductsCommand.Execute("ProductName");
+AssertEqual("A", inventoryViewModel.FilteredProducts.Cast<Product>().First().ProductName, "product name sort should sort ascending first");
+inventoryViewModel.SortProductsCommand.Execute("ProductName");
+AssertEqual("B", inventoryViewModel.FilteredProducts.Cast<Product>().First().ProductName, "same product name sort should toggle descending");
+inventoryViewModel.SortProductsCommand.Execute("Price");
+AssertEqual(20m, inventoryViewModel.FilteredProducts.Cast<Product>().First().Price, "price sort should sort ascending first");
+
 static OnlineOrder CreateOrder(string id, string productId, int quantity)
 {
     var order = new OnlineOrder
@@ -74,8 +122,26 @@ static void AssertEqual<T>(T expected, T actual, string message)
     }
 }
 
+static async Task AssertThrowsAsync<TException>(Func<Task> action, string expectedMessage, string message)
+    where TException : Exception
+{
+    try
+    {
+        await action();
+    }
+    catch (TException ex)
+    {
+        AssertEqual(expectedMessage, ex.Message, message);
+        return;
+    }
+
+    throw new InvalidOperationException($"{message}. Expected {typeof(TException).Name}.");
+}
+
 sealed class FakeFirebaseDatabaseClient : IFirebaseDatabaseClient
 {
+    public Dictionary<string, Dictionary<string, object?>> Categories { get; } = new();
+    public Dictionary<string, Dictionary<string, object?>> Products { get; } = new();
     public string PatchedPath { get; private set; } = string.Empty;
     public string PutPath { get; private set; } = string.Empty;
     public string DeletedPath { get; private set; } = string.Empty;
@@ -84,6 +150,22 @@ sealed class FakeFirebaseDatabaseClient : IFirebaseDatabaseClient
 
     public Task<T?> GetAsync<T>(string path)
     {
+        if (path == "categories")
+        {
+            return Task.FromResult((T?)(object)Categories);
+        }
+
+        if (path.StartsWith("categories/"))
+        {
+            var key = path["categories/".Length..];
+            return Task.FromResult(Categories.TryGetValue(key, out var category) ? (T?)(object)category : default);
+        }
+
+        if (path == "products")
+        {
+            return Task.FromResult((T?)(object)Products);
+        }
+
         return Task.FromResult<T?>(default);
     }
 
@@ -97,24 +179,56 @@ sealed class FakeFirebaseDatabaseClient : IFirebaseDatabaseClient
     {
         PutPath = path;
         PutPayload = payload;
+        if (path.StartsWith("categories/") && payload is Dictionary<string, object?> category)
+        {
+            Categories[path["categories/".Length..]] = category;
+        }
+
+        if (path.StartsWith("products/") && payload is Dictionary<string, object?> product)
+        {
+            Products[path["products/".Length..]] = product;
+        }
+
         return Task.CompletedTask;
     }
 
     public Task PatchAsync(string path, object payload)
     {
         PatchedPath = path;
+        if (path.StartsWith("products/") &&
+            payload is Dictionary<string, object?> updates &&
+            Products.TryGetValue(path["products/".Length..], out var product))
+        {
+            foreach (var update in updates)
+            {
+                product[update.Key] = update.Value;
+            }
+        }
+
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(string path)
     {
         DeletedPath = path;
+        if (path.StartsWith("categories/"))
+        {
+            Categories.Remove(path["categories/".Length..]);
+        }
+
         return Task.CompletedTask;
     }
 
     public object? PutPayloadValue(string key)
     {
         return PutPayload is Dictionary<string, object?> values && values.TryGetValue(key, out var value)
+            ? value
+            : null;
+    }
+
+    public object? CategoryName(string key)
+    {
+        return Categories.TryGetValue(key, out var values) && values.TryGetValue("name", out var value)
             ? value
             : null;
     }

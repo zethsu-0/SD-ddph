@@ -52,7 +52,7 @@ namespace ddph {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/ddph;V1.0.0.0;component/onlineorders.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ddph;component/onlineorders.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\OnlineOrders.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

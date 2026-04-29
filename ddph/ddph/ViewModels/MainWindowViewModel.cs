@@ -20,7 +20,9 @@ namespace ddph.ViewModels
         private const decimal MaxPaymentAmount = 999999m;
         private const decimal MaxDiscountRate = 100m;
         private readonly ProductRepository _productRepository = new();
+        private readonly CategoryRepository _categoryRepository = new();
         private readonly SalesRepository _salesRepository = new();
+        private List<string> _savedCategories = new();
         private Product? _selectedProduct;
         private string _paymentText = string.Empty;
         private string _searchText = string.Empty;
@@ -279,6 +281,7 @@ namespace ddph.ViewModels
                     Products.Add(product);
                 }
 
+                _savedCategories = await _categoryRepository.GetCategoriesAsync();
                 RebuildCategories();
                 RefreshFilters();
                 OnPropertyChanged(nameof(ProductCount));
@@ -446,6 +449,7 @@ namespace ddph.ViewModels
         {
             var categories = Products
                 .Select(product => string.IsNullOrWhiteSpace(product.Category) ? "Uncategorized" : product.Category)
+                .Concat(_savedCategories)
                 .Distinct(System.StringComparer.OrdinalIgnoreCase)
                 .OrderBy(category => category, System.StringComparer.OrdinalIgnoreCase)
                 .ToList();

@@ -15,12 +15,21 @@ namespace ddph.ViewModels
     public class InventoryViewModel : INotifyPropertyChanged
     {
         private readonly ProductRepository _productRepository = new();
+        private readonly CategoryRepository _categoryRepository = new();
+        private List<string> _savedCategories = new();
         private string _searchText = string.Empty;
         private string _selectedCategory = "All Categories";
+        private string _sortProperty = string.Empty;
+        private ListSortDirection _sortDirection = ListSortDirection.Ascending;
         private Product? _selectedProduct;
         private bool _isLoading;
 
         public InventoryViewModel()
+            : this(true)
+        {
+        }
+
+        public InventoryViewModel(bool loadProducts)
         {
             Products = new ObservableCollection<Product>();
             CategorySummaries = new ObservableCollection<CategorySummary>();
@@ -36,8 +45,12 @@ namespace ddph.ViewModels
             DeleteProductCommand = new RelayCommand(
                 async parameter => await DeleteProductAsync(parameter as Product),
                 parameter => parameter is Product && !IsLoading);
+            SortProductsCommand = new RelayCommand(SortProducts);
 
-            _ = LoadProductsAsync();
+            if (loadProducts)
+            {
+                _ = LoadProductsAsync();
+            }
         }
 
         public ObservableCollection<Product> Products { get; }
@@ -116,6 +129,7 @@ namespace ddph.ViewModels
         public ICommand AddProductCommand { get; }
         public ICommand EditProductCommand { get; }
         public ICommand DeleteProductCommand { get; }
+        public ICommand SortProductsCommand { get; }
 
         private bool FilterProducts(object item)
         {
@@ -133,6 +147,35 @@ namespace ddph.ViewModels
                 (product.ProductName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 product.Category.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
                 product.Description.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void SortProducts(object? parameter)
+        {
+            if (parameter is not string propertyName || string.IsNullOrWhiteSpace(propertyName))
+            {
+                return;
+            }
+
+            if (_sortProperty == propertyName)
+            {
+                _sortDirection = _sortDirection == ListSortDirection.Ascending
+                    ? ListSortDirection.Descending
+                    : ListSortDirection.Ascending;
+            }
+            else
+            {
+                _sortProperty = propertyName;
+                _sortDirection = ListSortDirection.Ascending;
+            }
+
+            ApplyProductSort();
+        }
+
+        private void ApplyProductSort()
+        {
+            FilteredProducts.SortDescriptions.Clear();
+            FilteredProducts.SortDescriptions.Add(new SortDescription(_sortProperty, _sortDirection));
+            FilteredProducts.Refresh();
         }
 
         private async Task AddProductAsync()
@@ -269,6 +312,7 @@ namespace ddph.ViewModels
                     Products.Add(product);
                 }
 
+                _savedCategories = await _categoryRepository.GetCategoriesAsync();
                 RebuildCategoryData();
                 FilteredProducts.Refresh();
                 OnPropertyChanged(nameof(VisibleProductCount));
@@ -319,9 +363,16 @@ namespace ddph.ViewModels
             Categories.Clear();
             Categories.Add("All Categories");
 
-            foreach (var group in categoryCounts)
+            var categoryNames = categoryCounts
+                .Select(group => group.Key)
+                .Concat(_savedCategories)
+                .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                .OrderBy(category => category, System.StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var category in categoryNames)
             {
-                Categories.Add(group.Key);
+                Categories.Add(category);
             }
 
             if (!Categories.Contains(SelectedCategory))
@@ -344,20 +395,9 @@ namespace ddph.ViewModels
                 {
                     Title = group.Key,
                     Count = group.Count(),
-                    Icon = GetCategoryIcon(group.Key)
+                    Icon = "🍽"
                 });
             }
-        }
-
-        private static string GetCategoryIcon(string category)
-        {
-            return category.ToLowerInvariant() switch
-            {
-                "cakes" => "🎂",
-                "cookies" => "🍪",
-                "cupcakes" => "🧁",
-                _ => "🍽"
-            };
         }
 
         private string[] GetEditableCategories()

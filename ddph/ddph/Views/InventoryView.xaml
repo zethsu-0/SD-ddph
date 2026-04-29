@@ -49,7 +49,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
+        <ScrollViewer x:Name="InventoryScrollViewer"
+                      VerticalScrollBarVisibility="Auto"
                       Background="{StaticResource InvShellBrush}">
             <Grid Margin="32"
                   MinWidth="940">
@@ -177,31 +178,38 @@
                                 BorderBrush="{StaticResource InvBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="24">
-                            <ContentControl Content="{Binding LatestProduct}">
-                                <ContentControl.ContentTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="180"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Border CornerRadius="24,24,0,0"
-                                                    ClipToBounds="True"
-                                                    Background="{StaticResource InvPanelBrush}">
-                                                <Image Source="{Binding ImageUrl, Converter={StaticResource ProductImageConverter}}"
-                                                       Stretch="UniformToFill"/>
-                                            </Border>
-                                            <TextBlock Grid.Row="1"
-                                                       Margin="20,16,20,20"
-                                                       FontSize="22"
-                                                       FontWeight="Bold"
-                                                       Foreground="{StaticResource InvGreenBrush}"
-                                                       Text="{Binding ProductName}"
-                                                       TextWrapping="Wrap"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ContentControl.ContentTemplate>
-                            </ContentControl>
+                            <StackPanel>
+                                <TextBlock Margin="20,18,20,0"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InvTextSoftBrush}"
+                                           Text="Latest Product"/>
+                                <ContentControl Content="{Binding LatestProduct}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="180"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Border Margin="0,16,0,0"
+                                                        ClipToBounds="True"
+                                                        Background="{StaticResource InvPanelBrush}">
+                                                    <Image Source="{Binding ImageUrl, Converter={StaticResource ProductImageConverter}}"
+                                                           Stretch="UniformToFill"/>
+                                                </Border>
+                                                <TextBlock Grid.Row="1"
+                                                           Margin="20,16,20,20"
+                                                           FontSize="22"
+                                                           FontWeight="Bold"
+                                                           Foreground="{StaticResource InvGreenBrush}"
+                                                           Text="{Binding ProductName}"
+                                                           TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </StackPanel>
                         </Border>
                     </StackPanel>
 
@@ -230,19 +238,40 @@
                                            FontSize="14"
                                            FontWeight="Bold"
                                            Foreground="{StaticResource InvOutlineBrush}"
-                                           Text="Product Name"/>
+                                           Cursor="Hand"
+                                           Text="Product Name">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding SortProductsCommand}"
+                                                      CommandParameter="ProductName"/>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
                                 <TextBlock Grid.Column="1"
                                            Margin="20,18"
                                            FontSize="14"
                                            FontWeight="Bold"
                                            Foreground="{StaticResource InvOutlineBrush}"
-                                           Text="Category"/>
+                                           Cursor="Hand"
+                                           Text="Category">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding SortProductsCommand}"
+                                                      CommandParameter="Category"/>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
                                 <TextBlock Grid.Column="2"
                                            Margin="20,18"
                                            FontSize="14"
                                            FontWeight="Bold"
                                            Foreground="{StaticResource InvOutlineBrush}"
-                                           Text="Unit Price"/>
+                                           Cursor="Hand"
+                                           Text="Unit Price">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding SortProductsCommand}"
+                                                      CommandParameter="Price"/>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
                                 <TextBlock Grid.Column="3"
                                            Margin="20,18"
                                            FontSize="14"
@@ -256,6 +285,7 @@
                                      BorderThickness="0"
                                      Background="Transparent"
                                      ItemsSource="{Binding FilteredProducts}"
+                                     PreviewMouseWheel="ProductListBox_PreviewMouseWheel"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
@@ -372,7 +402,7 @@
 
         <Border Panel.ZIndex="50"
                 Background="#CCFFF8EF"
-                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="414,300,0,0">
             <ProgressBar Width="180"
                          Height="8"
                          HorizontalAlignment="Center"
